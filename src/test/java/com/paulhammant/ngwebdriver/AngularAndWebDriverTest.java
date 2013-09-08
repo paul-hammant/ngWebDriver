@@ -47,7 +47,6 @@ public class AngularAndWebDriverTest {
         assertThat(wes.get(1).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
         assertThat(wes.get(2).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
 
-
     }
 
     @Test
@@ -57,7 +56,7 @@ public class AngularAndWebDriverTest {
         WebElement we = driver.findElement(angularRepeater("location in Locations").row(2))
                 .findElement(className("addressContent"));
 
-        assertThat(cleanup(we), is(
+        assertThat(removeTimeOfDaySensitivePartOfAddress(we), is(
                 "3328 N Clark St\n" +
                         "Chicago, IL\n" +
                         "773-244-9000\n" +
@@ -66,7 +65,7 @@ public class AngularAndWebDriverTest {
 
     }
 
-    private String cleanup(WebElement we) {
+    private String removeTimeOfDaySensitivePartOfAddress(WebElement we) {
         return we.getText().replace("Today's hours: 10:30 am - 10 pm\n", "");
     }
 
@@ -77,7 +76,7 @@ public class AngularAndWebDriverTest {
                 .findElement(angularRepeater("location in Locations").row(3))
                 .findElement(className("addressContent"));
 
-        assertThat(cleanup(we), is(
+        assertThat(removeTimeOfDaySensitivePartOfAddress(we), is(
                 "46 E Chicago Ave\n" +
                         "Chicago, IL\n" +
                         "312-787-0100\n" +
@@ -88,14 +87,23 @@ public class AngularAndWebDriverTest {
     @Test
     public void find_specific_cell_in_ng_repeat() {
 
-        // find the second address
+        // find the second address' city
         WebElement we = driver.findElement(angularRepeater("location in Locations").row(2).column("location.City"));
 
         assertThat(we.getText(), is("Chicago, IL"));
     }
 
     @Test
-    public void find_all_of_a_coumn_in_an_ng_repeat() {
+    public void find_specific_cell_in_ng_repeat_the_other_way() {
+
+        // find the second address' city
+        WebElement we = driver.findElement(angularRepeater("location in Locations").column("location.City").row(2));
+
+        assertThat(we.getText(), is("Chicago, IL"));
+    }
+
+    @Test
+    public void find_all_of_a_column_in_an_ng_repeat() {
 
         // find all the telephone numbers
         List<WebElement> we = driver.findElements(angularRepeater("location in Locations").column("location.Phone"));

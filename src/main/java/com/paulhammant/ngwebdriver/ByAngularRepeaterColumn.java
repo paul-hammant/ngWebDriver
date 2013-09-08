@@ -56,6 +56,10 @@ public class ByAngularRepeaterColumn extends By {
         );
     }
 
+    public ByAngularRepeaterCell row(int row) {
+        return new ByAngularRepeaterCell(repeater, row, column);
+    }
+
     // meaningless
     @Override
     public WebElement findElement(SearchContext context) {
