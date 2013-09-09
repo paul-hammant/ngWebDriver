@@ -56,16 +56,21 @@ public class AngularAndWebDriverTest {
         WebElement we = driver.findElement(angularRepeater("location in Locations").row(2))
                 .findElement(className("addressContent"));
 
-        assertThat(removeTimeOfDaySensitivePartOfAddress(we), is(
+        assertThat(getTextAndRemoveTimeOfDaySensitivePartOfAddress(we), is(
                 "3328 N Clark St\n" +
                         "Chicago, IL\n" +
                         "773-244-9000\n" +
                         "min order $3.75"
         ));
 
+
     }
 
-    private String removeTimeOfDaySensitivePartOfAddress(WebElement we) {
+    private String getTextAndRemoveTimeOfDaySensitivePartOfAddress(WebElement we) {
+        // if you run the tests before opening hours
+        // the listing for the outlet in question, has the hours
+        // that it opens as part of the address. This is a hack
+        // to make that consistent for assertions :)
         return we.getText().replace("Today's hours: 10:30 am - 10 pm\n", "");
     }
 
@@ -76,7 +81,7 @@ public class AngularAndWebDriverTest {
                 .findElement(angularRepeater("location in Locations").row(3))
                 .findElement(className("addressContent"));
 
-        assertThat(removeTimeOfDaySensitivePartOfAddress(we), is(
+        assertThat(getTextAndRemoveTimeOfDaySensitivePartOfAddress(we), is(
                 "46 E Chicago Ave\n" +
                         "Chicago, IL\n" +
                         "312-787-0100\n" +
@@ -140,38 +145,66 @@ public class AngularAndWebDriverTest {
 
         WebElement we = driver.findElement(className("addressContent"));
 
+        // assert the Starting position is true via regular WebDriver.
         assertThat(we.getText(), containsString("812 W Van Buren St\nChicago, IL"));
 
         AngularModelAccessor model = new AngularModelAccessor(driver);
+
+        // change something via the $scope model
         model.mutate(we, "location.City", "'Narnia'");
 
+        // assert the change happened via regular WebDriver.
         assertThat(we.getText(), containsString("812 W Van Buren St\nNarnia, IL"));
 
+        // retrieve the JSON for the location via the $scope model
         String locn = model.retrieveJson(we, "location");
 
+        // that is the JSON we expect.
         assertThat(locn.replace("\"","'"), containsString("{'Id':1675,'Name':'#0019 812 W Van Buren St','Abbreviation':'#0019'"));
 
+        // retrieve a single field as JSON
         String city = model.retrieveJson(we, "location.City");
 
+        // assert that it comes back indicating its type (presence of quotes)
         assertThat(city, is("\"Narnia\""));
 
+        // retrieve it again, but directly as String
         city = model.retrieveAsString(we, "location.City");
 
+        // assert it is still what we expect
         assertThat(city, is("Narnia"));
 
+        // WebDriver can hand that back as a String
         Object rv = model.retrieve(we, "location.City");
-
         assertThat(rv.toString(), is("Narnia"));
 
+        // WebDriver naturally hands back as a Map if it is not one
+        // variable..
         rv = model.retrieve(we, "location");
-
         assertThat(((Map) rv).get("City").toString(), is("Narnia"));
 
-        Long id  = model.retrieveAsLong(we, "location.Id");
-
+        // If something is numeric, WebDriver hands that back
+        // naturally as a long.
+        long id  = model.retrieveAsLong(we, "location.Id");
         assertThat(id, is(1675L));
 
-    }
+        // You can set whole parts of the tree within the scope..
+        model.mutate(we, "location",
+                "{" +
+                "  AddressLine1: '1600 Pennsylvania Avenue NW'," +
+                "  AddressLine2: ''," +
+                "  City: 'Washington'," +
+                "  State: 'DC'," +
+                "  Zipcode: 20500" +
+                "}");
 
+        // keys can be in quotes (single or double) or not have quotes at all
+        // values can be in quotes (single or double) or not habe quotes if
+        // they are not of type string.
+
+        WebElement addressContent = driver.findElement(className("addressContent"));
+        assertThat(addressContent.getText(), containsString("1600 Pennsylvania Avenue NW\nWashington, DC\n"));
+
+    }
 
 }

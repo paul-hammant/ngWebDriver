@@ -31,7 +31,7 @@ public class AngularModelAccessor {
     }
 
     public String retrieveAsString(WebElement element, final String variable) {
-        return (String) driver.executeScript("return angular.element(arguments[0]).scope()." + variable + ";", element);
+        return driver.executeScript("return angular.element(arguments[0]).scope()." + variable + ";", element).toString();
     }
 
     public Long retrieveAsLong(WebElement element, final String variable) {
