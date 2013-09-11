@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.paulhammant.ngwebdriver.ByAngularBinding.angularBinding;
-import static com.paulhammant.ngwebdriver.ByAngularRepeater.angularRepeater;
 import static com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish.waitForAngularRequestsToFinish;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -22,12 +20,14 @@ import static org.openqa.selenium.By.tagName;
 public class AngularAndWebDriverTest {
 
     private FirefoxDriver driver;
+    private ByAngular ng;
 
     @BeforeTest
     public void setup() {
         driver = new FirefoxDriver();
         driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
         driver.get("https://online.jimmyjohns.com/#/pickupresults/58");
+        ng = new ByAngular(driver);
         waitForAngularRequestsToFinish(driver);
     }
 
@@ -40,7 +40,7 @@ public class AngularAndWebDriverTest {
     public void find_ng_repeat_in_page() {
 
         // find the second address
-        List<WebElement> wes = driver.findElements(angularRepeater("location in Locations"));
+        List<WebElement> wes = driver.findElements(ng.repeater("location in Locations"));
 
         assertThat(wes.size(), is(3));
         assertThat(wes.get(0).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
@@ -53,7 +53,7 @@ public class AngularAndWebDriverTest {
     public void find_second_row_in_ng_repeat() {
 
         // find the second address
-        WebElement we = driver.findElement(angularRepeater("location in Locations").row(2))
+        WebElement we = driver.findElement(ng.repeater("location in Locations").row(2))
                 .findElement(className("addressContent"));
 
         assertThat(getTextAndRemoveTimeOfDaySensitivePartOfAddress(we), is(
@@ -78,7 +78,7 @@ public class AngularAndWebDriverTest {
     public void find_third_row_in_ng_repeat_by_default_from_intermediate_node() {
 
         WebElement we = driver.findElement(tagName("body"))
-                .findElement(angularRepeater("location in Locations").row(3))
+                .findElement(ng.repeater("location in Locations").row(3))
                 .findElement(className("addressContent"));
 
         assertThat(getTextAndRemoveTimeOfDaySensitivePartOfAddress(we), is(
@@ -93,7 +93,7 @@ public class AngularAndWebDriverTest {
     public void find_specific_cell_in_ng_repeat() {
 
         // find the second address' city
-        WebElement we = driver.findElement(angularRepeater("location in Locations").row(2).column("location.City"));
+        WebElement we = driver.findElement(ng.repeater("location in Locations").row(2).column("location.City"));
 
         assertThat(we.getText(), is("Chicago, IL"));
     }
@@ -102,7 +102,7 @@ public class AngularAndWebDriverTest {
     public void find_specific_cell_in_ng_repeat_the_other_way() {
 
         // find the second address' city
-        WebElement we = driver.findElement(angularRepeater("location in Locations").column("location.City").row(2));
+        WebElement we = driver.findElement(ng.repeater("location in Locations").column("location.City").row(2));
 
         assertThat(we.getText(), is("Chicago, IL"));
     }
@@ -111,7 +111,7 @@ public class AngularAndWebDriverTest {
     public void find_all_of_a_column_in_an_ng_repeat() {
 
         // find all the telephone numbers
-        List<WebElement> we = driver.findElements(angularRepeater("location in Locations").column("location.Phone"));
+        List<WebElement> we = driver.findElements(ng.repeater("location in Locations").column("location.Phone"));
 
         assertThat(we.get(0).getText(), is("312-733-8030"));
         assertThat(we.get(1).getText(), is("773-244-9000"));
@@ -122,7 +122,7 @@ public class AngularAndWebDriverTest {
     public void find_by_angular_binding() {
 
         // find the first telephone number
-        WebElement we = driver.findElement(angularBinding("location.Phone"));        
+        WebElement we = driver.findElement(ng.binding("location.Phone"));
         // could have been {{location.Phone}} too, or even ion.Pho
 
         assertThat(we.getText(), is("312-733-8030"));
@@ -132,7 +132,7 @@ public class AngularAndWebDriverTest {
     public void find_all_for_an_angular_binding() {
 
         // find all the telephone numbers
-        List<WebElement> wes = driver.findElements(angularBinding("location.Phone"));
+        List<WebElement> wes = driver.findElements(ng.binding("location.Phone"));
 
         assertThat(wes.get(0).getText(), is("312-733-8030"));
         assertThat(wes.get(1).getText(), is("773-244-9000"));

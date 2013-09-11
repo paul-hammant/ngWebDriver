@@ -1,26 +1,26 @@
 package com.paulhammant.ngwebdriver;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
 public class ByAngularBinding extends By {
 
-    public static ByAngularBinding angularBinding(String binding) {
-        return new ByAngularBinding(binding);
-    }
+    private final JavascriptExecutor jse;
 
     private String binding;
-    private int row = 1;
 
-    public ByAngularBinding(String binding) {
+    public ByAngularBinding(JavascriptExecutor jse, String binding) {
+        this.jse = jse;
         this.binding = binding;
     }
 
-    private By makeJsBy(String oneOrAll) {
-        return By.js(
+    private String makeJsBy(String oneOrAll) {
+        return
                 "var using = arguments[0] || document;\n" +
                 "var binding = '" + binding + "';\n" +
                 "var bindings = using.getElementsByClassName('ng-binding');\n" +
@@ -32,18 +32,23 @@ public class ByAngularBinding extends By {
                 "    matches.push(bindings[i]);\n" +
                 "  }\n" +
                 "}\n" +
-                "return matches" + oneOrAll + ";"
-        );
+                "return matches" + oneOrAll + ";";
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-        return makeJsBy("[0]").findElement(context);
+        if (context instanceof WebDriver) {
+            context = null;
+        }
+        return (WebElement) jse.executeScript(makeJsBy("[0]"), context);
     }
 
     @Override
     public List<WebElement> findElements(SearchContext searchContext) {
-        return makeJsBy("").findElements(searchContext);
+        if (searchContext instanceof WebDriver) {
+            searchContext = null;
+        }
+        return (List<WebElement>) jse.executeScript(makeJsBy(""), searchContext);
     }
 
 }
