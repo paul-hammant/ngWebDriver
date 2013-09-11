@@ -8,12 +8,11 @@ import java.util.List;
 
 public class ByAngularBinding extends By {
 
-    public static ByAngularBinding angularBinding(String binding) {
+    public static ByAngularBinding ngBinding(String binding) {
         return new ByAngularBinding(binding);
     }
 
     private String binding;
-    private int row = 1;
 
     public ByAngularBinding(String binding) {
         this.binding = binding;
