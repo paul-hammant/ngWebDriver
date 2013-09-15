@@ -30,7 +30,7 @@ If you're trying to revrieve a data object, there's a [selenium bug](http://code
 <dependency>
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.9</version>
   <scope>test</scope>
 </dependency>
 
