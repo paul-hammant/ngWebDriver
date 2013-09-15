@@ -1,6 +1,5 @@
 package com.paulhammant.ngwebdriver;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -8,14 +7,13 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class ByAngularRepeaterColumn extends By {
+public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
 
-    private final JavascriptExecutor jse;
     private final String repeater;
     private final String column;
 
     public ByAngularRepeaterColumn(JavascriptExecutor jse, String repeater, String column) {
-        this.jse = jse;
+        super(jse);
         this.repeater = repeater;
         this.column = column;
     }
@@ -35,7 +33,7 @@ public class ByAngularRepeaterColumn extends By {
         if (searchContext instanceof WebDriver) {
             searchContext = null;
         }
-        return (List<WebElement>) jse.executeScript(
+        Object o = jse.executeScript(
                 "var matches = [];\n" +
                         "var using = arguments[0] || document;\n" +
                         "var repeater = '" + repeater + "';\n" +
@@ -71,8 +69,16 @@ public class ByAngularRepeaterColumn extends By {
                         "  }\n" +
                         "}\n" +
                         "return matches;"
-        , searchContext);
+                , searchContext);
+        errorIfNull(o);
+        return (List<WebElement>) o;
 
     }
+
+    @Override
+    public String toString() {
+        return "repeater(" + repeater + ").column(" + column + ")";
+    }
+
 
 }

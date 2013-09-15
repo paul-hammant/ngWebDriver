@@ -1,6 +1,5 @@
 package com.paulhammant.ngwebdriver;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -8,14 +7,13 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class ByAngularRepeaterRow extends By {
+public class ByAngularRepeaterRow extends ByAngular.BaseBy {
 
-    private final JavascriptExecutor jse;
     private final String repeater;
     private final int row;
 
     public ByAngularRepeaterRow(JavascriptExecutor jse, String repeater, int row) {
-        this.jse = jse;
+        super(jse);
         this.repeater = repeater;
         this.row = row;
     }
@@ -30,7 +28,7 @@ public class ByAngularRepeaterRow extends By {
         if (context instanceof WebDriver) {
             context = null;
         }
-        return (WebElement) jse.executeScript(
+        Object o = jse.executeScript(
                 "var using = arguments[0] || document;\n" +
                         "var repeater = '" + repeater + "';\n" +
                         "var index = " + row + ";\n" +
@@ -48,12 +46,19 @@ public class ByAngularRepeaterRow extends By {
                         "  }\n" +
                         "}\n" +
                         "return rows[index - 1];", context);
+        errorIfNull(o);
+        return (WebElement) o;
     }
 
     // meaningless
     @Override
     public List<WebElement> findElements(SearchContext searchContext) {
         throw new UnsupportedOperationException("This locator zooms in on a single row, findElements() is meaningless");
+    }
+
+    @Override
+    public String toString() {
+        return "repeater(" + repeater + ").row(" + row + ")";
     }
 
 }

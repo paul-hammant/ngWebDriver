@@ -1,6 +1,5 @@
 package com.paulhammant.ngwebdriver;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -8,15 +7,14 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class ByAngularRepeaterCell extends By {
+public class ByAngularRepeaterCell extends ByAngular.BaseBy {
 
-    private final JavascriptExecutor jse;
     private final String repeater;
     private final int row;
     private final String column;
 
     public ByAngularRepeaterCell(JavascriptExecutor jse, String repeater, int row, String column) {
-        this.jse = jse;
+        super(jse);
         this.repeater = repeater;
         this.row = row;
         this.column = column;
@@ -27,7 +25,7 @@ public class ByAngularRepeaterCell extends By {
         if (context instanceof WebDriver) {
             context = null;
         }
-        return (WebElement) jse.executeScript(
+        Object o = jse.executeScript(
                 "var matches = [];\n" +
                         "var using = arguments[0] || document;\n" +
                         "var repeater = '" + repeater + "';\n" +
@@ -44,6 +42,9 @@ public class ByAngularRepeaterCell extends By {
                         "      rows.push(repeatElems[i]);\n" +
                         "    }\n" +
                         "  }\n" +
+                        "}\n" +
+                        "if (index > rows.length) {\n" +
+                        "  return null;\n" +
                         "}\n" +
                         "var row = rows[index - 1];\n" +
                         "var bindings = [];\n" +
@@ -63,13 +64,20 @@ public class ByAngularRepeaterCell extends By {
                         "}\n" +
                         "// We can only return one with webdriver.findElement.\n" +
                         "return matches[0];"
-        , context);
+                , context);
+        errorIfNull(o);
+        return (WebElement) o;
     }
 
     // meaningless
     @Override
     public List<WebElement> findElements(SearchContext searchContext) {
         throw new UnsupportedOperationException("This locator zooms in on a single row, findElements() is meaningless");
+    }
+
+    @Override
+    public String toString() {
+        return "repeater(" + repeater + ").row(" + row + ").column(" + column + ")";
     }
 
 }

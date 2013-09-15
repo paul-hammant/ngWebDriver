@@ -1,5 +1,7 @@
 package com.paulhammant.ngwebdriver;
 
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterTest;
@@ -13,9 +15,11 @@ import java.util.concurrent.TimeUnit;
 import static com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish.waitForAngularRequestsToFinish;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openqa.selenium.By.className;
 import static org.openqa.selenium.By.tagName;
+import static org.testng.AssertJUnit.fail;
 
 public class AngularAndWebDriverTest {
 
@@ -37,9 +41,8 @@ public class AngularAndWebDriverTest {
     }
 
     @Test
-    public void find_ng_repeat_in_page() {
+    public void find_multiple_hits_for_ng_repeat_in_page() {
 
-        // find the second address
         List<WebElement> wes = driver.findElements(ng.repeater("location in Locations"));
 
         assertThat(wes.size(), is(3));
@@ -47,6 +50,94 @@ public class AngularAndWebDriverTest {
         assertThat(wes.get(1).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
         assertThat(wes.get(2).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
 
+    }
+
+    @Test
+    public void find_first_hit_for_ng_repeat_in_page() {
+
+        WebElement we = driver.findElement(ng.repeater("location in Locations"));
+        assertThat(we.findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
+
+    }
+
+    @Test
+    public void findElement_should_barf_with_message_for_bad_repeater() {
+
+        try {
+            driver.findElement(ng.repeater("location in Locationssss"));
+            fail("should have barfed");
+        } catch (NoSuchElementException e) {
+            assertThat(e.getMessage(), startsWith("repeater(location in Locationssss) didn't have any matching elements at this place in the DOM"));
+        }
+
+    }
+
+    @Test
+    public void findElement_should_barf_with_message_for_bad_repeater_and_row() {
+
+        try {
+            driver.findElement(ng.repeater("location in Locationssss").row(99999));
+            fail("should have barfed");
+        } catch (NoSuchElementException e) {
+            assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).row(99999) didn't have any matching elements at this place in the DOM"));
+        }
+
+    }
+
+    @Test
+    public void findElements_should_barf_with_message_for_any_repeater_and_row2() {
+
+        try {
+            driver.findElements(ng.repeater("location in Locationssss").row(99999));
+            fail("should have barfed");
+        } catch (UnsupportedOperationException e) {
+            assertThat(e.getMessage(), startsWith("This locator zooms in on a single row, findElements() is meaningless"));
+        }
+
+    }
+
+    @Test
+    public void findElement_should_barf_with_message_for_bad_repeater_and_row_and_column() {
+
+        try {
+            driver.findElement(ng.repeater("location in Locationssss").row(99999).column("blort"));
+            fail("should have barfed");
+        } catch (NoSuchElementException e) {
+            assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).row(99999).column(blort) didn't have any matching elements at this place in the DOM"));
+        }
+    }
+
+    @Test
+    public void findElements_should_barf_with_message_for_any_repeater_and_row_and_column() {
+
+        try {
+            driver.findElements(ng.repeater("location in Locationssss").row(99999).column("blort"));
+            fail("should have barfed");
+        } catch (UnsupportedOperationException e) {
+            assertThat(e.getMessage(), startsWith("This locator zooms in on a single row, findElements() is meaningless"));
+        }
+    }
+
+    @Test
+    public void findElement_should_barf_with_message_for_any_repeater_and_column() {
+
+        try {
+            driver.findElement(ng.repeater("location in Locationssss").column("blort"));
+            fail("should have barfed");
+        } catch (UnsupportedOperationException e) {
+            assertThat(e.getMessage(), startsWith("This locator zooms in on a multiple cells, findElement() is meaningless"));
+        }
+    }
+
+    @Test
+    public void findElements_should_barf_with_message_for_bad_repeater_and_column() {
+
+        try {
+            List<WebElement> foo = driver.findElements(ng.repeater("location in Locationssss").column("blort"));
+            fail("should have barfed");
+        } catch (NoSuchElementException e) {
+            assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).column(blort) didn't have any matching elements at this place in the DOM"));
+        }
     }
 
     @Test
@@ -177,6 +268,14 @@ public class AngularAndWebDriverTest {
         // WebDriver can hand that back as a String
         Object rv = model.retrieve(we, "location.City");
         assertThat(rv.toString(), is("Narnia"));
+
+        // Can't process scoped variables that don't exist
+        try {
+            model.retrieve(we, "location.Cityyyyyyy");
+            fail("should have barfed");
+        } catch (WebDriverException e) {
+            assertThat(e.getMessage(), startsWith("$scope variable 'location.Cityyyyyyy' not found in same scope as the element passed in."));
+        }
 
         // WebDriver naturally hands back as a Map if it is not one
         // variable..

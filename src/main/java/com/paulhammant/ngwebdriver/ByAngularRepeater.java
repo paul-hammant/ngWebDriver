@@ -1,6 +1,5 @@
 package com.paulhammant.ngwebdriver;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -8,17 +7,11 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class ByAngularRepeater extends By {
-
-    private final JavascriptExecutor jse;
+public class ByAngularRepeater extends ByAngular.BaseBy {
 
     public ByAngularRepeater(JavascriptExecutor jse, String repeater) {
-        this.jse = jse;
+        super(jse);
         this.repeater = repeater;
-    }
-
-    public ByAngularRepeater(JavascriptExecutor jse) {
-        this.jse = jse;
     }
 
     private String repeater;
@@ -36,7 +29,7 @@ public class ByAngularRepeater extends By {
         if (context instanceof WebDriver) {
             context = null;
         }
-        return (WebElement) jse.executeScript(
+        Object o = jse.executeScript(
                 "var using = arguments[0] || document;\n" +
                         "var repeater = '" + repeater + "';\n" +
                         "\n" +
@@ -52,7 +45,9 @@ public class ByAngularRepeater extends By {
                         "    }\n" +
                         "  }\n" +
                         "}\n" +
-                        "return rows;", context);
+                        "return rows[0];", context);
+        errorIfNull(o);
+        return (WebElement) o;
     }
 
     @Override
@@ -60,7 +55,7 @@ public class ByAngularRepeater extends By {
         if (searchContext instanceof WebDriver) {
             searchContext = null;
         }
-        return (List<WebElement>) jse.executeScript(
+        Object o = jse.executeScript(
                 "var using = arguments[0] || document;\n" +
                         "var repeater = '" + repeater + "';\n" +
                         "\n" +
@@ -77,6 +72,12 @@ public class ByAngularRepeater extends By {
                         "  }\n" +
                         "}\n" +
                         "return rows;", searchContext);
+        errorIfNull(o);
+        return (List<WebElement>) o;
     }
 
+    @Override
+    public String toString() {
+        return "repeater(" + repeater + ')';
+    }
 }
