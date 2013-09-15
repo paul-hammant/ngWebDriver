@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ByAngularRepeater extends By {
 
-    public static ByAngularRepeater ngRepeater(String repeater) {
+    public static ByAngularRepeater angularRepeater(String repeater) {
         return new ByAngularRepeater(repeater);
     }
 
