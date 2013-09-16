@@ -1,10 +1,10 @@
-This is about WebDriver locators for AngularJS, as well as a utility to interoperate with $scope variables directly.
+A small library of WebDriver locators for AngularJS, as well as a utility to interoperate with $scope variables directly.
 
 It is only in Java for now, but I'm sure ports will make it available for .Net, Python, Ruby etc.
 
 # Status
 
-This is experimental for now. Though [Protractor](https://github.com/angular/protractor) (from where the JavaScript has been copied) is stable, but this Java library isn't quite released as yet. 
+[Protractor](https://github.com/angular/protractor) (from where some of the JavaScript has been copied) is stable, but this Java library isn't quite released as yet despite 100% test coverage, hence the sub-1.0 version number. APIs could change! 
 
 ## Code Examples
 
@@ -20,7 +20,13 @@ In there are examples of:
 
 ## Pitfalls
 
-If you're trying to revrieve a data object, there's a [selenium bug](http://code.google.com/p/selenium/issues/detail?id=6267) stopping that for now.  Instead bring it back as JSON and post-process it.
+If you're trying to retrieve a date object, there's a [selenium bug](http://code.google.com/p/selenium/issues/detail?id=6267) stopping that for now. Instead bring it back as JSON and post-process it:
+
+```java
+DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser()
+                            .withChronology(ISOChronology.getInstanceUTC());
+DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateField").replace("\"", ""));
+```
 
 # Including it in your project
 
@@ -37,3 +43,6 @@ If you're trying to revrieve a data object, there's a [selenium bug](http://code
 <!-- you still need to have a dependency for preferred version of Selenium/WebDriver 2.35 or above -->
 ```
 
+## Non-Maven
+
+[Download from here](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22ngwebdriver%22)
