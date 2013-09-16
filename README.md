@@ -36,7 +36,7 @@ DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateF
 <dependency>
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>0.9</version>
+  <version>0.9.1</version>
   <scope>test</scope>
 </dependency>
 
