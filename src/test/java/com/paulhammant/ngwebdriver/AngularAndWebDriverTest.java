@@ -163,6 +163,13 @@ public class AngularAndWebDriverTest {
         // retrieve the JSON for the location via the $scope model
         String locn = ngModel.retrieveJson(we, "location");
 
+        // Can't process scoped variables that don't exist
+        try {
+            ngModel.retrieveJson(we, "locationnnnnnnnn");
+        } catch (WebDriverException e) {
+            assertThat(e.getMessage(), startsWith("$scope variable 'locationnnnnnnnn' not found in same scope as the element passed in."));
+        }
+
         // that is the JSON we expect.
         assertThat(locn.replace("\"", "'"), containsString("{'Id':1675,'Name':'#0019 812 W Van Buren St','Abbreviation':'#0019'"));
 
@@ -199,6 +206,13 @@ public class AngularAndWebDriverTest {
         // naturally as a long.
         long id  = ngModel.retrieveAsLong(we, "location.Id");
         assertThat(id, is(1675L));
+
+        // Can't process scoped variables that don't exist
+        try {
+            ngModel.retrieveAsLong(we, "location.Iddddddd");
+        } catch (WebDriverException e) {
+            assertThat(e.getMessage(), startsWith("$scope variable 'location.Iddddddd' not found in same scope as the element passed in."));
+        }
 
         // You can set whole parts of the tree within the scope..
         ngModel.mutate(we, "location",
