@@ -4,7 +4,7 @@ It is only in Java for now, but I'm sure ports will make it available for .Net, 
 
 # Status
 
-[Protractor](https://github.com/angular/protractor) (from where some of the JavaScript has been copied) is stable, but this Java library isn't quite released as yet despite 100% test coverage, hence the sub-1.0 version number. APIs could change! 
+[Protractor](https://github.com/angular/protractor) (from where some of the JavaScript has been copied) is stable, but this Java library isn't quite released as yet despite 99% test coverage, hence the sub-1.0 version number. APIs could change! 
 
 ## Code Examples
 
