@@ -39,7 +39,11 @@ public class AngularModelAccessor {
     }
 
     public Long retrieveAsLong(WebElement element, final String variable) {
-        return (Long) retrieve(element, variable);
+        Object rv = retrieve(element, variable);
+        if (rv instanceof Double) {
+            return ((Double) rv).longValue();
+        }
+        return (Long) rv;
     }
 
 
