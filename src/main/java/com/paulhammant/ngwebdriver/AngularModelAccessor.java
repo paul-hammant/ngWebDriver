@@ -1,7 +1,6 @@
 package com.paulhammant.ngwebdriver;
 
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 public class AngularModelAccessor {
@@ -24,7 +23,7 @@ public class AngularModelAccessor {
 
     private Object check(String variable, Object o) {
         if (o == null) {
-            throw new WebDriverException("$scope variable '" + variable + "' not found in same scope as the element passed in.");
+            throw new VariableNotInScopeException("$scope variable '" + variable + "' not found in same scope as the element passed in.");
         }
         return o;
     }
@@ -45,6 +44,5 @@ public class AngularModelAccessor {
         }
         return (Long) rv;
     }
-
 
 }
