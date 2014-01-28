@@ -240,7 +240,12 @@ public class AngularAndWebDriverTest {
         // the listing for the outlet in question, has the hours
         // that it opens as part of the address. This is a hack
         // to make that consistent for assertions :)
-        return we.getText().replace("Today's hours: 10:30 am - 10 pm\n", "");
+        String startingText = we.getText();
+        int start = startingText.indexOf("Today's hours");
+        int end = startingText.indexOf( "\n",start);
+        String finishText = startingText.substring(start, end+1);
+		String endText = startingText.replace(finishText, "");
+		return endText;
     }
 
 
