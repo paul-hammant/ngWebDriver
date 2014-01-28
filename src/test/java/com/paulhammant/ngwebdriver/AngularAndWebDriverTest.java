@@ -242,7 +242,9 @@ public class AngularAndWebDriverTest {
         // to make that consistent for assertions :)
         String startingText = we.getText();
         int start = startingText.indexOf("Today's hours");
+        if(start == -1) return null;
         int end = startingText.indexOf( "\n",start);
+        if(end == -1) return null;
         String finishText = startingText.substring(start, end+1);
 		String endText = startingText.replace(finishText, "");
 		return endText;
