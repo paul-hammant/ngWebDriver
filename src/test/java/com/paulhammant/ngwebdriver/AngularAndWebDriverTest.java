@@ -4,6 +4,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.seleniumhq.selenium.fluent.FluentWebDriver;
+import org.seleniumhq.selenium.fluent.FluentMatcher;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -50,6 +52,33 @@ public class AngularAndWebDriverTest {
         assertThat(wes.get(1).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
         assertThat(wes.get(2).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
 
+    }
+
+    @Test
+    public void find_multiple_hits_for_ng_repeat_and_subset_to_first_matching_predicate_for_fluent_selenium_example() {
+
+         new FluentWebDriver(driver).divs(ng.repeater("location in Locations"))
+                 .first(new TextContainsWord("Clark St"))
+                 .getText().shouldContain("773-244-9000");
+
+    }
+
+    public static class TextContainsWord implements FluentMatcher {
+
+        private String word;
+
+        public TextContainsWord(String word) {
+            this.word = word;
+        }
+
+        public boolean matches(WebElement webElement) {
+            return webElement.getText().indexOf(word) > -1;
+        }
+
+        @Override
+        public String toString() {
+            return "TextContainsWord{word='" + word + "'}";
+        }
     }
 
     @Test
