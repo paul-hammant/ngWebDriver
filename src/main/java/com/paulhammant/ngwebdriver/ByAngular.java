@@ -21,6 +21,9 @@ public class ByAngular {
     public ByAngularBinding binding(String binding) {
         return new ByAngularBinding(jse, binding);
     }
+     public ByAngularModel model(String model) {
+        return new ByAngularModel(jse, model);
+    }
 
     public abstract static class BaseBy extends By {
 
