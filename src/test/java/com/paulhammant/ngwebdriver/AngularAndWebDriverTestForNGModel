@@ -1,0 +1,53 @@
+package com.paulhammant.ngwebdriver;
+
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.seleniumhq.selenium.fluent.FluentMatcher;
+import org.seleniumhq.selenium.fluent.FluentWebDriver;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish.waitForAngularRequestsToFinish;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.openqa.selenium.By.className;
+import static org.openqa.selenium.By.tagName;
+import static org.testng.AssertJUnit.fail;
+
+public class AngularAndWebDriverTestForNGModel {
+
+    private FirefoxDriver driver;
+    private ByAngular ng;
+
+    @BeforeTest
+    public void setup() {
+        driver = new FirefoxDriver();
+        driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
+        driver.get("https://online.jimmyjohns.com/#/pickupresults/58");
+        ng = new ByAngular(driver);
+        waitForAngularRequestsToFinish(driver);
+    }
+
+    @AfterTest
+    public void tear_down() {
+        driver.quit();
+    }
+
+    @Test
+    public void find_by_angular_model() {
+
+        // find the first telephone number
+        WebElement we = driver.findElement(ng.model("zipcode"));
+        // could have been {{location.Phone}} too, or even ion.Pho
+        System.out.println(we.isDisplayed());
+        we.sendKeys("20");
+    }
+
+}
