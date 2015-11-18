@@ -42,6 +42,14 @@ public class AngularAndWebDriverTest {
         driver.quit();
     }
 
+     @Test
+    public void find_by_angular_model() {
+
+        // find the first telephone number
+        WebElement wezipcode = driver.findElement(ng.model("zipcode"));
+        // could have been {{location.Phone}} too, or even ion.Pho
+        wezipcode.sendKeys("20");
+    }
     @Test
     public void find_multiple_hits_for_ng_repeat_in_page() {
 
