@@ -57,11 +57,17 @@
       <artifactId>fluent-selenium</artifactId>
       <version>1.14.5</version>
       <scope>test</scope>
+	  <exclusions>
+	    <exclusion>  <!-- declare the exclusion here -->
+	  		  <groupId>org.seleniumhq.selenium</groupId>
+			    <artifactId>selenium-java</artifactId>
+	        </exclusion>
+	    </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>[2.37.1,)</version>
+      <version>[2.48.2,)</version>
     </dependency>
   </dependencies>
 </project>
