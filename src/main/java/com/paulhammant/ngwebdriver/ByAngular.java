@@ -25,6 +25,10 @@ public class ByAngular {
         return new ByAngularModel(jse, model);
     }
 
+    public ByAngularOptions options(String options) {
+        return new ByAngularOptions(jse,options);
+    }
+
     public abstract static class BaseBy extends By {
 
         protected final JavascriptExecutor jse;
