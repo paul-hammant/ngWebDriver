@@ -34,7 +34,7 @@ public class ByAngularRepeater extends ByAngular.BaseBy {
                         "var repeater = '" + repeater + "';\n" +
                         "\n" +
                         "var rows = [];\n" +
-                        "var prefixes = ['ng-', 'ng_', 'data-ng-', 'x-ng-'];\n" +
+                        "var prefixes = ['ng-', 'ng_', 'data-ng-', 'x-ng-', 'ng\\\\:'];\n" +
                         "for (var p = 0; p < prefixes.length; ++p) {\n" +
                         "  var attr = prefixes[p] + 'repeat';\n" +
                         "  var repeatElems = using.querySelectorAll('[' + attr + ']');\n" +

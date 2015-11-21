@@ -4,6 +4,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.seleniumhq.selenium.fluent.FluentBy;
 import org.seleniumhq.selenium.fluent.FluentWebDriver;
 import org.seleniumhq.selenium.fluent.FluentMatcher;
 import org.testng.annotations.AfterTest;
@@ -19,8 +20,8 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.openqa.selenium.By.className;
-import static org.openqa.selenium.By.tagName;
+import static org.openqa.selenium.By.*;
+import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.fail;
 
 public class AngularAndWebDriverTest {
@@ -32,9 +33,7 @@ public class AngularAndWebDriverTest {
     public void setup() {
         driver = new FirefoxDriver();
         driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
-        driver.get("https://online.jimmyjohns.com/#/pickupresults/58");
         ng = new ByAngular(driver);
-        waitForAngularRequestsToFinish(driver);
     }
 
     @AfterTest
@@ -42,140 +41,141 @@ public class AngularAndWebDriverTest {
         driver.quit();
     }
 
-     @Test
+    @Test
     public void find_by_angular_model() {
 
+        driver.get("http://www.angularjshub.com/code/examples/basics/02_TwoWayDataBinding_HTML/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
+
         // find the first telephone number
-        WebElement wezipcode = driver.findElement(ng.model("zipcode"));
-        // could have been {{location.Phone}} too, or even ion.Pho
-        wezipcode.sendKeys("20");
+        WebElement firstname = driver.findElement(ng.model("firstName"));
+        firstname.sendKeys("Mary");
     }
+
     @Test
     public void find_multiple_hits_for_ng_repeat_in_page() {
 
-        List<WebElement> wes = driver.findElements(ng.repeater("location in Locations"));
+        driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
 
-        assertThat(wes.size(), is(3));
-        assertThat(wes.get(0).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
-        assertThat(wes.get(1).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
-        assertThat(wes.get(2).findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
+        List<WebElement> wes = driver.findElement(tagName("table")).findElements(ng.repeater("person in people"));
+
+        assertThat(wes.size(), is(4));
+        assertThat(wes.get(0).findElement(tagName("td")).getText(), containsString("John"));
+        assertThat(wes.get(1).findElement(tagName("td")).getText(), containsString("Bob"));
+        assertThat(wes.get(2).findElement(tagName("td")).getText(), containsString("Jack"));
+        assertThat(wes.get(3).findElement(tagName("td")).getText(), containsString("Michael"));
 
     }
 
     @Test
     public void find_multiple_hits_for_ng_repeat_and_subset_to_first_matching_predicate_for_fluent_selenium_example() {
 
-         new FluentWebDriver(driver).divs(ng.repeater("location in Locations"))
-                 .first(new TextContainsWord("Clark St"))
-                 .getText().shouldContain("773-244-9000");
+        // As much as anything, this is a test of FluentSelenium
+
+        driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
+
+        new FluentWebDriver(driver).lis(ng.repeater("(propName, propValue) in person"))
+                .first(new TextContainsTerm("name ="))
+                .getText().shouldContain("John");
 
     }
 
-    public static class TextContainsWord implements FluentMatcher {
+    public static class TextContainsTerm implements FluentMatcher {
 
-        private String word;
+        private String term;
 
-        public TextContainsWord(String word) {
-            this.word = word;
+        public TextContainsTerm(String term) {
+            this.term = term;
         }
 
         public boolean matches(WebElement webElement) {
-            return webElement.getText().indexOf(word) > -1;
+            return webElement.getText().indexOf(term) > -1;
         }
 
         @Override
         public String toString() {
-            return "TextContainsWord{word='" + word + "'}";
+            return "TextContainsTerm{term='" + term + "'}";
         }
-    }
-
-    @Test
-    public void find_first_hit_for_ng_repeat_in_page() {
-
-        WebElement we = driver.findElement(ng.repeater("location in Locations"));
-        assertThat(we.findElement(className("addressContent")).getText(), containsString("Chicago, IL"));
-
     }
 
     @Test
     public void find_second_row_in_ng_repeat() {
 
-        // find the second address
-        WebElement we = driver.findElement(ng.repeater("location in Locations").row(2))
-                .findElement(className("addressContent"));
+        driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
 
-        assertThat(getTextAndRemoveTimeOfDaySensitivePartOfAddress(we), is(
-                "3328 N Clark St\n" +
-                        "Chicago, IL\n" +
-                        "773-244-9000\n" +
-                        "min order $3.75"
-        ));
+        // find the second person
+        // index starts with 1 (Javascript)
 
-    }
+        assertThat(driver.findElement(ng.repeater("person in people").row(2)).getText(), is("Bob Smith"));
 
-    @Test
-    public void find_third_row_in_ng_repeat_by_default_from_intermediate_node() {
-
-        WebElement we = driver.findElement(tagName("body"))
-                .findElement(ng.repeater("location in Locations").row(3))
-                .findElement(className("addressContent"));
-
-        assertThat(getTextAndRemoveTimeOfDaySensitivePartOfAddress(we), is(
-                "46 E Chicago Ave\n" +
-                        "Chicago, IL\n" +
-                        "312-787-0100\n" +
-                        "min order $3.00"
-        ));
     }
 
     @Test
     public void find_specific_cell_in_ng_repeat() {
 
-        // find the second address' city
-        WebElement we = driver.findElement(ng.repeater("location in Locations").row(2).column("location.City"));
+        driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
 
-        assertThat(we.getText(), is("Chicago, IL"));
+        driver.findElement(ng.repeater("person in selectablePeople").row(2).column("person.isSelected")).click();
+
+        assertThat(driver.findElement(xpath("//tr[@ng-repeat='person in selectablePeople']")).getText(), is("x y z"));
     }
 
     @Test
     public void find_specific_cell_in_ng_repeat_the_other_way() {
 
-        // find the second address' city
-        WebElement we = driver.findElement(ng.repeater("location in Locations").column("location.City").row(2));
+        driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
 
-        assertThat(we.getText(), is("Chicago, IL"));
+        // find the second address' city
+        driver.findElement(ng.repeater("person in selectablePeople").column("person.isSelected").row(2)).click();
+
+        assertThat(driver.findElement(xpath("//tr[@ng-repeat='person in selectablePeople']")).getText(), is("x y z"));
     }
 
     @Test
     public void find_all_of_a_column_in_an_ng_repeat() {
 
-        // find all the telephone numbers
-        List<WebElement> we = driver.findElements(ng.repeater("location in Locations").column("location.Phone"));
+        driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
 
-        assertThat(we.get(0).getText(), is("312-733-8030"));
-        assertThat(we.get(1).getText(), is("773-244-9000"));
-        assertThat(we.get(2).getText(), is("312-787-0100"));
+        List<WebElement> we = driver.findElements(ng.repeater("person in selectablePeople").column("person.isSelected"));
+
+        assertThat(we.get(0).getText(), is("unselcted"));
+        we.get(1).click();
+        assertThat(we.get(1).getText(), is("selected"));
+        assertThat(we.get(2).getText(), is("unselected"));
     }
 
     @Test
     public void find_by_angular_binding() {
 
-        // find the first telephone number
-        WebElement we = driver.findElement(ng.binding("location.Phone"));
-        // could have been {{location.Phone}} too, or even ion.Pho
+        driver.get("http://www.angularjshub.com/code/examples/forms/01_TextInputs/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
 
-        assertThat(we.getText(), is("312-733-8030"));
+
+        // find the first telephone number
+        WebElement we = driver.findElement(ng.binding("numberValue"));
+
+        we.click();
+
+        assertThat(we.getText(), is("Value:"));
     }
 
     @Test
     public void find_all_for_an_angular_binding() {
 
-        // find all the telephone numbers
-        List<WebElement> wes = driver.findElements(ng.binding("location.Phone"));
+        driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
 
-        assertThat(wes.get(0).getText(), is("312-733-8030"));
-        assertThat(wes.get(1).getText(), is("773-244-9000"));
-        assertThat(wes.get(2).getText(), is("312-787-0100"));
+        List<WebElement> wes = driver.findElements(ng.binding("peopleArrayValue4"));
+
+        assertThat(wes.get(0).getTagName(), is("textarea"));
+
+        // really need an example that return more than one.
 
     }
 
@@ -184,107 +184,84 @@ public class AngularAndWebDriverTest {
     @Test
     public void model_mutation_and_query_is_possible() {
 
-        WebElement we = driver.findElement(className("addressContent"));
+        driver.get("http://www.angularjshub.com/code/examples/forms/08_FormSubmission/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
 
-        // assert the Starting position is true via regular WebDriver.
-        assertThat(we.getText(), containsString("812 W Van Buren St\nChicago, IL"));
+        WebElement fn = driver.findElement(id("firstNameEdit1"));
+        fn.sendKeys("Fred");
+        WebElement ln = driver.findElement(id("lastNameEdit1"));
+        ln.sendKeys("Flintstone");
+
+        WebElement wholeForm = driver.findElement(FluentBy.attribute("name", "personForm1"));
 
         AngularModelAccessor ngModel = new AngularModelAccessor(driver);
 
         // change something via the $scope model
-        ngModel.mutate(we, "location.City", "'Narnia'");
-
+        ngModel.mutate(wholeForm, "person1.firstName", "'Wilma'");
         // assert the change happened via regular WebDriver.
-        assertThat(we.getText(), containsString("812 W Van Buren St\nNarnia, IL"));
+        assertThat(fn.getAttribute("value"), containsString("Wilma"));
 
         // retrieve the JSON for the location via the $scope model
-        String locn = ngModel.retrieveJson(we, "location");
-
-        // Can't process scoped variables that don't exist
-        try {
-            ngModel.retrieveJson(we, "locationnnnnnnnn");
-        } catch (WebDriverException e) {
-            assertThat(e.getMessage(), startsWith("$scope variable 'locationnnnnnnnn' not found in same scope as the element passed in."));
-        }
-
-        // that is the JSON we expect.
-        assertThat(locn.replace("\"", "'"), containsString("{'Id':1675,'Name':'#0019 812 W Van Buren St','Abbreviation':'#0019'"));
+        String tv = ngModel.retrieveJson(wholeForm, "person1");
+        assertThat(tv, is("{\"firstName\":\"Wilma\",\"lastName\":\"Flintstone\"}"));
 
         // retrieve a single field as JSON
-        String city = ngModel.retrieveJson(we, "location.City");
+        String v = ngModel.retrieveJson(wholeForm, "person1.firstName");
 
         // assert that it comes back indicating its type (presence of quotes)
-        assertThat(city, is("\"Narnia\""));
+        assertThat(v, is("\"Wilma\""));
 
         // retrieve it again, but directly as String
-        city = ngModel.retrieveAsString(we, "location.City");
+        v = ngModel.retrieveAsString(wholeForm, "person1.firstName");
 
         // assert it is still what we expect
-        assertThat(city, is("Narnia"));
+        assertThat(v, is("Wilma"));
 
-        // WebDriver can hand that back as a String
-        Object rv = ngModel.retrieve(we, "location.City");
-        assertThat(rv.toString(), is("Narnia"));
-
-        // Can't process scoped variables that don't exist
-        try {
-            ngModel.retrieve(we, "location.Cityyyyyyy");
-            fail("should have barfed");
-        } catch (WebDriverException e) {
-            assertThat(e.getMessage(), startsWith("$scope variable 'location.Cityyyyyyy' not found in same scope as the element passed in."));
-        }
 
         // WebDriver naturally hands back as a Map if it is not one
         // variable..
-        rv = ngModel.retrieve(we, "location");
-        assertThat(((Map) rv).get("City").toString(), is("Narnia"));
+        Object rv = ngModel.retrieve(wholeForm, "person1");
+        assertThat(((Map) rv).get("firstName").toString(), is("Wilma"));
 
         // If something is numeric, WebDriver hands that back
         // naturally as a long.
-        long id  = ngModel.retrieveAsLong(we, "location.Id");
-        assertThat(id, is(1675L));
+//        long id = ngModel.retrieveAsLong(wholeForm, "location.Id");
+//        assertThat(id, is(1675L));
 
         // Can't process scoped variables that don't exist
         try {
-            ngModel.retrieveAsLong(we, "location.Iddddddd");
+            ngModel.retrieve(wholeForm, "person1.Cityyyyyyy");
+            fail("should have barfed");
         } catch (WebDriverException e) {
-            assertThat(e.getMessage(), startsWith("$scope variable 'location.Iddddddd' not found in same scope as the element passed in."));
+            assertThat(e.getMessage(), startsWith("$scope variable 'person1.Cityyyyyyy' not found in same scope as the element passed in."));
+        }
+        // Can't process scoped variables that don't exist
+        try {
+            ngModel.retrieveJson(wholeForm, "locationnnnnnnnn");
+        } catch (WebDriverException e) {
+            assertThat(e.getMessage(), startsWith("$scope variable 'locationnnnnnnnn' not found in same scope as the element passed in."));
+        }
+        // Can't process scoped variables that don't exist
+        try {
+            ngModel.retrieveAsLong(wholeForm, "person1.Iddddddd");
+        } catch (WebDriverException e) {
+            assertThat(e.getMessage(), startsWith("$scope variable 'person1.Iddddddd' not found in same scope as the element passed in."));
         }
 
         // You can set whole parts of the tree within the scope..
-        ngModel.mutate(we, "location",
+        ngModel.mutate(wholeForm, "person1",
                 "{" +
-                        "  AddressLine1: '1600 Pennsylvania Avenue NW'," +
-                        "  AddressLine2: ''," +
-                        "  City: 'Washington'," +
-                        "  State: 'DC'," +
-                        "  Zipcode: 20500" +
+                        "  firstName: 'Barney'," +
+                        "  lastName: 'Rubble'" +
                         "}");
+
+        assertEquals(fn.getAttribute("value"), "Barney");
+        assertEquals(ln.getAttribute("value"), "Rubble");
 
         // Keys can be in quotes (single or double) or not have quotes at all.
         // Values can be in quotes (single or double) or not have quotes if
         // they are not of type string.
 
-        WebElement addressContent = driver.findElement(className("addressContent"));
-        assertThat(addressContent.getText(), containsString("1600 Pennsylvania Avenue NW\nWashington, DC\n"));
-
-    }
-
-    // helper method for JimmyJohns..
-
-    private String getTextAndRemoveTimeOfDaySensitivePartOfAddress(WebElement we) {
-        // if you run the tests before opening hours
-        // the listing for the outlet in question, has the hours
-        // that it opens as part of the address. This is a hack
-        // to make that consistent for assertions :)
-        String startingText = we.getText();
-        int start = startingText.indexOf("Today's hours");
-        if(start == -1) return null;
-        int end = startingText.indexOf( "\n",start);
-        if(end == -1) return null;
-        String finishText = startingText.substring(start, end+1);
-		String endText = startingText.replace(finishText, "");
-		return endText;
     }
 
 
@@ -292,6 +269,10 @@ public class AngularAndWebDriverTest {
 
     @Test
     public void findElement_should_barf_with_message_for_bad_repeater() {
+
+        driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
+
 
         try {
             driver.findElement(ng.repeater("location in Locationssss"));
@@ -305,6 +286,10 @@ public class AngularAndWebDriverTest {
     @Test
     public void findElement_should_barf_with_message_for_bad_repeater_and_row() {
 
+        driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
+
+
         try {
             driver.findElement(ng.repeater("location in Locationssss").row(99999));
             fail("should have barfed");
@@ -316,6 +301,10 @@ public class AngularAndWebDriverTest {
 
     @Test
     public void findElements_should_barf_with_message_for_any_repeater_and_row2() {
+
+        driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
+
 
         try {
             driver.findElements(ng.repeater("location in Locationssss").row(99999));
@@ -340,6 +329,10 @@ public class AngularAndWebDriverTest {
     @Test
     public void findElements_should_barf_with_message_for_any_repeater_and_row_and_column() {
 
+        driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
+
+
         try {
             driver.findElements(ng.repeater("location in Locationssss").row(99999).column("blort"));
             fail("should have barfed");
@@ -351,6 +344,10 @@ public class AngularAndWebDriverTest {
     @Test
     public void findElement_should_barf_with_message_for_any_repeater_and_column() {
 
+        driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
+
+
         try {
             driver.findElement(ng.repeater("location in Locationssss").column("blort"));
             fail("should have barfed");
@@ -361,6 +358,10 @@ public class AngularAndWebDriverTest {
 
     @Test
     public void findElements_should_barf_with_message_for_bad_repeater_and_column() {
+
+        driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
+
 
         try {
             driver.findElements(ng.repeater("location in Locationssss").column("blort"));
