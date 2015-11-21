@@ -113,7 +113,7 @@ public class AngularAndWebDriverTest {
 
     }
 
-    @Test
+    @Test(enabled = false)
     public void find_specific_cell_in_ng_repeat() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
@@ -124,7 +124,7 @@ public class AngularAndWebDriverTest {
         assertThat(driver.findElement(xpath("//tr[@ng-repeat='person in selectablePeople']")).getText(), is("x y z"));
     }
 
-    @Test
+    @Test(enabled = false)
     public void find_specific_cell_in_ng_repeat_the_other_way() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
@@ -136,7 +136,7 @@ public class AngularAndWebDriverTest {
         assertThat(driver.findElement(xpath("//tr[@ng-repeat='person in selectablePeople']")).getText(), is("x y z"));
     }
 
-    @Test
+    @Test(enabled = false)
     public void find_all_of_a_column_in_an_ng_repeat() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
