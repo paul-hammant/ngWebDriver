@@ -7,6 +7,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.seleniumhq.selenium.fluent.FluentBy;
 import org.seleniumhq.selenium.fluent.FluentWebDriver;
 import org.seleniumhq.selenium.fluent.FluentMatcher;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -50,6 +51,19 @@ public class AngularAndWebDriverTest {
         // find the first telephone number
         WebElement firstname = driver.findElement(ng.model("firstName"));
         firstname.sendKeys("Mary");
+    }
+
+    @Test
+    public void find_all_for_an_angular_options() {
+
+        driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
+        waitForAngularRequestsToFinish(driver);
+
+        List<WebElement> weColors = driver.findElements(ng.options("color for color in colorsArray"));
+        assertThat(weColors.get(0).getText(), containsString("Red"));
+
+        Select dropdownColors = new Select(driver.findElement(ng.options("color for color in colorsArray")));
+        dropdownColors.selectByVisibleText("Blue");
     }
 
     @Test
