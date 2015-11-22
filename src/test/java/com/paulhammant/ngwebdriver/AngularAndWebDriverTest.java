@@ -59,11 +59,11 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> wes = driver.findElements(ng.options("color for color in colorsArray"));
-        assertThat(wes.get(0).getText(), containsString("Red"));
+        List<WebElement> weColors = driver.findElements(ng.options("color for color in colorsArray"));
+        assertThat(weColors.get(0).getText(), containsString("Red"));
 
-        Select dropdown = new Select(driver.findElement(ng.options("color for color in colorsArray")));
-        dropdown.selectByVisibleText("Blue");
+        Select dropdownColors = new Select(driver.findElement(ng.options("color for color in colorsArray")));
+        dropdownColors.selectByVisibleText("Blue");
     }
 
     @Test
