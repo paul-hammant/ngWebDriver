@@ -7,10 +7,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.firefox.internal.Streams;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,13 +34,26 @@ public class ByAngular {
         String src = new Scanner(resourceAsStream, "UTF-8").useDelimiter("\\A").next();
         iterateOverJsFunctionsInSource(src);
 
+        inlineUtilityFunctions();
+
         // Debugging
         //System.out.println(new XStream().toXML(functions));
 
     }
 
+    private static void inlineUtilityFunctions() {
+        Set<String> keys = functions.keySet();
+        for (String key : keys) {
+            String val = functions.get(key);
+            if (!key.equals("repeaterMatch") && val.indexOf("repeaterMatch") > 0) {
+                val = "var repeaterMatch = function(ngRepeat, repeater, exact) {" + functions.get("repeaterMatch") + "}\n" + val;
+                functions.put(key, val);
+            }
+        }
+    }
+
     private static void iterateOverJsFunctionsInSource(String src) {
-        Pattern ps = Pattern.compile("^function", Pattern.MULTILINE);
+        Pattern ps = Pattern.compile("^function.* \\{$", Pattern.MULTILINE);
         Pattern pe = Pattern.compile("^\\}", Pattern.MULTILINE);
         Matcher m = ps.matcher(src);
         boolean more = true;
