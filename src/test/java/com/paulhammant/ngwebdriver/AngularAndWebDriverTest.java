@@ -48,9 +48,10 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/basics/02_TwoWayDataBinding_HTML/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        // find the first telephone number
         WebElement firstname = driver.findElement(ng.model("firstName"));
         firstname.sendKeys("Mary");
+        assertEquals(driver.findElement(xpath("//input")).getAttribute("value"), "JohnMary");
+
     }
 
     @Test
