@@ -1,10 +1,8 @@
 package com.paulhammant.ngwebdriver;
 
-import com.thoughtworks.xstream.XStream;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.firefox.internal.Streams;
 
 import java.io.*;
 import java.util.*;

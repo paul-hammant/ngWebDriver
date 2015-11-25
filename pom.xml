@@ -70,9 +70,10 @@
       <version>[2.48.2,)</version>
     </dependency>
     <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <version>1.4.8</version>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.3.6.v20151106</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

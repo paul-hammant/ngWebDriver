@@ -1,5 +1,10 @@
 package com.paulhammant.ngwebdriver;
 
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -28,18 +33,33 @@ import static org.testng.AssertJUnit.fail;
 public class AngularAndWebDriverTest {
 
     private FirefoxDriver driver;
-    private ByAngular ng;
+    private ByAngular byNg;
+    private Server webServer;
 
     @BeforeTest
-    public void setup() {
+    public void setup() throws Exception {
+
+        // Launch Protractor's own test app on http://localhost:8080
+        webServer = new Server(8080);
+        ResourceHandler resource_handler = new ResourceHandler();
+        resource_handler.setDirectoriesListed(true);
+        resource_handler.setWelcomeFiles(new String[]{ "index.html" });
+        resource_handler.setResourceBase("src/test/webapp");
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[] { resource_handler, new DefaultHandler() });
+        webServer.setHandler(handlers);
+        webServer.start();
+        webServer.dumpStdErr();
+
         driver = new FirefoxDriver();
         driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
-        ng = new ByAngular(driver);
+        byNg = new ByAngular(driver);
     }
 
     @AfterTest
-    public void tear_down() {
+    public void tear_down() throws Exception {
         driver.quit();
+        webServer.stop();
     }
 
     @Test
@@ -48,7 +68,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/basics/02_TwoWayDataBinding_HTML/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        WebElement firstname = driver.findElement(ng.model("firstName"));
+        WebElement firstname = driver.findElement(byNg.model("firstName"));
         firstname.sendKeys("Mary");
         assertEquals(driver.findElement(xpath("//input")).getAttribute("value"), "JohnMary");
 
@@ -60,10 +80,10 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> weColors = driver.findElements(ng.options("color for color in colorsArray"));
+        List<WebElement> weColors = driver.findElements(byNg.options("color for color in colorsArray"));
         assertThat(weColors.get(0).getText(), containsString("Red"));
 
-        Select dropdownColors = new Select(driver.findElement(ng.options("color for color in colorsArray")));
+        Select dropdownColors = new Select(driver.findElement(byNg.options("color for color in colorsArray")));
         dropdownColors.selectByVisibleText("Blue");
     }
 
@@ -73,7 +93,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> wes = driver.findElement(tagName("table")).findElements(ng.repeater("person in people"));
+        List<WebElement> wes = driver.findElement(tagName("table")).findElements(byNg.repeater("person in people"));
 
         assertThat(wes.size(), is(4));
         assertThat(wes.get(0).findElement(tagName("td")).getText(), containsString("John"));
@@ -91,7 +111,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        new FluentWebDriver(driver).lis(ng.repeater("(propName, propValue) in person"))
+        new FluentWebDriver(driver).lis(byNg.repeater("(propName, propValue) in person"))
                 .first(new TextContainsTerm("name ="))
                 .getText().shouldContain("John");
 
@@ -124,7 +144,7 @@ public class AngularAndWebDriverTest {
         // find the second person
         // index starts with 1 (Javascript)
 
-        assertThat(driver.findElement(ng.repeater("person in people").row(2)).getText(), is("Bob Smith"));
+        assertThat(driver.findElement(byNg.repeater("person in people").row(2)).getText(), is("Bob Smith"));
 
     }
 
@@ -134,9 +154,9 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        driver.findElement(ng.repeater("person in selectablePeople").row(2).column("person.isSelected")).click();
+        driver.findElement(byNg.repeater("person in selectablePeople").row(2).column("person.isSelected")).click();
 
-        assertThat(driver.findElement(xpath("//tr[@ng-repeat='person in selectablePeople']")).getText(), is("x y z"));
+        assertThat(driver.findElement(xpath("//tr[@byNg-repeat='person in selectablePeople']")).getText(), is("x y z"));
     }
 
     @Test(enabled = false)
@@ -146,9 +166,9 @@ public class AngularAndWebDriverTest {
         waitForAngularRequestsToFinish(driver);
 
         // find the second address' city
-        driver.findElement(ng.repeater("person in selectablePeople").column("person.isSelected").row(2)).click();
+        driver.findElement(byNg.repeater("person in selectablePeople").column("person.isSelected").row(2)).click();
 
-        assertThat(driver.findElement(xpath("//tr[@ng-repeat='person in selectablePeople']")).getText(), is("x y z"));
+        assertThat(driver.findElement(xpath("//tr[@byNg-repeat='person in selectablePeople']")).getText(), is("x y z"));
     }
 
     @Test(enabled = false)
@@ -157,7 +177,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> we = driver.findElements(ng.repeater("person in selectablePeople").column("person.isSelected"));
+        List<WebElement> we = driver.findElements(byNg.repeater("person in selectablePeople").column("person.isSelected"));
 
         assertThat(we.get(0).getText(), is("unselcted"));
         we.get(1).click();
@@ -173,7 +193,7 @@ public class AngularAndWebDriverTest {
 
 
         // find the first telephone number
-        WebElement we = driver.findElement(ng.binding("numberValue"));
+        WebElement we = driver.findElement(byNg.binding("numberValue"));
 
         we.click();
 
@@ -186,7 +206,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> wes = driver.findElements(ng.binding("peopleArrayValue4"));
+        List<WebElement> wes = driver.findElements(byNg.binding("peopleArrayValue4"));
 
         assertThat(wes.get(0).getTagName(), is("textarea"));
 
@@ -290,7 +310,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElement(ng.repeater("location in Locationssss"));
+            driver.findElement(byNg.repeater("location in Locationssss"));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss) didn't have any matching elements at this place in the DOM"));
@@ -306,7 +326,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElement(ng.repeater("location in Locationssss").row(99999));
+            driver.findElement(byNg.repeater("location in Locationssss").row(99999));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).row(99999) didn't have any matching elements at this place in the DOM"));
@@ -322,7 +342,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElements(ng.repeater("location in Locationssss").row(99999));
+            driver.findElements(byNg.repeater("location in Locationssss").row(99999));
             fail("should have barfed");
         } catch (UnsupportedOperationException e) {
             assertThat(e.getMessage(), startsWith("This locator zooms in on a single row, findElements() is meaningless"));
@@ -334,7 +354,7 @@ public class AngularAndWebDriverTest {
     public void findElement_should_barf_with_message_for_bad_repeater_and_row_and_column() {
 
         try {
-            driver.findElement(ng.repeater("location in Locationssss").row(99999).column("blort"));
+            driver.findElement(byNg.repeater("location in Locationssss").row(99999).column("blort"));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).row(99999).column(blort) didn't have any matching elements at this place in the DOM"));
@@ -349,7 +369,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElements(ng.repeater("location in Locationssss").row(99999).column("blort"));
+            driver.findElements(byNg.repeater("location in Locationssss").row(99999).column("blort"));
             fail("should have barfed");
         } catch (UnsupportedOperationException e) {
             assertThat(e.getMessage(), startsWith("This locator zooms in on a single row, findElements() is meaningless"));
@@ -364,7 +384,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElement(ng.repeater("location in Locationssss").column("blort"));
+            driver.findElement(byNg.repeater("location in Locationssss").column("blort"));
             fail("should have barfed");
         } catch (UnsupportedOperationException e) {
             assertThat(e.getMessage(), startsWith("This locator zooms in on a multiple cells, findElement() is meaningless"));
@@ -379,7 +399,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElements(ng.repeater("location in Locationssss").column("blort"));
+            driver.findElements(byNg.repeater("location in Locationssss").column("blort"));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).column(blort) didn't have any matching elements at this place in the DOM"));
