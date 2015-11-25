@@ -1,10 +1,14 @@
 package com.paulhammant.ngwebdriver;
 
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.MovedContextHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -40,13 +44,22 @@ public class AngularAndWebDriverTest {
     public void setup() throws Exception {
 
         // Launch Protractor's own test app on http://localhost:8080
-        webServer = new Server(8080);
+        webServer = new Server(new QueuedThreadPool(5));
+        ServerConnector connector = new ServerConnector(webServer, new HttpConnectionFactory());
+        connector.setPort(8080);
+        webServer.addConnector(connector);
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
         resource_handler.setWelcomeFiles(new String[]{ "index.html" });
         resource_handler.setResourceBase("src/test/webapp");
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[] { resource_handler, new DefaultHandler() });
+        MovedContextHandler effective_symlink = new MovedContextHandler();
+        effective_symlink.setNewContextURL("http://localhost:8080/lib/angular_v1.2.9");
+        effective_symlink.setContextPath("/lib/angular");
+        effective_symlink.setPermanent(false);
+        effective_symlink.setDiscardPathInfo(false);
+        effective_symlink.setDiscardQuery(false);
+        handlers.setHandlers(new Handler[] { effective_symlink, resource_handler, new DefaultHandler() });
         webServer.setHandler(handlers);
         webServer.start();
         webServer.dumpStdErr();
