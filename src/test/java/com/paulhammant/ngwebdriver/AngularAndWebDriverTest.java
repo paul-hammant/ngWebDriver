@@ -78,26 +78,27 @@ public class AngularAndWebDriverTest {
     @Test
     public void find_by_angular_model() {
 
-        driver.get("http://www.angularjshub.com/code/examples/basics/02_TwoWayDataBinding_HTML/index.demo.php");
+        //driver.get("http://www.angularjshub.com/code/examples/basics/02_TwoWayDataBinding_HTML/index.demo.php");
+        driver.get("http://localhost:8080/");
         waitForAngularRequestsToFinish(driver);
 
-        WebElement firstname = driver.findElement(byNg.model("firstName"));
+        WebElement firstname = driver.findElement(byNg.model("username"));
+        firstname.clear();
         firstname.sendKeys("Mary");
-        assertEquals(driver.findElement(xpath("//input")).getAttribute("value"), "JohnMary");
+        assertEquals(driver.findElement(xpath("//input")).getAttribute("value"), "Mary");
 
     }
 
     @Test
     public void find_all_for_an_angular_options() {
 
-        driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
+        driver.get("http://localhost:8080/#/form");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> weColors = driver.findElements(byNg.options("color for color in colorsArray"));
-        assertThat(weColors.get(0).getText(), containsString("Red"));
+        List<WebElement> weColors = driver.findElements(byNg.options("fruit for fruit in fruits"));
+        assertThat(weColors.get(0).getText(), containsString("apple"));
+        assertThat(weColors.get(3).getText(), containsString("banana"));
 
-        Select dropdownColors = new Select(driver.findElement(byNg.options("color for color in colorsArray")));
-        dropdownColors.selectByVisibleText("Blue");
     }
 
     @Test
@@ -201,16 +202,11 @@ public class AngularAndWebDriverTest {
     @Test
     public void find_by_angular_binding() {
 
-        driver.get("http://www.angularjshub.com/code/examples/forms/01_TextInputs/index.demo.php");
+        driver.get("http://localhost:8080/#/form");
         waitForAngularRequestsToFinish(driver);
 
-
-        // find the first telephone number
-        WebElement we = driver.findElement(byNg.binding("numberValue"));
-
-        we.click();
-
-        assertThat(we.getText(), is("Value:"));
+        List<WebElement> wes = driver.findElements(byNg.binding("username"));
+        assertThat(wes.get(0).getText(), is("Anon"));
     }
 
     @Test
