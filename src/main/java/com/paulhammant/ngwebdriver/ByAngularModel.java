@@ -21,25 +21,20 @@ public class ByAngularModel extends ByAngular.BaseBy {
         if (context instanceof WebDriver) {
             context = null;
         }
+        Object o = getObject(context);
+        return ((List<WebElement>) o).get(0);
+    }
+
+    private Object getObject(SearchContext context) {
         Object o = jse.executeScript(
                 "var using = arguments[0] || document;\n" +
+                        "var rootSelector = 'body';\n" +
                         "var model = '" + model + "';\n" +
                         "\n" +
-                        "var rows = [];\n" +
-                        "var prefixes = ['ng-', 'ng_', 'data-ng-', 'x-ng-'];\n" +
-                        "for (var p = 0; p < prefixes.length; ++p) {\n" +
-                        "  var attr = prefixes[p] + 'model';\n" +
-                        "  var modelElems = using.querySelectorAll('[' + attr + ']');\n" +
-                        "  attr = attr.replace(/\\\\/g, '');\n" +
-                        "  for (var i = 0; i < modelElems.length; ++i) {\n" +
-                        "    if (modelElems[i].getAttribute(attr).indexOf(model) != -1) {\n" +
-                        "      rows.push(modelElems[i]);\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}\n" +
-                        "return rows[0];", context);
+                        ByAngular.functions.get("findByModel")
+                , context);
         errorIfNull(o);
-        return (WebElement) o;
+        return o;
     }
 
     @Override
@@ -47,23 +42,7 @@ public class ByAngularModel extends ByAngular.BaseBy {
         if (searchContext instanceof WebDriver) {
             searchContext = null;
         }
-        Object o = jse.executeScript(
-                "var using = arguments[0] || document;\n" +
-                        "var model = '" + model + "';\n" +
-                        "\n" +
-                        "var rows = [];\n" +
-                        "var prefixes = ['ng-', 'ng_', 'data-ng-', 'x-ng-'];\n" +
-                        "for (var p = 0; p < prefixes.length; ++p) {\n" +
-                        "  var attr = prefixes[p] + 'model';\n" +
-                        "  var modelElems = using.querySelectorAll('[' + attr + ']');\n" +
-                        "  attr = attr.replace(/\\\\/g, '');\n" +
-                        "  for (var i = 0; i < modelElems.length; ++i) {\n" +
-                        "    if (modelElems[i].getAttribute(attr).indexOf(model) != -1) {\n" +
-                        "      rows.push(modelElems[i]);\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}\n" +
-                        "return rows;", searchContext);
+        Object o = getObject(searchContext);
         errorIfNull(o);
         return (List<WebElement>) o;
     }
