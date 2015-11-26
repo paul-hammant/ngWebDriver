@@ -466,6 +466,31 @@ public class AngularAndWebDriverTest {
         sliderBar.getAttribute("value").shouldBe("10");
     }
 
+    /*
+      Ported from protractor/spec/basic/elements_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_elements_should_chain_with_index_correctly() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+        driver.get("http://localhost:8080/index.html");
+
+        // hack in lieu of matches(..) having a 'int ix' param
+        final int[] ix = new int[1];
+        ix[0] = -1;
+        // TODO should be .last() not .first()
+        fwd.inputs(By.cssSelector("#checkboxes input")).first(new FluentMatcher() {
+            public boolean matches(WebElement webElement) {
+                ix[0] += 1;
+                // TODO should be ix = 2 or 3 (matches(..) needs an 'int ix' param)
+                return ix[0] == 3;
+            }
+        }).click();
+
+        fwd.span(By.cssSelector("#letterlist")).getText().shouldBe("'x'");
+
+    }
+
 
 
 }
