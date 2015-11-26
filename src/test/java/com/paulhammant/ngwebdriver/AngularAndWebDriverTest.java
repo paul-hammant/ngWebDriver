@@ -19,9 +19,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.seleniumhq.selenium.fluent.*;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -44,8 +42,8 @@ public class AngularAndWebDriverTest {
     private ByAngular byNg;
     private Server webServer;
 
-    @BeforeTest
-    public void setup() throws Exception {
+    @BeforeSuite
+    public void before_suite() throws Exception {
 
         StdErrLog log = new StdErrLog();
         log.setStdErrStream(new PrintStream(new ByteArrayOutputStream()));
@@ -76,10 +74,15 @@ public class AngularAndWebDriverTest {
         byNg = new ByAngular(driver);
     }
 
-    @AfterTest
-    public void tear_down() throws Exception {
+    @AfterSuite
+    public void after_suite() throws Exception {
         driver.quit();
         webServer.stop();
+    }
+
+    @BeforeTest
+    public void resetBrowser() {
+        driver.get("about:blank");
     }
 
     @Test
@@ -428,12 +431,12 @@ public class AngularAndWebDriverTest {
     public void stress_test() {
         FluentWebDriver fwd = new FluentWebDriver(driver);
         for (int i = 0; i < 20; ++i) {
-            driver.get("http://localhost:8080/");
+            resetBrowser();
 
+            driver.get("http://localhost:8080/index.html#/form");
             FluentWebElement usernameInput = fwd.input(byNg.model("username"));
             FluentWebElement name = fwd.span(byNg.binding("username"));
 
-            driver.get("http://localhost:8080/index.html#/form");
             waitForAngularRequestsToFinish(driver);
 
             name.getText().shouldBe("Anon");
