@@ -45,9 +45,6 @@ public class AngularAndWebDriverTest {
     @BeforeSuite
     public void before_suite() throws Exception {
 
-        StdErrLog log = new StdErrLog();
-        log.setStdErrStream(new PrintStream(new ByteArrayOutputStream()));
-        org.eclipse.jetty.util.log.Log.setLog(log);
         // Launch Protractor's own test app on http://localhost:8080
         webServer = new Server(new QueuedThreadPool(5));
         ServerConnector connector = new ServerConnector(webServer, new HttpConnectionFactory());
@@ -80,7 +77,7 @@ public class AngularAndWebDriverTest {
         webServer.stop();
     }
 
-    @BeforeTest
+    @BeforeMethod
     public void resetBrowser() {
         driver.get("about:blank");
     }
