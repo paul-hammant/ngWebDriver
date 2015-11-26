@@ -14,11 +14,9 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.seleniumhq.selenium.fluent.FluentBy;
-import org.seleniumhq.selenium.fluent.FluentWebDriver;
-import org.seleniumhq.selenium.fluent.FluentMatcher;
+import org.openqa.selenium.interactions.Actions;
+import org.seleniumhq.selenium.fluent.*;
 import org.openqa.selenium.support.ui.Select;
-import org.seleniumhq.selenium.fluent.FluentWebElement;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -441,7 +439,7 @@ public class AngularAndWebDriverTest {
       Ported from protractor/spec/altRoot/findelements_spec.js
      */
     @Test
-    public void find_elements() {
+    public void altRoot_find_elements() {
         FluentWebDriver fwd = new FluentWebDriver(driver);
         driver.get("http://localhost:8080/alt_root_index.html#/form");
 
@@ -449,6 +447,23 @@ public class AngularAndWebDriverTest {
 
         fwd.div(id("outside-ng")).getText().shouldBe("{{1 + 2}}");
         fwd.div(id("inside-ng")).getText().shouldBe("3");
+    }
+
+    /*
+      Ported from protractor/spec/basic/action_spec.js
+     */
+    @Test
+    public void basic_actions() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+        driver.get("http://localhost:8080/index.html#/form");
+
+        FluentWebElement sliderBar = fwd.input(By.name("points"));
+
+        sliderBar.getAttribute("value").shouldBe("1");
+
+        new Actions(driver).dragAndDropBy(sliderBar.getWebElement(), 400, 20).build().perform();
+
+        sliderBar.getAttribute("value").shouldBe("10");
     }
 
 
