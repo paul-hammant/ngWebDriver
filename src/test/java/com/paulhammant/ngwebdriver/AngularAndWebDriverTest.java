@@ -64,7 +64,6 @@ public class AngularAndWebDriverTest {
         handlers.setHandlers(new Handler[] { effective_symlink, resource_handler, new DefaultHandler() });
         webServer.setHandler(handlers);
         webServer.start();
-        webServer.dumpStdErr();
 
         driver = new FirefoxDriver();
         driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
