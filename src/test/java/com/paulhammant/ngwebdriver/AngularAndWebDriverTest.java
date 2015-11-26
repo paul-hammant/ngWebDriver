@@ -497,4 +497,22 @@ public class AngularAndWebDriverTest {
             return ix == 2 || ix == 3;
         }
     }
+
+    /*
+      Ported from protractor/spec/basic/elements_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_elements_chained_call_should_wait_to_grab_the_WebElement_until_a_method_is_called() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/conflict");
+
+        FluentWebElement reused = fwd.div(id("baz")).span(byNg.binding("item.reusedBinding"));
+
+        reused.getText().shouldBe("Inner: inner");
+
+    }
+
+
 }
