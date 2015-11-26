@@ -8,6 +8,9 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.MovedContextHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.log.AbstractLogger;
+import org.eclipse.jetty.util.log.Logger;
+import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -16,11 +19,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.seleniumhq.selenium.fluent.*;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -43,6 +47,9 @@ public class AngularAndWebDriverTest {
     @BeforeTest
     public void setup() throws Exception {
 
+        StdErrLog log = new StdErrLog();
+        log.setStdErrStream(new PrintStream(new ByteArrayOutputStream()));
+        org.eclipse.jetty.util.log.Log.setLog(log);
         // Launch Protractor's own test app on http://localhost:8080
         webServer = new Server(new QueuedThreadPool(5));
         ServerConnector connector = new ServerConnector(webServer, new HttpConnectionFactory());
@@ -139,7 +146,7 @@ public class AngularAndWebDriverTest {
             this.term = term;
         }
 
-        public boolean matches(WebElement webElement) {
+        public boolean matches(WebElement webElement, int ix) {
             return webElement.getText().indexOf(term) > -1;
         }
 
@@ -442,6 +449,8 @@ public class AngularAndWebDriverTest {
     public void altRoot_find_elements() {
         FluentWebDriver fwd = new FluentWebDriver(driver);
         driver.get("http://localhost:8080/alt_root_index.html#/form");
+        waitForAngularRequestsToFinish(driver);
+
 
         fwd.span(byNg.binding("{{greeting}}")).getText().shouldBe("Hiya");
 
@@ -456,6 +465,8 @@ public class AngularAndWebDriverTest {
     public void basic_actions() {
         FluentWebDriver fwd = new FluentWebDriver(driver);
         driver.get("http://localhost:8080/index.html#/form");
+        waitForAngularRequestsToFinish(driver);
+
 
         FluentWebElement sliderBar = fwd.input(By.name("points"));
 
@@ -475,22 +486,15 @@ public class AngularAndWebDriverTest {
         FluentWebDriver fwd = new FluentWebDriver(driver);
         driver.get("http://localhost:8080/index.html");
 
-        // hack in lieu of matches(..) having a 'int ix' param
-        final int[] ix = new int[1];
-        ix[0] = -1;
-        // TODO should be .last() not .first()
-        fwd.inputs(By.cssSelector("#checkboxes input")).first(new FluentMatcher() {
-            public boolean matches(WebElement webElement) {
-                ix[0] += 1;
-                // TODO should be ix = 2 or 3 (matches(..) needs an 'int ix' param)
-                return ix[0] == 3;
-            }
-        }).click();
+        fwd.inputs(By.cssSelector("#checkboxes input")).last(new IsIndex2Or3()).click();
 
         fwd.span(By.cssSelector("#letterlist")).getText().shouldBe("'x'");
 
     }
 
-
-
+    private static class IsIndex2Or3 implements FluentMatcher {
+        public boolean matches(WebElement webElement, int ix) {
+            return ix == 2 || ix == 3;
+        }
+    }
 }
