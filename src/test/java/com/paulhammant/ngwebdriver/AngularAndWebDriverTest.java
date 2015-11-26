@@ -9,6 +9,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.MovedContextHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -434,6 +435,20 @@ public class AngularAndWebDriverTest {
             usernameInput.clearField().sendKeys("B");
             name.getText().shouldBe("B");
         }
+    }
+
+    /*
+      Ported from protractor/spec/altRoot/findelements_spec.js
+     */
+    @Test
+    public void find_elements() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+        driver.get("http://localhost:8080/alt_root_index.html#/form");
+
+        fwd.span(byNg.binding("{{greeting}}")).getText().shouldBe("Hiya");
+
+        fwd.div(id("outside-ng")).getText().shouldBe("{{1 + 2}}");
+        fwd.div(id("inside-ng")).getText().shouldBe("3");
     }
 
 
