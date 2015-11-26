@@ -17,6 +17,7 @@ import org.seleniumhq.selenium.fluent.FluentBy;
 import org.seleniumhq.selenium.fluent.FluentWebDriver;
 import org.seleniumhq.selenium.fluent.FluentMatcher;
 import org.openqa.selenium.support.ui.Select;
+import org.seleniumhq.selenium.fluent.FluentWebElement;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -406,7 +407,6 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-
         try {
             driver.findElements(byNg.repeater("location in Locationssss").column("blort"));
             fail("should have barfed");
@@ -414,6 +414,28 @@ public class AngularAndWebDriverTest {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).column(blort) didn't have any matching elements at this place in the DOM"));
         }
     }
+
+    /*
+      Ported from protractor/stress/spec.js
+     */
+    @Test
+    public void stress_test() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+        for (int i = 0; i < 20; ++i) {
+            driver.get("http://localhost:8080/");
+
+            FluentWebElement usernameInput = fwd.input(byNg.model("username"));
+            FluentWebElement name = fwd.span(byNg.binding("username"));
+
+            driver.get("http://localhost:8080/index.html#/form");
+            waitForAngularRequestsToFinish(driver);
+
+            name.getText().shouldBe("Anon");
+            usernameInput.clearField().sendKeys("B");
+            name.getText().shouldBe("B");
+        }
+    }
+
 
 
 }
