@@ -57,12 +57,7 @@ public class AngularAndWebDriverTest {
         resource_handler.setWelcomeFiles(new String[]{ "index.html" });
         resource_handler.setResourceBase("src/test/webapp");
         HandlerList handlers = new HandlerList();
-        MovedContextHandler effective_symlink = new MovedContextHandler();
-        effective_symlink.setNewContextURL("/lib/angular_v1.2.9");
-        effective_symlink.setContextPath("/lib/angular");
-        effective_symlink.setPermanent(false);
-        effective_symlink.setDiscardPathInfo(false);
-        effective_symlink.setDiscardQuery(false);
+        MovedContextHandler effective_symlink = new MovedContextHandler(webServer, "/lib/angular", "/lib/angular_v1.2.9");
         handlers.setHandlers(new Handler[] { effective_symlink, resource_handler, new DefaultHandler() });
         webServer.setHandler(handlers);
         webServer.start();
