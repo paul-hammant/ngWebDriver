@@ -56,7 +56,7 @@ public class AngularAndWebDriverTest {
         resource_handler.setResourceBase("src/test/webapp");
         HandlerList handlers = new HandlerList();
         MovedContextHandler effective_symlink = new MovedContextHandler();
-        effective_symlink.setNewContextURL("http://localhost:8080/lib/angular_v1.2.9");
+        effective_symlink.setNewContextURL("/lib/angular_v1.2.9");
         effective_symlink.setContextPath("/lib/angular");
         effective_symlink.setPermanent(false);
         effective_symlink.setDiscardPathInfo(false);
