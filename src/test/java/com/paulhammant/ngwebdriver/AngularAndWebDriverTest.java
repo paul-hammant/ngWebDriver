@@ -8,19 +8,21 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.MovedContextHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.log.AbstractLogger;
+import org.eclipse.jetty.util.log.Logger;
+import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.seleniumhq.selenium.fluent.FluentBy;
-import org.seleniumhq.selenium.fluent.FluentWebDriver;
-import org.seleniumhq.selenium.fluent.FluentMatcher;
-import org.openqa.selenium.support.ui.Select;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.openqa.selenium.interactions.Actions;
+import org.seleniumhq.selenium.fluent.*;
+import org.testng.annotations.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -40,8 +42,8 @@ public class AngularAndWebDriverTest {
     private ByAngular byNg;
     private Server webServer;
 
-    @BeforeTest
-    public void setup() throws Exception {
+    @BeforeSuite
+    public void before_suite() throws Exception {
 
         // Launch Protractor's own test app on http://localhost:8080
         webServer = new Server(new QueuedThreadPool(5));
@@ -54,7 +56,7 @@ public class AngularAndWebDriverTest {
         resource_handler.setResourceBase("src/test/webapp");
         HandlerList handlers = new HandlerList();
         MovedContextHandler effective_symlink = new MovedContextHandler();
-        effective_symlink.setNewContextURL("http://localhost:8080/lib/angular_v1.2.9");
+        effective_symlink.setNewContextURL("/lib/angular_v1.2.9");
         effective_symlink.setContextPath("/lib/angular");
         effective_symlink.setPermanent(false);
         effective_symlink.setDiscardPathInfo(false);
@@ -62,17 +64,21 @@ public class AngularAndWebDriverTest {
         handlers.setHandlers(new Handler[] { effective_symlink, resource_handler, new DefaultHandler() });
         webServer.setHandler(handlers);
         webServer.start();
-        webServer.dumpStdErr();
 
         driver = new FirefoxDriver();
         driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
         byNg = new ByAngular(driver);
     }
 
-    @AfterTest
-    public void tear_down() throws Exception {
+    @AfterSuite
+    public void after_suite() throws Exception {
         driver.quit();
         webServer.stop();
+    }
+
+    @BeforeMethod
+    public void resetBrowser() {
+        driver.get("about:blank");
     }
 
     @Test
@@ -139,7 +145,7 @@ public class AngularAndWebDriverTest {
             this.term = term;
         }
 
-        public boolean matches(WebElement webElement) {
+        public boolean matches(WebElement webElement, int ix) {
             return webElement.getText().indexOf(term) > -1;
         }
 
@@ -406,13 +412,105 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-
         try {
             driver.findElements(byNg.repeater("location in Locationssss").column("blort"));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).column(blort) didn't have any matching elements at this place in the DOM"));
         }
+    }
+
+    /*
+      Ported from protractor/stress/spec.js
+     */
+    @Test
+    public void stress_test() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+        for (int i = 0; i < 20; ++i) {
+            resetBrowser();
+
+            driver.get("http://localhost:8080/index.html#/form");
+            FluentWebElement usernameInput = fwd.input(byNg.model("username"));
+            FluentWebElement name = fwd.span(byNg.binding("username"));
+
+            waitForAngularRequestsToFinish(driver);
+
+            name.getText().shouldBe("Anon");
+            usernameInput.clearField().sendKeys("B");
+            name.getText().shouldBe("B");
+        }
+    }
+
+    /*
+      Ported from protractor/spec/altRoot/findelements_spec.js
+     */
+    @Test
+    public void altRoot_find_elements() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+        driver.get("http://localhost:8080/alt_root_index.html#/form");
+        waitForAngularRequestsToFinish(driver);
+
+
+        fwd.span(byNg.binding("{{greeting}}")).getText().shouldBe("Hiya");
+
+        fwd.div(id("outside-ng")).getText().shouldBe("{{1 + 2}}");
+        fwd.div(id("inside-ng")).getText().shouldBe("3");
+    }
+
+    /*
+      Ported from protractor/spec/basic/action_spec.js
+     */
+    @Test
+    public void basic_actions() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+        driver.get("http://localhost:8080/index.html#/form");
+        waitForAngularRequestsToFinish(driver);
+
+
+        FluentWebElement sliderBar = fwd.input(By.name("points"));
+
+        sliderBar.getAttribute("value").shouldBe("1");
+
+        new Actions(driver).dragAndDropBy(sliderBar.getWebElement(), 400, 20).build().perform();
+
+        sliderBar.getAttribute("value").shouldBe("10");
+    }
+
+    /*
+      Ported from protractor/spec/basic/elements_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_elements_should_chain_with_index_correctly() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+        driver.get("http://localhost:8080/index.html");
+
+        fwd.inputs(By.cssSelector("#checkboxes input")).last(new IsIndex2Or3()).click();
+
+        fwd.span(By.cssSelector("#letterlist")).getText().shouldBe("'x'");
+
+    }
+
+    private static class IsIndex2Or3 implements FluentMatcher {
+        public boolean matches(WebElement webElement, int ix) {
+            return ix == 2 || ix == 3;
+        }
+    }
+
+    /*
+      Ported from protractor/spec/basic/elements_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_elements_chained_call_should_wait_to_grab_the_WebElement_until_a_method_is_called() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/conflict");
+
+        FluentWebElement reused = fwd.div(id("baz")).span(byNg.binding("item.reusedBinding"));
+
+        reused.getText().shouldBe("Inner: inner");
+
     }
 
 

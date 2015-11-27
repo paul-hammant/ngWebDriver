@@ -55,7 +55,7 @@
     <dependency>
       <groupId>org.seleniumhq.selenium.fluent</groupId>
       <artifactId>fluent-selenium</artifactId>
-      <version>1.15</version>
+      <version>1.15.1-SNAPSHOT</version>
       <scope>test</scope>
 	  <exclusions>
 	    <exclusion>  <!-- declare the exclusion here -->
