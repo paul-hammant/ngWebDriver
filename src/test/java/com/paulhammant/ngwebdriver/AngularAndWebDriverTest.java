@@ -8,9 +8,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.MovedContextHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.util.log.AbstractLogger;
 import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.openqa.selenium.By;
@@ -22,8 +20,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.seleniumhq.selenium.fluent.*;
 import org.testng.annotations.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +30,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.By.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.fail;
@@ -159,9 +157,9 @@ public class AngularAndWebDriverTest {
         waitForAngularRequestsToFinish(driver);
 
         // find the second person
-        // index starts with 1 (Javascript)
+        // index starts with 0 of course
 
-        assertThat(driver.findElement(byNg.repeater("person in people").row(2)).getText(), is("Bob Smith"));
+        assertThat(driver.findElement(byNg.repeater("person in people").row(1)).getText(), is("Bob Smith"));
 
     }
 
@@ -384,22 +382,21 @@ public class AngularAndWebDriverTest {
             driver.findElements(byNg.repeater("location in Locationssss").row(99999).column("blort"));
             fail("should have barfed");
         } catch (UnsupportedOperationException e) {
-            assertThat(e.getMessage(), startsWith("This locator zooms in on a single row, findElements() is meaningless"));
+            assertThat(e.getMessage(), startsWith("This locator zooms in on a single cell, findElements() is meaningless"));
         }
     }
 
     @Test
-    public void findElement_should_barf_with_message_for_any_repeater_and_column() {
+    public void findElement_should_barf_when_element_not_in_the_dom() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-
         try {
             driver.findElement(byNg.repeater("location in Locationssss").column("blort"));
             fail("should have barfed");
-        } catch (UnsupportedOperationException e) {
-            assertThat(e.getMessage(), startsWith("This locator zooms in on a multiple cells, findElement() is meaningless"));
+        } catch (NoSuchElementException e) {
+            assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).column(blort) didn't have any matching elements at this place in the DOM"));
         }
     }
 
@@ -507,6 +504,119 @@ public class AngularAndWebDriverTest {
         FluentWebElement reused = fwd.div(id("baz")).span(byNg.binding("item.reusedBinding"));
 
         reused.getText().shouldBe("Inner: inner");
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/elements_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_elements_should_allow_using_repeater_locator_within_map() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        Map<String, String> expected = new HashMap<String, String>() {{
+           put("M", "Monday");
+           put("T", "Tuesday");
+           put("W", "Wednesday");
+           put("Th", "Thursday");
+           put("F", "Friday");
+        }};
+
+        Map<String, String> days = fwd.lis(byNg.repeater("allinfo in days")).map(new FluentWebElementMap<String, String>() {
+            public void map(FluentWebElement elem, int ix) {
+                put(elem.element(byNg.binding("allinfo.initial")).getText().toString(),
+                        elem.element(byNg.binding("allinfo.name")).getText().toString());
+            }
+        });
+
+        assertThat(days.entrySet(), equalTo(expected.entrySet()));
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_by_partial_match() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        fwd.span(byNg.repeater("baz in days | filter:'T'").row(0).column("baz.initial"))
+                .getText().shouldBe("T");
+
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_many_rows_by_partial_match() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        FluentWebElements spans = fwd.spans(byNg.repeater("baz in days | filter:'T'").column("baz.initial"));
+        spans.getText().shouldBe("TTh");
+        spans.get(0).getText().shouldBe("T");
+        spans.get(1).getText().shouldBe("Th");
+
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_one_row_by_partial_match() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        fwd.li(byNg.repeater("baz in days | filter:'T'").row(0)).getText().shouldBe("T");
+        fwd.li(byNg.repeater("baz in days | filter:'T'").row(1)).getText().shouldBe("Th");
+
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_many_rows_by_partial_match2() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        FluentWebElements lis = fwd.lis(byNg.repeater("baz in days | filter:'T'"));
+        lis.getText().shouldBe("TTh");
+        lis.get(0).getText().shouldBe("T");
+        lis.get(1).getText().shouldBe("Th");
+
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_single_rows_by_partial_match() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        FluentWebElement li = fwd.li(byNg.repeater("baz in days | filter:'T'"));
+        li.getText().shouldBe("T");
+
 
     }
 

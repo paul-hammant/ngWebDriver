@@ -29,25 +29,21 @@ public class ByAngularRepeater extends ByAngular.BaseBy {
         if (context instanceof WebDriver) {
             context = null;
         }
-        Object o = jse.executeScript(
-                "var using = arguments[0] || document;\n" +
-                        "var repeater = '" + repeater + "';\n" +
-                        "\n" +
-                        "var rows = [];\n" +
-                        "var prefixes = ['ng-', 'ng_', 'data-ng-', 'x-ng-', 'ng\\\\:'];\n" +
-                        "for (var p = 0; p < prefixes.length; ++p) {\n" +
-                        "  var attr = prefixes[p] + 'repeat';\n" +
-                        "  var repeatElems = using.querySelectorAll('[' + attr + ']');\n" +
-                        "  attr = attr.replace(/\\\\/g, '');\n" +
-                        "  for (var i = 0; i < repeatElems.length; ++i) {\n" +
-                        "    if (repeatElems[i].getAttribute(attr).indexOf(repeater) != -1) {\n" +
-                        "      rows.push(repeatElems[i]);\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}\n" +
-                        "return rows[0];", context);
+        Object o = getObject(context);
         errorIfNull(o);
-        return (WebElement) o;
+        return ((List<WebElement>) o).get(0);
+    }
+
+    private Object getObject(SearchContext context) {
+        return jse.executeScript(
+                    "var using = arguments[0] || document;\n" +
+                            "var rootSelector = 'body';\n" +
+                            "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
+                            "var exact = false;\n" +
+                            "\n" +
+                            ByAngular.functions.get("findAllRepeaterRows")
+
+                    , context);
     }
 
     @Override
@@ -55,23 +51,7 @@ public class ByAngularRepeater extends ByAngular.BaseBy {
         if (searchContext instanceof WebDriver) {
             searchContext = null;
         }
-        Object o = jse.executeScript(
-                "var using = arguments[0] || document;\n" +
-                        "var repeater = '" + repeater + "';\n" +
-                        "\n" +
-                        "var rows = [];\n" +
-                        "var prefixes = ['ng-', 'ng_', 'data-ng-', 'x-ng-'];\n" +
-                        "for (var p = 0; p < prefixes.length; ++p) {\n" +
-                        "  var attr = prefixes[p] + 'repeat';\n" +
-                        "  var repeatElems = using.querySelectorAll('[' + attr + ']');\n" +
-                        "  attr = attr.replace(/\\\\/g, '');\n" +
-                        "  for (var i = 0; i < repeatElems.length; ++i) {\n" +
-                        "    if (repeatElems[i].getAttribute(attr).indexOf(repeater) != -1) {\n" +
-                        "      rows.push(repeatElems[i]);\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}\n" +
-                        "return rows;", searchContext);
+        Object o = getObject(searchContext);
         errorIfNull(o);
         return (List<WebElement>) o;
     }
