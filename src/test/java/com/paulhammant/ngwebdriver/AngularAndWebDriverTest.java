@@ -140,8 +140,8 @@ public class AngularAndWebDriverTest {
             this.term = term;
         }
 
-        public boolean matches(WebElement webElement, int ix) {
-            return webElement.getText().indexOf(term) > -1;
+        public boolean matches(FluentWebElement webElement, int ix) {
+            return webElement.getWebElement().getText().indexOf(term) > -1;
         }
 
         @Override
@@ -486,7 +486,7 @@ public class AngularAndWebDriverTest {
     }
 
     private static class IsIndex2Or3 implements FluentMatcher {
-        public boolean matches(WebElement webElement, int ix) {
+        public boolean matches(FluentWebElement webElement, int ix) {
             return ix == 2 || ix == 3;
         }
     }
@@ -546,9 +546,17 @@ public class AngularAndWebDriverTest {
 
         driver.get("http://localhost:8080/index.html#/repeater");
 
-        fwd.span(byNg.repeater("baz in days | filter:'T'").row(0).column("baz.initial"))
-                .getText().shouldBe("T");
+        fwd.span(byNg.repeater("baz in days | filter:'T'").row(0).column("baz.initial")).getText().shouldBe("T");
 
+        fwd.span(byNg.repeater("baz in days | fil").row(0).column("baz.initial")).getText().shouldBe("T");
+
+        try {
+            fwd.li(byNg.exactRepeater("baz in days | fil").row(0).column("baz.initial")).getText().shouldBe("T");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | fil).row(0).column(baz.initial))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | fil).row(0).column(baz.initial) didn't have any matching elements at this place in the DOM"));
+        }
 
     }
 
@@ -567,6 +575,19 @@ public class AngularAndWebDriverTest {
         spans.get(0).getText().shouldBe("T");
         spans.get(1).getText().shouldBe("Th");
 
+        spans = fwd.spans(byNg.repeater("baz in days | fil").column("baz.initial"));
+        spans.getText().shouldBe("TTh");
+        spans.get(0).getText().shouldBe("T");
+        spans.get(1).getText().shouldBe("Th");
+
+        try {
+            fwd.li(byNg.exactRepeater("baz in days | fil").column("baz.initial")).getText().shouldBe("TTh");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | fil).column(baz.initial))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | fil).column(baz.initial) didn't have any matching elements at this place in the DOM"));
+        }
+
 
     }
 
@@ -583,6 +604,16 @@ public class AngularAndWebDriverTest {
         fwd.li(byNg.repeater("baz in days | filter:'T'").row(0)).getText().shouldBe("T");
         fwd.li(byNg.repeater("baz in days | filter:'T'").row(1)).getText().shouldBe("Th");
 
+        fwd.li(byNg.repeater("baz in days | filt").row(1)).getText().shouldBe("Th");
+
+
+        try {
+            fwd.li(byNg.exactRepeater("baz in days | filt").row(1)).getText().shouldBe("T");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | filt).row(1))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | filt).row(1) didn't have any matching elements at this place in the DOM"));
+        }
 
     }
 
@@ -601,6 +632,19 @@ public class AngularAndWebDriverTest {
         lis.get(0).getText().shouldBe("T");
         lis.get(1).getText().shouldBe("Th");
 
+        lis = fwd.lis(byNg.repeater("baz in days | fil"));
+        lis.getText().shouldBe("TTh");
+        lis.get(0).getText().shouldBe("T");
+        lis.get(1).getText().shouldBe("Th");
+
+        try {
+            fwd.lis(byNg.exactRepeater("baz in days | filt")).getText().shouldBe("T");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.lis(exactRepeater(baz in days | filt))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | filt) didn't have any matching elements at this place in the DOM"));
+        }
+
 
     }
 
@@ -614,11 +658,18 @@ public class AngularAndWebDriverTest {
 
         driver.get("http://localhost:8080/index.html#/repeater");
 
-        FluentWebElement li = fwd.li(byNg.repeater("baz in days | filter:'T'"));
-        li.getText().shouldBe("T");
+        fwd.li(byNg.repeater("baz in days | filter:'T'")).getText().shouldBe("T");
 
+        fwd.li(byNg.repeater("baz in days | filt")).getText().shouldBe("T");
+
+        try {
+            fwd.li(byNg.exactRepeater("baz in days | filt")).getText().shouldBe("T");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | filt))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | filt) didn't have any matching elements at this place in the DOM"));
+        }
 
     }
-
 
 }

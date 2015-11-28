@@ -19,7 +19,11 @@ public class ByAngular extends AngularJavaScriptFunctions {
 
 
     public ByAngularRepeater repeater(String repeater) {
-        return new ByAngularRepeater(jse, repeater);
+        return new ByAngularRepeater(jse, repeater, false);
+    }
+
+    public ByAngularRepeater exactRepeater(String repeater) {
+        return new ByAngularRepeater(jse, repeater, true);
     }
 
     public ByAngularBinding binding(String binding) {

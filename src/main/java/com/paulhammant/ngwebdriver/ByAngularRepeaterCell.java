@@ -10,12 +10,14 @@ import java.util.List;
 public class ByAngularRepeaterCell extends ByAngular.BaseBy {
 
     private final String repeater;
+    private boolean exact;
     private final int row;
     private final String column;
 
-    public ByAngularRepeaterCell(JavascriptExecutor jse, String repeater, int row, String column) {
+    public ByAngularRepeaterCell(JavascriptExecutor jse, String repeater, boolean exact, int row, String column) {
         super(jse);
         this.repeater = repeater;
+        this.exact = exact;
         this.row = row;
         this.column = column;
     }
@@ -31,7 +33,7 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
                         "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
                         "var index = " + row + ";\n" +
                         "var binding = '" + column + "';\n" +
-                        "var exact = false;\n" +
+                        "var exact = " + exact + ";\n" +
                         "\n" +
                         ByAngular.functions.get("findRepeaterElement")
                 , context);
@@ -47,7 +49,7 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
 
     @Override
     public String toString() {
-        return "repeater(" + repeater + ").row(" + row + ").column(" + column + ")";
+        return (exact? "exactR":"r") + "epeater(" + repeater + ").row(" + row + ").column(" + column + ")";
     }
 
 }

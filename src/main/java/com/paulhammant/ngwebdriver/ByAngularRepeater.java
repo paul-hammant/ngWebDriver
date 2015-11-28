@@ -9,19 +9,21 @@ import java.util.List;
 
 public class ByAngularRepeater extends ByAngular.BaseBy {
 
-    public ByAngularRepeater(JavascriptExecutor jse, String repeater) {
+    public ByAngularRepeater(JavascriptExecutor jse, String repeater, boolean exact) {
         super(jse);
         this.repeater = repeater;
+        this.exact = exact;
     }
 
     private String repeater;
+    private boolean exact;
 
     public ByAngularRepeaterRow row(int row) {
-        return new ByAngularRepeaterRow(jse, repeater, row);
+        return new ByAngularRepeaterRow(jse, repeater, exact, row);
     }
 
     public ByAngularRepeaterColumn column(String column) {
-        return new ByAngularRepeaterColumn(jse, repeater, column);
+        return new ByAngularRepeaterColumn(jse, repeater, exact, column);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class ByAngularRepeater extends ByAngular.BaseBy {
                     "var using = arguments[0] || document;\n" +
                             "var rootSelector = 'body';\n" +
                             "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
-                            "var exact = false;\n" +
+                            "var exact = " + exact + ";\n" +
                             "\n" +
                             ByAngular.functions.get("findAllRepeaterRows")
 
@@ -58,6 +60,6 @@ public class ByAngularRepeater extends ByAngular.BaseBy {
 
     @Override
     public String toString() {
-        return "repeater(" + repeater + ')';
+        return (exact? "exactR":"r") + "epeater(" + repeater + ')';
     }
 }
