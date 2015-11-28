@@ -4,13 +4,15 @@ It is only in Java for now, but I'm sure ports will make it available for .Net, 
 
 # Status
 
-[Protractor](https://github.com/angular/protractor) (from where some of the JavaScript has been copied) is stable, but this Java library isn't quite released as yet despite high test coverage, hence the sub-1.0 version number. APIs could change! 
+We have taken JavaScript from Angular's [Protractor](https://github.com/angular/protractor) project. While ngWebDriver perfectly compliments the Java version of WebDriver, it has to pass JavaScript up to the browser to inteoprate with Angular, and the Protractor project has done the hard work (including testing) to make that solid, and ngWebDriver benefits from that work.
+
+You can use ngWebDriver today with the regular Java Selenium2/WebDriver libraries. You can also use it with [FluentSelenium](https://github.com/SeleniumHQ/fluent-selenium).
 
 ## Locators
 
 ### repeater() and exactRepeater()
 
-[As Protractor's repeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) and [Protractor's exactRepeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactRepeater) 
+[As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) and [Protractor's exactRepeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactRepeater) 
 
 ```java
 byAngular.exactRepeater("foo in foos")
@@ -25,16 +27,16 @@ byAngular.repeater("foo in f").column("foo.name")
 
 ### binding()
 
-[As Protractor's binding](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.binding)
+[As Protractor's binding locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.binding)
 
 ```java
-by.binding('person.name')
-by.binding('{{person.name}}')
+by.binding("person.name")
+by.binding("{{person.name}}")
 ```
 
 ### model()
 
-[As Protractor's binding](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.model)
+[As Protractor's model locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.model)
 
 ```java
 by.model('person.name')
@@ -42,11 +44,22 @@ by.model('person.name')
 
 ### options()
 
-[As Protractor's options](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.options)
+[As Protractor's options locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.options)
 
 ```java
-by.model('c for c in colors')
+by.model("c for c in colors")
 ```
+## Angular model interop
+
+As Protractor, you can change items in an Angular model, or retrieve them reagrdless of whether they aappear in the UI or not.
+
+```java
+AngularModelAccessor ngModel = new AngularModelAccessor(driver);
+// change something via the model defined in $scope 
+ngModel.mutate(wholeForm, "person.name", "Wilma");
+```
+
+See also retrieveJson, retrieve, retrieveAsString and retrieveAsLong for getting Angular data back from the browser.
 
 ## Code Examples
 
@@ -60,7 +73,7 @@ In there are examples of:
 1. how to find read $scope variables
 1. how to find write $scope variables
 
-## Pitfalls
+## Pitfalls with retrieveJson
 
 If you're trying to retrieve a date object, there's a [selenium bug](http://code.google.com/p/selenium/issues/detail?id=6267) stopping that for now. Instead bring it back as JSON and post-process it:
 
