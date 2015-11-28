@@ -4,7 +4,49 @@ It is only in Java for now, but I'm sure ports will make it available for .Net, 
 
 # Status
 
-[Protractor](https://github.com/angular/protractor) (from where some of the JavaScript has been copied) is stable, but this Java library isn't quite released as yet despite 99% test coverage, hence the sub-1.0 version number. APIs could change! 
+[Protractor](https://github.com/angular/protractor) (from where some of the JavaScript has been copied) is stable, but this Java library isn't quite released as yet despite high test coverage, hence the sub-1.0 version number. APIs could change! 
+
+## Locators
+
+### repeater() and exactRepeater()
+
+[As Protractor's repeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) and [Protractor's exactRepeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactRepeater) 
+
+```java
+byAngular.exactRepeater("foo in foos")
+byAngular.exactRepeater("foo in foos").row(17)
+byAngular.exactRepeater("foo in foos").row(17).column("foo.name")
+byAngular.exactRepeater("foo in foos").column("foo.name")
+byAngular.repeater("foo in f")
+byAngular.repeater("foo in f").row(17)
+byAngular.repeater("foo in f").row(17).column("foo.name")
+byAngular.repeater("foo in f").column("foo.name")
+```
+
+### binding()
+
+[As Protractor's binding](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.binding)
+
+```java
+by.binding('person.name')
+by.binding('{{person.name}}')
+```
+
+### model()
+
+[As Protractor's binding](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.model)
+
+```java
+by.model('person.name')
+```
+
+### options()
+
+[As Protractor's options](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.options)
+
+```java
+by.model('c for c in colors')
+```
 
 ## Code Examples
 
