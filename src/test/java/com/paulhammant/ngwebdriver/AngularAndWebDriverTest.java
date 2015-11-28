@@ -9,10 +9,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.MovedContextHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.seleniumhq.selenium.fluent.*;
@@ -100,6 +97,16 @@ public class AngularAndWebDriverTest {
         assertThat(weColors.get(0).getText(), containsString("apple"));
         assertThat(weColors.get(3).getText(), containsString("banana"));
 
+    }
+    @Test
+    public void find_by_angular_buttonText() {
+
+        driver.get("http://localhost:8080/#/form");
+        waitForAngularRequestsToFinish(driver);
+
+        driver.findElement(byNg.buttonText("Open Alert")).click();
+        Alert alert = driver.switchTo().alert();
+        assertThat(alert.getText(), containsString("Hello"));
     }
 
     @Test

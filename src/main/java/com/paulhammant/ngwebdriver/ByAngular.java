@@ -35,6 +35,9 @@ public class ByAngular extends AngularJavaScriptFunctions {
     public ByAngularOptions options(String options) {
         return new ByAngularOptions(jse,options);
     }
+    public ByAngularButtonText buttonText(String buttonText) {
+        return new ByAngularButtonText(jse,buttonText);
+    }
 
     public abstract static class BaseBy extends By {
 
