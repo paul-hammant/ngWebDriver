@@ -13,29 +13,30 @@ public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
     private boolean exact;
     private final String column;
 
-    public ByAngularRepeaterColumn(JavascriptExecutor jse, String repeater, boolean exact, String column) {
-        super(jse);
+    public ByAngularRepeaterColumn(String repeater, boolean exact, String column) {
+        super();
         this.repeater = repeater;
         this.exact = exact;
         this.column = column;
     }
 
     public ByAngularRepeaterCell row(int row) {
-        return new ByAngularRepeaterCell(jse, repeater, exact, row, column);
+        return new ByAngularRepeaterCell(repeater, exact, row, column);
     }
 
     // meaningless
     @Override
     public WebElement findElement(SearchContext context) {
-        if (context instanceof WebDriver) {
-            context = null;
-        }
         Object o = getObject(context);
         errorIfNull(o);
         return ((List<WebElement>) o).get(0);
     }
 
     private Object getObject(SearchContext context) {
+        JavascriptExecutor jse = getJavascriptExecutor(context);
+        if (context instanceof WebDriver) {
+            context = null;
+        }
         return jse.executeScript(
                     "var using = arguments[0] || document;\n" +
                             "var rootSelector = 'body';\n" +
@@ -49,9 +50,6 @@ public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
 
     @Override
     public List<WebElement> findElements(SearchContext searchContext) {
-        if (searchContext instanceof WebDriver) {
-            searchContext = null;
-        }
         Object o = getObject(searchContext);
         errorIfNull(o);
         return (List<WebElement>) o;

@@ -3,54 +3,55 @@ package com.paulhammant.ngwebdriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.remote.RemoteWebElement;
 
-import java.io.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ByAngular extends AngularJavaScriptFunctions {
-
-    protected final JavascriptExecutor jse;
-
-    public ByAngular(JavascriptExecutor jse) {
-        this.jse = jse;
+    
+    public ByAngular() {
     }
 
-    public ByAngularRepeater repeater(String repeater) {
-        return new ByAngularRepeater(jse, repeater, false);
+    public static ByAngularRepeater repeater(String repeater) {
+        return new ByAngularRepeater(repeater, false);
     }
 
-    public ByAngularRepeater exactRepeater(String repeater) {
-        return new ByAngularRepeater(jse, repeater, true);
+    public static ByAngularRepeater exactRepeater(String repeater) {
+        return new ByAngularRepeater(repeater, true);
     }
 
-    public ByAngularBinding binding(String binding) {
-        return new ByAngularBinding(jse, binding);
+    public static ByAngularBinding binding(String binding) {
+        return new ByAngularBinding(binding);
     }
 
-    public ByAngularExactBinding exactBinding(String exactBinding) {
-        return new ByAngularExactBinding(jse, exactBinding);
+    public static ByAngularExactBinding exactBinding(String exactBinding) {
+        return new ByAngularExactBinding(exactBinding);
     }
 
-    public ByAngularModel model(String model) {
-        return new ByAngularModel(jse, model);
+    public static ByAngularModel model(String model) {
+        return new ByAngularModel(model);
     }
 
-    public ByAngularOptions options(String options) {
-        return new ByAngularOptions(jse,options);
+    public static ByAngularOptions options(String options) {
+        return new ByAngularOptions(options);
     }
 
-    public ByAngularButtonText buttonText(String buttonText) {
-        return new ByAngularButtonText(jse,buttonText);
+    public static ByAngularButtonText buttonText(String buttonText) {
+        return new ByAngularButtonText(buttonText);
     }
 
     protected abstract static class BaseBy extends By {
 
-        protected final JavascriptExecutor jse;
 
-        public BaseBy(JavascriptExecutor jse) {
-            this.jse = jse;
+        protected final JavascriptExecutor getJavascriptExecutor(SearchContext context) {
+            JavascriptExecutor jse;
+            if (context instanceof RemoteWebElement) {
+                jse = (JavascriptExecutor) ((RemoteWebElement) context).getWrappedDriver();
+            } else {
+                jse = (JavascriptExecutor) context;
+            }
+            return jse;
         }
 
         protected final void errorIfNull(Object o) {

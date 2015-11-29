@@ -14,8 +14,8 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
     private final int row;
     private final String column;
 
-    public ByAngularRepeaterCell(JavascriptExecutor jse, String repeater, boolean exact, int row, String column) {
-        super(jse);
+    public ByAngularRepeaterCell(String repeater, boolean exact, int row, String column) {
+        super();
         this.repeater = repeater;
         this.exact = exact;
         this.row = row;
@@ -24,6 +24,8 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
 
     @Override
     public WebElement findElement(SearchContext context) {
+        JavascriptExecutor jse = getJavascriptExecutor(context);
+
         if (context instanceof WebDriver) {
             context = null;
         }

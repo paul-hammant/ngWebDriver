@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ByAngularButtonText extends ByAngular.BaseBy {
 
-    public ByAngularButtonText(JavascriptExecutor jse, String buttonText) {
-        super(jse);
+    public ByAngularButtonText(String buttonText) {
+        super();
         this.searchText = buttonText;
     }
 
@@ -18,14 +18,15 @@ public class ByAngularButtonText extends ByAngular.BaseBy {
 
     @Override
     public WebElement findElement(SearchContext context) {
-        if (context instanceof WebDriver) {
-            context = null;
-        }
         Object o = getObject(context);
         return ((List<WebElement>) o).get(0);
     }
 
     private Object getObject(SearchContext context) {
+        JavascriptExecutor jse = getJavascriptExecutor(context);
+        if (context instanceof WebDriver) {
+            context = null;
+        }
         Object o = jse.executeScript(
                 "var using = arguments[0] || document;\n" +
                         "var searchText = '" + searchText + "';\n" +
@@ -38,9 +39,6 @@ public class ByAngularButtonText extends ByAngular.BaseBy {
 
     @Override
     public List<WebElement> findElements(SearchContext searchContext) {
-        if (searchContext instanceof WebDriver) {
-            searchContext = null;
-        }
         Object o = getObject(searchContext);
         errorIfNull(o);
         return (List<WebElement>) o;

@@ -13,20 +13,21 @@ public class ByAngularRepeaterRow extends ByAngular.BaseBy {
     private boolean exact;
     private final int row;
 
-    public ByAngularRepeaterRow(JavascriptExecutor jse, String repeater, boolean exact, int row) {
-        super(jse);
+    public ByAngularRepeaterRow(String repeater, boolean exact, int row) {
+        super();
         this.repeater = repeater;
         this.exact = exact;
         this.row = row;
     }
 
     public ByAngularRepeaterCell column(String column) {
-        return new ByAngularRepeaterCell(jse, repeater, exact, row, column);
+        return new ByAngularRepeaterCell(repeater, exact, row, column);
     }
 
 
     @Override
     public WebElement findElement(SearchContext context) {
+        JavascriptExecutor jse = getJavascriptExecutor(context);
         if (context instanceof WebDriver) {
             context = null;
         }

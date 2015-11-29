@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ByAngularRepeater extends ByAngular.BaseBy {
 
-    public ByAngularRepeater(JavascriptExecutor jse, String repeater, boolean exact) {
-        super(jse);
+    public ByAngularRepeater(String repeater, boolean exact) {
+        super();
         this.repeater = repeater;
         this.exact = exact;
     }
@@ -19,24 +19,25 @@ public class ByAngularRepeater extends ByAngular.BaseBy {
     private boolean exact;
 
     public ByAngularRepeaterRow row(int row) {
-        return new ByAngularRepeaterRow(jse, repeater, exact, row);
+        return new ByAngularRepeaterRow(repeater, exact, row);
     }
 
     public ByAngularRepeaterColumn column(String column) {
-        return new ByAngularRepeaterColumn(jse, repeater, exact, column);
+        return new ByAngularRepeaterColumn(repeater, exact, column);
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-        if (context instanceof WebDriver) {
-            context = null;
-        }
         Object o = getObject(context);
         errorIfNull(o);
         return ((List<WebElement>) o).get(0);
     }
 
     private Object getObject(SearchContext context) {
+        JavascriptExecutor jse = getJavascriptExecutor(context);
+        if (context instanceof WebDriver) {
+            context = null;
+        }
         return jse.executeScript(
                     "var using = arguments[0] || document;\n" +
                             "var rootSelector = 'body';\n" +
@@ -50,9 +51,6 @@ public class ByAngularRepeater extends ByAngular.BaseBy {
 
     @Override
     public List<WebElement> findElements(SearchContext searchContext) {
-        if (searchContext instanceof WebDriver) {
-            searchContext = null;
-        }
         Object o = getObject(searchContext);
         errorIfNull(o);
         return (List<WebElement>) o;
