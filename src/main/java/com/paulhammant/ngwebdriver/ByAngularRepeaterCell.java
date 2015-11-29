@@ -23,9 +23,6 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
     }
 
     protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
-        if (context instanceof WebDriver) {
-            context = null;
-        }
         return javascriptExecutor.executeScript(
                     "var using = arguments[0] || document;\n" +
                             "var rootSelector = 'body';\n" +

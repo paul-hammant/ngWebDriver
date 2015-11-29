@@ -14,10 +14,7 @@ public class ByAngularBinding extends ByAngular.BaseBy {
     private String binding;
 
     protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
-        if (context instanceof WebDriver) {
-            context = null;
-        }
-        Object o = javascriptExecutor.executeScript(
+        return javascriptExecutor.executeScript(
                 "var using = arguments[0] || document;\n" +
                         "var rootSelector = 'body';\n" +
                         "var exactMatch = false;\n" +
@@ -25,8 +22,6 @@ public class ByAngularBinding extends ByAngular.BaseBy {
                         "\n" +
                         ByAngular.functions.get("findBindings")
                 , context);
-        errorIfNull(o);
-        return o;
     }
 
     @Override

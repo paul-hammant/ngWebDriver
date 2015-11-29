@@ -60,15 +60,22 @@ public class ByAngular extends AngularJavaScriptFunctions {
 
         @Override
         public WebElement findElement(SearchContext context) {
-            List<WebElement> object = (List<WebElement>) getObject(context, getJavascriptExecutor(context));
-            return ((List<WebElement>) errorIfNull(getObject(context, getJavascriptExecutor(context)))).get(0);
+            JavascriptExecutor javascriptExecutor = getJavascriptExecutor(context);
+            if (context instanceof WebDriver) {
+                context = null;
+            }
+            return ((List<WebElement>) errorIfNull(getObject(context, javascriptExecutor))).get(0);
         }
 
         protected abstract Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor);
 
         @Override
         public List<WebElement> findElements(SearchContext context) {
-            return (List<WebElement>) errorIfNull(getObject(context, getJavascriptExecutor(context)));
+            JavascriptExecutor javascriptExecutor = getJavascriptExecutor(context);
+            if (context instanceof WebDriver) {
+                context = null;
+            }
+            return (List<WebElement>) errorIfNull(getObject(context, javascriptExecutor));
         }
     }
 }
