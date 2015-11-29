@@ -101,7 +101,7 @@ public class AngularAndWebDriverTest {
         assertThat(weColors.get(3).getText(), containsString("banana"));
 
     }
-    @Test(enabled = false)
+    @Test
     public void find_by_angular_buttonText() {
 
         driver.get("http://localhost:8080/#/form");
@@ -110,6 +110,7 @@ public class AngularAndWebDriverTest {
         driver.findElement(byNg.buttonText("Open Alert")).click();
         Alert alert = driver.switchTo().alert();
         assertThat(alert.getText(), containsString("Hello"));
+        alert.accept();
     }
 
     @Test
