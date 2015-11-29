@@ -8,7 +8,7 @@ import java.util.*;
 
 public class ByAngular extends AngularJavaScriptFunctions {
     
-    public ByAngular() {
+    private ByAngular() {
     }
 
     public static ByAngularRepeater repeater(String repeater) {
@@ -41,8 +41,7 @@ public class ByAngular extends AngularJavaScriptFunctions {
 
     protected abstract static class BaseBy extends By {
 
-
-        protected final JavascriptExecutor getJavascriptExecutor(SearchContext context) {
+        private final JavascriptExecutor getJavascriptExecutor(SearchContext context) {
             JavascriptExecutor jse;
             if (context instanceof RemoteWebElement) {
                 jse = (JavascriptExecutor) ((RemoteWebElement) context).getWrappedDriver();
@@ -61,15 +60,15 @@ public class ByAngular extends AngularJavaScriptFunctions {
 
         @Override
         public WebElement findElement(SearchContext context) {
-            List<WebElement> object = (List<WebElement>) getObject(context);
-            return ((List<WebElement>) errorIfNull(getObject(context))).get(0);
+            List<WebElement> object = (List<WebElement>) getObject(context, getJavascriptExecutor(context));
+            return ((List<WebElement>) errorIfNull(getObject(context, getJavascriptExecutor(context)))).get(0);
         }
 
-        protected abstract Object getObject(SearchContext context);
+        protected abstract Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor);
 
         @Override
         public List<WebElement> findElements(SearchContext context) {
-            return (List<WebElement>) errorIfNull(getObject(context));
+            return (List<WebElement>) errorIfNull(getObject(context, getJavascriptExecutor(context)));
         }
     }
 }

@@ -22,12 +22,11 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
         this.column = column;
     }
 
-    protected Object getObject(SearchContext context) {
-        JavascriptExecutor jse = getJavascriptExecutor(context);
+    protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
         if (context instanceof WebDriver) {
             context = null;
         }
-        return jse.executeScript(
+        return javascriptExecutor.executeScript(
                     "var using = arguments[0] || document;\n" +
                             "var rootSelector = 'body';\n" +
                             "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +

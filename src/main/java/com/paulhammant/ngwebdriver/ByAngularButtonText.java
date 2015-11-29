@@ -16,18 +16,11 @@ public class ByAngularButtonText extends ByAngular.BaseBy {
 
     private String searchText;
 
-    @Override
-    public WebElement findElement(SearchContext context) {
-        Object o = getObject(context);
-        return ((List<WebElement>) o).get(0);
-    }
-
-    protected Object getObject(SearchContext context) {
-        JavascriptExecutor jse = getJavascriptExecutor(context);
+    protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
         if (context instanceof WebDriver) {
             context = null;
         }
-        Object o = jse.executeScript(
+        Object o = javascriptExecutor.executeScript(
                 "var using = arguments[0] || document;\n" +
                         "var searchText = '" + searchText + "';\n" +
                         "\n" +
@@ -36,14 +29,7 @@ public class ByAngularButtonText extends ByAngular.BaseBy {
         errorIfNull(o);
         return o;
     }
-
-    @Override
-    public List<WebElement> findElements(SearchContext searchContext) {
-        Object o = getObject(searchContext);
-        errorIfNull(o);
-        return (List<WebElement>) o;
-    }
-
+    
     @Override
     public String toString() {
         return "searchText(" + searchText + ')';

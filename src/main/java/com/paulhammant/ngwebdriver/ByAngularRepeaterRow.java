@@ -24,13 +24,11 @@ public class ByAngularRepeaterRow extends ByAngular.BaseBy {
         return new ByAngularRepeaterCell(repeater, exact, row, column);
     }
 
-
-    protected Object getObject(SearchContext context) {
-        JavascriptExecutor jse = getJavascriptExecutor(context);
+    protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
         if (context instanceof WebDriver) {
             context = null;
         }
-        return jse.executeScript(
+        return javascriptExecutor.executeScript(
                     "var using = arguments[0] || document;\n" +
                             "var rootSelector = 'body';\n" +
                             "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +

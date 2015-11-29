@@ -3,9 +3,6 @@ package com.paulhammant.ngwebdriver;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import java.util.List;
 
 public class ByAngularOptions extends ByAngular.BaseBy {
 
@@ -16,12 +13,11 @@ public class ByAngularOptions extends ByAngular.BaseBy {
 
     private String options;
 
-    protected Object getObject(SearchContext context) {
-        JavascriptExecutor jse = getJavascriptExecutor(context);
+    protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
         if (context instanceof WebDriver) {
             context = null;
         }
-        Object o = jse.executeScript(
+        Object o = javascriptExecutor.executeScript(
                 "var using = arguments[0] || document;\n" +
                         "var optionsDescriptor = '" + options + "';\n" +
                         "\n" +
