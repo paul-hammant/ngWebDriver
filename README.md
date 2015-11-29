@@ -47,7 +47,7 @@ ByAngular.model('person.name')
 [As Protractor's options locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.options)
 
 ```java
-ByAngular.model("c for c in colors")
+ByAngular.options("c for c in colors")
 ```
 ### buttonText()
 
