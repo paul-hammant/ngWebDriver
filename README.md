@@ -10,20 +10,28 @@ You can use ngWebDriver today with the regular Java Selenium2/WebDriver librarie
 
 ## Locators
 
-### repeater() and exactRepeater()
+### repeater()
 
-[As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) and [Protractor's exactRepeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactRepeater) 
+[As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) 
+
+```java
+ByAngular.repeater("foo in f")
+ByAngular.repeater("foo in f").row(17)
+ByAngular.repeater("foo in f").row(17).column("foo.name")
+ByAngular.repeater("foo in f").column("foo.name")
+```
+
+### exactRepeater()
+
+[As Protractor's exactRepeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactRepeater)
 
 ```java
 ByAngular.exactRepeater("foo in foos")
 ByAngular.exactRepeater("foo in foos").row(17)
 ByAngular.exactRepeater("foo in foos").row(17).column("foo.name")
 ByAngular.exactRepeater("foo in foos").column("foo.name")
-ByAngular.repeater("foo in f")
-ByAngular.repeater("foo in f").row(17)
-ByAngular.repeater("foo in f").row(17).column("foo.name")
-ByAngular.repeater("foo in f").column("foo.name")
 ```
+
 
 ### binding()
 
@@ -32,6 +40,18 @@ ByAngular.repeater("foo in f").column("foo.name")
 ```java
 ByAngular.binding("person.name")
 ByAngular.binding("{{person.name}}")
+// You can also use a substring for a partial match
+ByAngular.binding("person");
+
+```
+
+### exactBinding()
+
+[As Protractor's exactBinding locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactBinding)
+
+```java
+ByAngular.exactBinding("person.name")
+ByAngular.exactBinding("{{person.name}}")
 ```
 
 ### model()
