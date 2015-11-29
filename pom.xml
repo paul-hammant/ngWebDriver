@@ -9,7 +9,7 @@
 
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>0.9.4</version>
   <packaging>jar</packaging>
 
   <name>ngWebDriver</name>
