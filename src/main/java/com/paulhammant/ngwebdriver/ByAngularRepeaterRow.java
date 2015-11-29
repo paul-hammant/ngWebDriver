@@ -25,23 +25,20 @@ public class ByAngularRepeaterRow extends ByAngular.BaseBy {
     }
 
 
-    @Override
-    public WebElement findElement(SearchContext context) {
+    protected Object getObject(SearchContext context) {
         JavascriptExecutor jse = getJavascriptExecutor(context);
         if (context instanceof WebDriver) {
             context = null;
         }
-        Object o = jse.executeScript(
-                "var using = arguments[0] || document;\n" +
-                        "var rootSelector = 'body';\n" +
-                        "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
-                        "var index = " + row + ";\n" +
-                        "var exact = " + exact+ ";\n" +
-                        "\n" +
-                        ByAngular.functions.get("findRepeaterRows")
-                , context);
-        errorIfNull(o);
-        return ((List<WebElement>) o).get(0);
+        return jse.executeScript(
+                    "var using = arguments[0] || document;\n" +
+                            "var rootSelector = 'body';\n" +
+                            "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
+                            "var index = " + row + ";\n" +
+                            "var exact = " + exact+ ";\n" +
+                            "\n" +
+                            ByAngular.functions.get("findRepeaterRows")
+                    , context);
     }
 
     // meaningless

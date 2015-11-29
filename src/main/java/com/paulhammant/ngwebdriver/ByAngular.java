@@ -1,9 +1,7 @@
 package com.paulhammant.ngwebdriver;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.util.*;
@@ -54,11 +52,24 @@ public class ByAngular extends AngularJavaScriptFunctions {
             return jse;
         }
 
-        protected final void errorIfNull(Object o) {
+        protected final Object errorIfNull(Object o) {
             if (o == null || o instanceof List && ((List) o).size() == 0) {
                 throw new NoSuchElementException(this + " didn't have any matching elements at this place in the DOM");
             }
+            return o;
         }
 
+        @Override
+        public WebElement findElement(SearchContext context) {
+            List<WebElement> object = (List<WebElement>) getObject(context);
+            return ((List<WebElement>) errorIfNull(getObject(context))).get(0);
+        }
+
+        protected abstract Object getObject(SearchContext context);
+
+        @Override
+        public List<WebElement> findElements(SearchContext context) {
+            return (List<WebElement>) errorIfNull(getObject(context));
+        }
     }
 }

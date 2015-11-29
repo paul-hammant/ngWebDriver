@@ -22,7 +22,7 @@ public class ByAngularButtonText extends ByAngular.BaseBy {
         return ((List<WebElement>) o).get(0);
     }
 
-    private Object getObject(SearchContext context) {
+    protected Object getObject(SearchContext context) {
         JavascriptExecutor jse = getJavascriptExecutor(context);
         if (context instanceof WebDriver) {
             context = null;

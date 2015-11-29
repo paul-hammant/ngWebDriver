@@ -24,15 +24,7 @@ public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
         return new ByAngularRepeaterCell(repeater, exact, row, column);
     }
 
-    // meaningless
-    @Override
-    public WebElement findElement(SearchContext context) {
-        Object o = getObject(context);
-        errorIfNull(o);
-        return ((List<WebElement>) o).get(0);
-    }
-
-    private Object getObject(SearchContext context) {
+    protected Object getObject(SearchContext context) {
         JavascriptExecutor jse = getJavascriptExecutor(context);
         if (context instanceof WebDriver) {
             context = null;
@@ -46,14 +38,6 @@ public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
                             "\n" +
                             ByAngular.functions.get("findRepeaterColumn")
                     , context);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext searchContext) {
-        Object o = getObject(searchContext);
-        errorIfNull(o);
-        return (List<WebElement>) o;
-
     }
 
     @Override

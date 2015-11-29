@@ -16,13 +16,7 @@ public class ByAngularOptions extends ByAngular.BaseBy {
 
     private String options;
 
-    @Override
-    public WebElement findElement(SearchContext context) {
-        Object o = getObject(context);
-        return ((List<WebElement>) o).get(0);
-    }
-
-    private Object getObject(SearchContext context) {
+    protected Object getObject(SearchContext context) {
         JavascriptExecutor jse = getJavascriptExecutor(context);
         if (context instanceof WebDriver) {
             context = null;
@@ -35,13 +29,6 @@ public class ByAngularOptions extends ByAngular.BaseBy {
                 , context);
         errorIfNull(o);
         return o;
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext searchContext) {
-        Object o = getObject(searchContext);
-        errorIfNull(o);
-        return (List<WebElement>) o;
     }
 
     @Override
