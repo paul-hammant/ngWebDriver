@@ -7,14 +7,14 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class ByAngularBinding extends ByAngular.BaseBy {
+public class ByAngularButtonText extends ByAngular.BaseBy {
 
-    public ByAngularBinding(JavascriptExecutor jse, String binding) {
+    public ByAngularButtonText(JavascriptExecutor jse, String buttonText) {
         super(jse);
-        this.binding = binding;
+        this.searchText = buttonText;
     }
 
-    private String binding;
+    private String searchText;
 
     @Override
     public WebElement findElement(SearchContext context) {
@@ -28,11 +28,9 @@ public class ByAngularBinding extends ByAngular.BaseBy {
     private Object getObject(SearchContext context) {
         Object o = jse.executeScript(
                 "var using = arguments[0] || document;\n" +
-                        "var rootSelector = 'body';\n" +
-                        "var exactMatch = false;\n" +
-                        "var binding = '" + binding + "';\n" +
+                        "var searchText = '" + searchText + "';\n" +
                         "\n" +
-                        ByAngular.functions.get("findBindings")
+                        ByAngular.functions.get("findByButtonText")
                 , context);
         errorIfNull(o);
         return o;
@@ -50,6 +48,6 @@ public class ByAngularBinding extends ByAngular.BaseBy {
 
     @Override
     public String toString() {
-        return "bindings(" + binding + ')';
+        return "searchText(" + searchText + ')';
     }
 }

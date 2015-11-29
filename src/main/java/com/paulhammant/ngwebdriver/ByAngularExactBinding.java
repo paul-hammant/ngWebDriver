@@ -7,11 +7,11 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class ByAngularBinding extends ByAngular.BaseBy {
+public class ByAngularExactBinding extends ByAngular.BaseBy {
 
-    public ByAngularBinding(JavascriptExecutor jse, String binding) {
+    public ByAngularExactBinding(JavascriptExecutor jse, String exactBinding) {
         super(jse);
-        this.binding = binding;
+        this.binding = exactBinding;
     }
 
     private String binding;
@@ -29,7 +29,7 @@ public class ByAngularBinding extends ByAngular.BaseBy {
         Object o = jse.executeScript(
                 "var using = arguments[0] || document;\n" +
                         "var rootSelector = 'body';\n" +
-                        "var exactMatch = false;\n" +
+                        "var exactMatch = true;\n" +
                         "var binding = '" + binding + "';\n" +
                         "\n" +
                         ByAngular.functions.get("findBindings")
@@ -50,6 +50,6 @@ public class ByAngularBinding extends ByAngular.BaseBy {
 
     @Override
     public String toString() {
-        return "bindings(" + binding + ')';
+        return "exactBinding(" + binding + ')';
     }
 }

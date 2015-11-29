@@ -29,12 +29,18 @@ public class ByAngular extends AngularJavaScriptFunctions {
     public ByAngularBinding binding(String binding) {
         return new ByAngularBinding(jse, binding);
     }
+    public ByAngularExactBinding exactBinding(String exactBinding) {
+        return new ByAngularExactBinding(jse, exactBinding);
+    }
      public ByAngularModel model(String model) {
         return new ByAngularModel(jse, model);
     }
 
     public ByAngularOptions options(String options) {
         return new ByAngularOptions(jse,options);
+    }
+    public ByAngularButtonText buttonText(String buttonText) {
+        return new ByAngularButtonText(jse,buttonText);
     }
 
     public abstract static class BaseBy extends By {
