@@ -64,7 +64,9 @@ As Protractor, you can change items in an Angular model, or retrieve them reagrd
 ```java
 AngularModelAccessor ngModel = new AngularModelAccessor(driver);
 // change something via the model defined in $scope 
-ngModel.mutate(wholeForm, "person.name", "Wilma");
+ngModel.mutate(wholeForm, "person.name", "'Wilma'");
+// Note Wilma wrapped in single-quotes as it has to be a valid JavaScript 
+// string literal when it arrives browser-side for execution 
 ```
 
 See also retrieveJson, retrieve, retrieveAsString and retrieveAsLong for getting Angular data back from the browser.
@@ -93,7 +95,7 @@ DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateF
 
 # Releases
 
-## 0.9.5 - Nov 29, 2015
+### 0.9.5 - Nov 29, 2015
 
 * Updated dependence on Protractor's clientsidescripts.js source.
 * FluentSelenium dependency changed to 1.16.
@@ -101,26 +103,26 @@ DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateF
 
 [Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9.3...ngwebdriver-0.9.4)
 
-## 0.9.3 - Nov 21, 2015
+### 0.9.3 - Nov 21, 2015
 
 * FluentSelenium dependency changed to 1.15.
 * New locators (from Protractor) options (courtesy of Manoj Kumar)
 
 [Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9.2...ngwebdriver-0.9.3)
 
-## 0.9.2 - Sep 23, 2013
+### 0.9.2 - Sep 23, 2013
 
 * bugfix in retrieveAsLong() operation
 
 [Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9.1...ngwebdriver-0.9.2)
 
-## 0.9.1 - Sep 16, 2013
+### 0.9.1 - Sep 16, 2013
 
 * bugfix in retrieveJson() operation
 
 [Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9...ngwebdriver-0.9.1)
 
-## 0.9 - Sep 15, 2013
+### 0.9 - Sep 15, 2013
 
 * Initial release
 
@@ -136,7 +138,8 @@ DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateF
   <scope>test</scope>
 </dependency>
 
-<!-- you still need to have a dependency for preferred version of Selenium/WebDriver 2.48.2 or above -->
+<!-- you still need to have a dependency for preferred version of 
+  Selenium/WebDriver. That should be 2.48.2 or above -->
 ```
 
 ## Non-Maven
