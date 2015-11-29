@@ -11,14 +11,14 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.seleniumhq.selenium.fluent.*;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +52,7 @@ public class AngularAndWebDriverTest {
         webServer.addConnector(connector);
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
-        resource_handler.setWelcomeFiles(new String[]{ "index.html" });
+        resource_handler.setWelcomeFiles(new String[]{"index.html"});
         resource_handler.setResourceBase("src/test/webapp");
         HandlerList handlers = new HandlerList();
         MovedContextHandler effective_symlink = new MovedContextHandler(webServer, "/lib/angular", "/lib/angular_v1.2.9");
@@ -100,6 +100,16 @@ public class AngularAndWebDriverTest {
         assertThat(weColors.get(0).getText(), containsString("apple"));
         assertThat(weColors.get(3).getText(), containsString("banana"));
 
+    }
+    @Test(enabled = false)
+    public void find_by_angular_buttonText() {
+
+        driver.get("http://localhost:8080/#/form");
+        waitForAngularRequestsToFinish(driver);
+
+        driver.findElement(byNg.buttonText("Open Alert")).click();
+        Alert alert = driver.switchTo().alert();
+        assertThat(alert.getText(), containsString("Hello"));
     }
 
     @Test
@@ -206,8 +216,12 @@ public class AngularAndWebDriverTest {
         driver.get("http://localhost:8080/#/form");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> wes = driver.findElements(byNg.binding("username"));
+        // An example showcasing ByBinding, where we give a substring of the binding attribute
+        List<WebElement> wes = driver.findElements(byNg.binding("user"));
         assertThat(wes.get(0).getText(), is("Anon"));
+        //An exmple showcasing ByExactBinding, where it strictly matches the given Biding attribute name.
+        List<WebElement> weeb = driver.findElements(byNg.exactBinding("username"));
+        assertThat(weeb.get(0).getText(), is("Anon"));
     }
 
     @Test
