@@ -10,16 +10,18 @@ import java.util.List;
 public class ByAngularRepeaterRow extends ByAngular.BaseBy {
 
     private final String repeater;
+    private boolean exact;
     private final int row;
 
-    public ByAngularRepeaterRow(JavascriptExecutor jse, String repeater, int row) {
+    public ByAngularRepeaterRow(JavascriptExecutor jse, String repeater, boolean exact, int row) {
         super(jse);
         this.repeater = repeater;
+        this.exact = exact;
         this.row = row;
     }
 
     public ByAngularRepeaterCell column(String column) {
-        return new ByAngularRepeaterCell(jse, repeater, row, column);
+        return new ByAngularRepeaterCell(jse, repeater, exact, row, column);
     }
 
 
@@ -30,24 +32,15 @@ public class ByAngularRepeaterRow extends ByAngular.BaseBy {
         }
         Object o = jse.executeScript(
                 "var using = arguments[0] || document;\n" +
-                        "var repeater = '" + repeater + "';\n" +
+                        "var rootSelector = 'body';\n" +
+                        "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
                         "var index = " + row + ";\n" +
+                        "var exact = " + exact+ ";\n" +
                         "\n" +
-                        "var rows = [];\n" +
-                        "var prefixes = ['ng-', 'ng_', 'data-ng-', 'x-ng-'];\n" +
-                        "for (var p = 0; p < prefixes.length; ++p) {\n" +
-                        "  var attr = prefixes[p] + 'repeat';\n" +
-                        "  var repeatElems = using.querySelectorAll('[' + attr + ']');\n" +
-                        "  attr = attr.replace(/\\\\/g, '');\n" +
-                        "  for (var i = 0; i < repeatElems.length; ++i) {\n" +
-                        "    if (repeatElems[i].getAttribute(attr).indexOf(repeater) != -1) {\n" +
-                        "      rows.push(repeatElems[i]);\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}\n" +
-                        "return rows[index - 1];", context);
+                        ByAngular.functions.get("findRepeaterRows")
+                , context);
         errorIfNull(o);
-        return (WebElement) o;
+        return ((List<WebElement>) o).get(0);
     }
 
     // meaningless
@@ -58,7 +51,7 @@ public class ByAngularRepeaterRow extends ByAngular.BaseBy {
 
     @Override
     public String toString() {
-        return "repeater(" + repeater + ").row(" + row + ")";
+        return (exact? "exactR":"r") + "epeater(" + repeater + ").row(" + row + ")";
     }
 
 }

@@ -8,13 +8,19 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.MovedContextHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.seleniumhq.selenium.fluent.*;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +30,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.By.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.fail;
@@ -38,6 +45,7 @@ public class AngularAndWebDriverTest {
     public void before_suite() throws Exception {
 
         // Launch Protractor's own test app on http://localhost:8080
+        ((StdErrLog) Log.getRootLogger()).setLevel(StdErrLog.LEVEL_OFF);
         webServer = new Server(new QueuedThreadPool(5));
         ServerConnector connector = new ServerConnector(webServer, new HttpConnectionFactory());
         connector.setPort(8080);
@@ -47,12 +55,7 @@ public class AngularAndWebDriverTest {
         resource_handler.setWelcomeFiles(new String[]{"index.html"});
         resource_handler.setResourceBase("src/test/webapp");
         HandlerList handlers = new HandlerList();
-        MovedContextHandler effective_symlink = new MovedContextHandler();
-        effective_symlink.setNewContextURL("/lib/angular_v1.2.9");
-        effective_symlink.setContextPath("/lib/angular");
-        effective_symlink.setPermanent(false);
-        effective_symlink.setDiscardPathInfo(false);
-        effective_symlink.setDiscardQuery(false);
+        MovedContextHandler effective_symlink = new MovedContextHandler(webServer, "/lib/angular", "/lib/angular_v1.2.9");
         handlers.setHandlers(new Handler[] { effective_symlink, resource_handler, new DefaultHandler() });
         webServer.setHandler(handlers);
         webServer.start();
@@ -98,7 +101,7 @@ public class AngularAndWebDriverTest {
         assertThat(weColors.get(3).getText(), containsString("banana"));
 
     }
-    @Test
+    @Test(enabled = false)
     public void find_by_angular_buttonText() {
 
         driver.get("http://localhost:8080/#/form");
@@ -147,8 +150,8 @@ public class AngularAndWebDriverTest {
             this.term = term;
         }
 
-        public boolean matches(WebElement webElement, int ix) {
-            return webElement.getText().indexOf(term) > -1;
+        public boolean matches(FluentWebElement webElement, int ix) {
+            return webElement.getWebElement().getText().indexOf(term) > -1;
         }
 
         @Override
@@ -164,9 +167,9 @@ public class AngularAndWebDriverTest {
         waitForAngularRequestsToFinish(driver);
 
         // find the second person
-        // index starts with 1 (Javascript)
+        // index starts with 0 of course
 
-        assertThat(driver.findElement(byNg.repeater("person in people").row(2)).getText(), is("Bob Smith"));
+        assertThat(driver.findElement(byNg.repeater("person in people").row(1)).getText(), is("Bob Smith"));
 
     }
 
@@ -393,22 +396,21 @@ public class AngularAndWebDriverTest {
             driver.findElements(byNg.repeater("location in Locationssss").row(99999).column("blort"));
             fail("should have barfed");
         } catch (UnsupportedOperationException e) {
-            assertThat(e.getMessage(), startsWith("This locator zooms in on a single row, findElements() is meaningless"));
+            assertThat(e.getMessage(), startsWith("This locator zooms in on a single cell, findElements() is meaningless"));
         }
     }
 
     @Test
-    public void findElement_should_barf_with_message_for_any_repeater_and_column() {
+    public void findElement_should_barf_when_element_not_in_the_dom() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-
         try {
             driver.findElement(byNg.repeater("location in Locationssss").column("blort"));
             fail("should have barfed");
-        } catch (UnsupportedOperationException e) {
-            assertThat(e.getMessage(), startsWith("This locator zooms in on a multiple cells, findElement() is meaningless"));
+        } catch (NoSuchElementException e) {
+            assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).column(blort) didn't have any matching elements at this place in the DOM"));
         }
     }
 
@@ -498,7 +500,7 @@ public class AngularAndWebDriverTest {
     }
 
     private static class IsIndex2Or3 implements FluentMatcher {
-        public boolean matches(WebElement webElement, int ix) {
+        public boolean matches(FluentWebElement webElement, int ix) {
             return ix == 2 || ix == 3;
         }
     }
@@ -519,5 +521,169 @@ public class AngularAndWebDriverTest {
 
     }
 
+    /*
+      Ported from protractor/spec/basic/elements_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_elements_should_allow_using_repeater_locator_within_map() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        Map<String, String> expected = new HashMap<String, String>() {{
+           put("M", "Monday");
+           put("T", "Tuesday");
+           put("W", "Wednesday");
+           put("Th", "Thursday");
+           put("F", "Friday");
+        }};
+
+        Map<String, String> days = fwd.lis(byNg.repeater("allinfo in days")).map(new FluentWebElementMap<String, String>() {
+            public void map(FluentWebElement elem, int ix) {
+                put(elem.element(byNg.binding("allinfo.initial")).getText().toString(),
+                        elem.element(byNg.binding("allinfo.name")).getText().toString());
+            }
+        });
+
+        assertThat(days.entrySet(), equalTo(expected.entrySet()));
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_by_partial_match() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        fwd.span(byNg.repeater("baz in days | filter:'T'").row(0).column("baz.initial")).getText().shouldBe("T");
+
+        fwd.span(byNg.repeater("baz in days | fil").row(0).column("baz.initial")).getText().shouldBe("T");
+
+        try {
+            fwd.li(byNg.exactRepeater("baz in days | fil").row(0).column("baz.initial")).getText().shouldBe("T");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | fil).row(0).column(baz.initial))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | fil).row(0).column(baz.initial) didn't have any matching elements at this place in the DOM"));
+        }
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_many_rows_by_partial_match() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        FluentWebElements spans = fwd.spans(byNg.repeater("baz in days | filter:'T'").column("baz.initial"));
+        spans.getText().shouldBe("TTh");
+        spans.get(0).getText().shouldBe("T");
+        spans.get(1).getText().shouldBe("Th");
+
+        spans = fwd.spans(byNg.repeater("baz in days | fil").column("baz.initial"));
+        spans.getText().shouldBe("TTh");
+        spans.get(0).getText().shouldBe("T");
+        spans.get(1).getText().shouldBe("Th");
+
+        try {
+            fwd.li(byNg.exactRepeater("baz in days | fil").column("baz.initial")).getText().shouldBe("TTh");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | fil).column(baz.initial))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | fil).column(baz.initial) didn't have any matching elements at this place in the DOM"));
+        }
+
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_one_row_by_partial_match() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        fwd.li(byNg.repeater("baz in days | filter:'T'").row(0)).getText().shouldBe("T");
+        fwd.li(byNg.repeater("baz in days | filter:'T'").row(1)).getText().shouldBe("Th");
+
+        fwd.li(byNg.repeater("baz in days | filt").row(1)).getText().shouldBe("Th");
+
+
+        try {
+            fwd.li(byNg.exactRepeater("baz in days | filt").row(1)).getText().shouldBe("T");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | filt).row(1))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | filt).row(1) didn't have any matching elements at this place in the DOM"));
+        }
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_many_rows_by_partial_match2() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        FluentWebElements lis = fwd.lis(byNg.repeater("baz in days | filter:'T'"));
+        lis.getText().shouldBe("TTh");
+        lis.get(0).getText().shouldBe("T");
+        lis.get(1).getText().shouldBe("Th");
+
+        lis = fwd.lis(byNg.repeater("baz in days | fil"));
+        lis.getText().shouldBe("TTh");
+        lis.get(0).getText().shouldBe("T");
+        lis.get(1).getText().shouldBe("Th");
+
+        try {
+            fwd.lis(byNg.exactRepeater("baz in days | filt")).getText().shouldBe("T");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.lis(exactRepeater(baz in days | filt))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | filt) didn't have any matching elements at this place in the DOM"));
+        }
+
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/locators_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_locators_by_repeater_should_find_single_rows_by_partial_match() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html#/repeater");
+
+        fwd.li(byNg.repeater("baz in days | filter:'T'")).getText().shouldBe("T");
+
+        fwd.li(byNg.repeater("baz in days | filt")).getText().shouldBe("T");
+
+        try {
+            fwd.li(byNg.exactRepeater("baz in days | filt")).getText().shouldBe("T");
+            fail("should have barfed");
+        } catch (FluentExecutionStopped e) {
+            assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | filt))"));
+            assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | filt) didn't have any matching elements at this place in the DOM"));
+        }
+
+    }
 
 }
