@@ -106,7 +106,7 @@ DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateF
 ### 0.9.3 - Nov 21, 2015
 
 * FluentSelenium dependency changed to 1.15.
-* New locators (from Protractor) options (courtesy of Manoj Kumar)
+* New locators (from Protractor) model, options (courtesy of Manoj Kumar)
 
 [Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9.2...ngwebdriver-0.9.3)
 
