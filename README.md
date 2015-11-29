@@ -15,14 +15,14 @@ You can use ngWebDriver today with the regular Java Selenium2/WebDriver librarie
 [As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) and [Protractor's exactRepeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactRepeater) 
 
 ```java
-byAngular.exactRepeater("foo in foos")
-byAngular.exactRepeater("foo in foos").row(17)
-byAngular.exactRepeater("foo in foos").row(17).column("foo.name")
-byAngular.exactRepeater("foo in foos").column("foo.name")
-byAngular.repeater("foo in f")
-byAngular.repeater("foo in f").row(17)
-byAngular.repeater("foo in f").row(17).column("foo.name")
-byAngular.repeater("foo in f").column("foo.name")
+ByAngular.exactRepeater("foo in foos")
+ByAngular.exactRepeater("foo in foos").row(17)
+ByAngular.exactRepeater("foo in foos").row(17).column("foo.name")
+ByAngular.exactRepeater("foo in foos").column("foo.name")
+ByAngular.repeater("foo in f")
+ByAngular.repeater("foo in f").row(17)
+ByAngular.repeater("foo in f").row(17).column("foo.name")
+ByAngular.repeater("foo in f").column("foo.name")
 ```
 
 ### binding()
@@ -30,8 +30,8 @@ byAngular.repeater("foo in f").column("foo.name")
 [As Protractor's binding locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.binding)
 
 ```java
-by.binding("person.name")
-by.binding("{{person.name}}")
+ByAngular.binding("person.name")
+ByAngular.binding("{{person.name}}")
 ```
 
 ### model()
@@ -39,7 +39,7 @@ by.binding("{{person.name}}")
 [As Protractor's model locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.model)
 
 ```java
-by.model('person.name')
+ByAngular.model('person.name')
 ```
 
 ### options()
@@ -47,8 +47,16 @@ by.model('person.name')
 [As Protractor's options locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.options)
 
 ```java
-by.model("c for c in colors")
+ByAngular.model("c for c in colors")
 ```
+### buttonText()
+
+[As Protractor's buttonText locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.buttonText)
+
+```java
+ByAngular.buttonText("cLiCk mE")
+```
+
 ## Angular model interop
 
 As Protractor, you can change items in an Angular model, or retrieve them reagrdless of whether they aappear in the UI or not.
