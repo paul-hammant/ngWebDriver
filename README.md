@@ -91,6 +91,39 @@ DateTimeFormatter parser = ISODateTimeFormat.dateTimeParser()
 DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateField").replace("\"", ""));
 ```
 
+# Releases
+
+## 0.9.5 - Nov 29, 2015
+
+* Updated dependence on Protractor's clientsidescripts.js source.
+* FluentSelenium dependency changed to 1.16.
+* New locators (from Protractor) exactRepeater, buttonText, exactBinding (courtesy of Manoj Kumar)
+
+[Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9.3...ngwebdriver-0.9.4)
+
+## 0.9.3 - Nov 21, 2015
+
+* FluentSelenium dependency changed to 1.15.
+* New locators (from Protractor) options (courtesy of Manoj Kumar)
+
+[Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9.2...ngwebdriver-0.9.3)
+
+## 0.9.2 - Sep 23, 2013
+
+* bugfix in retrieveAsLong() operation
+
+[Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9.1...ngwebdriver-0.9.2)
+
+## 0.9.1 - Sep 16, 2013
+
+* bugfix in retrieveJson() operation
+
+[Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9...ngwebdriver-0.9.1)
+
+## 0.9 - Sep 15, 2013
+
+* Initial release
+
 # Including it in your project
 
 ## Maven
@@ -99,11 +132,11 @@ DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateF
 <dependency>
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>0.9.1</version>
+  <version>0.9.4</version>
   <scope>test</scope>
 </dependency>
 
-<!-- you still need to have a dependency for preferred version of Selenium/WebDriver 2.35 or above -->
+<!-- you still need to have a dependency for preferred version of Selenium/WebDriver 2.48.2 or above -->
 ```
 
 ## Non-Maven
