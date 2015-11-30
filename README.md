@@ -88,6 +88,15 @@ ByAngular.options("c for c in colors")
 ByAngular.buttonText("cLiCk mE")
 ```
 
+### partialButtonText()
+
+[As Protractor's partialButtonText locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.partialButtonText)
+
+```java
+// If you have a button name "Click me to open", using just "click" would do if you partialButtonText
+ByAngular.partialButtonText("cLiCk ")
+```
+
 ## Angular model interop
 
 As Protractor, you can change items in an Angular model, or retrieve them reagrdless of whether they aappear in the UI or not.
