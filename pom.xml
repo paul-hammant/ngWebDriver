@@ -9,7 +9,7 @@
 
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>0.9.5-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>ngWebDriver</name>
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.8.5</version>
+      <version>6.9.9</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>org.seleniumhq.selenium.fluent</groupId>
       <artifactId>fluent-selenium</artifactId>
-      <version>1.15.1-SNAPSHOT</version>
+      <version>1.16</version>
       <scope>test</scope>
 	  <exclusions>
 	    <exclusion>  <!-- declare the exclusion here -->

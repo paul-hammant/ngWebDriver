@@ -1,61 +1,81 @@
 package com.paulhammant.ngwebdriver;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.remote.RemoteWebElement;
 
-import java.io.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ByAngular extends AngularJavaScriptFunctions {
-
-    protected final JavascriptExecutor jse;
-
-    public ByAngular(JavascriptExecutor jse) {
-        this.jse = jse;
+    
+    private ByAngular() {
     }
 
-
-    public ByAngularRepeater repeater(String repeater) {
-        return new ByAngularRepeater(jse, repeater, false);
+    public static ByAngularRepeater repeater(String repeater) {
+        return new ByAngularRepeater(repeater, false);
     }
 
-    public ByAngularRepeater exactRepeater(String repeater) {
-        return new ByAngularRepeater(jse, repeater, true);
+    public static ByAngularRepeater exactRepeater(String repeater) {
+        return new ByAngularRepeater(repeater, true);
     }
 
-    public ByAngularBinding binding(String binding) {
-        return new ByAngularBinding(jse, binding);
-    }
-    public ByAngularExactBinding exactBinding(String exactBinding) {
-        return new ByAngularExactBinding(jse, exactBinding);
-    }
-     public ByAngularModel model(String model) {
-        return new ByAngularModel(jse, model);
+    public static ByAngularBinding binding(String binding) {
+        return new ByAngularBinding(binding);
     }
 
-    public ByAngularOptions options(String options) {
-        return new ByAngularOptions(jse,options);
-    }
-    public ByAngularButtonText buttonText(String buttonText) {
-        return new ByAngularButtonText(jse,buttonText);
+    public static ByAngularExactBinding exactBinding(String exactBinding) {
+        return new ByAngularExactBinding(exactBinding);
     }
 
-    public abstract static class BaseBy extends By {
+    public static ByAngularModel model(String model) {
+        return new ByAngularModel(model);
+    }
 
-        protected final JavascriptExecutor jse;
+    public static ByAngularOptions options(String options) {
+        return new ByAngularOptions(options);
+    }
 
-        public BaseBy(JavascriptExecutor jse) {
-            this.jse = jse;
+    public static ByAngularButtonText buttonText(String buttonText) {
+        return new ByAngularButtonText(buttonText);
+    }
+
+    protected abstract static class BaseBy extends By {
+
+        private final JavascriptExecutor getJavascriptExecutor(SearchContext context) {
+            JavascriptExecutor jse;
+            if (context instanceof RemoteWebElement) {
+                jse = (JavascriptExecutor) ((RemoteWebElement) context).getWrappedDriver();
+            } else {
+                jse = (JavascriptExecutor) context;
+            }
+            return jse;
         }
 
-        protected final void errorIfNull(Object o) {
+        protected final Object errorIfNull(Object o) {
             if (o == null || o instanceof List && ((List) o).size() == 0) {
                 throw new NoSuchElementException(this + " didn't have any matching elements at this place in the DOM");
             }
+            return o;
         }
 
+        @Override
+        public WebElement findElement(SearchContext context) {
+            JavascriptExecutor javascriptExecutor = getJavascriptExecutor(context);
+            if (context instanceof WebDriver) {
+                context = null;
+            }
+            return ((List<WebElement>) errorIfNull(getObject(context, javascriptExecutor))).get(0);
+        }
+
+        protected abstract Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor);
+
+        @Override
+        public List<WebElement> findElements(SearchContext context) {
+            JavascriptExecutor javascriptExecutor = getJavascriptExecutor(context);
+            if (context instanceof WebDriver) {
+                context = null;
+            }
+            return (List<WebElement>) errorIfNull(getObject(context, javascriptExecutor));
+        }
     }
 }

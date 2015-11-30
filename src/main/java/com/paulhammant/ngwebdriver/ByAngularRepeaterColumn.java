@@ -3,9 +3,6 @@ package com.paulhammant.ngwebdriver;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import java.util.List;
 
 public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
 
@@ -13,30 +10,19 @@ public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
     private boolean exact;
     private final String column;
 
-    public ByAngularRepeaterColumn(JavascriptExecutor jse, String repeater, boolean exact, String column) {
-        super(jse);
+    public ByAngularRepeaterColumn(String repeater, boolean exact, String column) {
+        super();
         this.repeater = repeater;
         this.exact = exact;
         this.column = column;
     }
 
     public ByAngularRepeaterCell row(int row) {
-        return new ByAngularRepeaterCell(jse, repeater, exact, row, column);
+        return new ByAngularRepeaterCell(repeater, exact, row, column);
     }
 
-    // meaningless
-    @Override
-    public WebElement findElement(SearchContext context) {
-        if (context instanceof WebDriver) {
-            context = null;
-        }
-        Object o = getObject(context);
-        errorIfNull(o);
-        return ((List<WebElement>) o).get(0);
-    }
-
-    private Object getObject(SearchContext context) {
-        return jse.executeScript(
+    protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
+        return javascriptExecutor.executeScript(
                     "var using = arguments[0] || document;\n" +
                             "var rootSelector = 'body';\n" +
                             "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
@@ -45,17 +31,6 @@ public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
                             "\n" +
                             ByAngular.functions.get("findRepeaterColumn")
                     , context);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext searchContext) {
-        if (searchContext instanceof WebDriver) {
-            searchContext = null;
-        }
-        Object o = getObject(searchContext);
-        errorIfNull(o);
-        return (List<WebElement>) o;
-
     }
 
     @Override

@@ -14,31 +14,25 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
     private final int row;
     private final String column;
 
-    public ByAngularRepeaterCell(JavascriptExecutor jse, String repeater, boolean exact, int row, String column) {
-        super(jse);
+    public ByAngularRepeaterCell(String repeater, boolean exact, int row, String column) {
+        super();
         this.repeater = repeater;
         this.exact = exact;
         this.row = row;
         this.column = column;
     }
 
-    @Override
-    public WebElement findElement(SearchContext context) {
-        if (context instanceof WebDriver) {
-            context = null;
-        }
-        Object o = jse.executeScript(
-                "var using = arguments[0] || document;\n" +
-                        "var rootSelector = 'body';\n" +
-                        "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
-                        "var index = " + row + ";\n" +
-                        "var binding = '" + column + "';\n" +
-                        "var exact = " + exact + ";\n" +
-                        "\n" +
-                        ByAngular.functions.get("findRepeaterElement")
-                , context);
-        errorIfNull(o);
-        return ((List<WebElement>) o).get(0);
+    protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
+        return javascriptExecutor.executeScript(
+                    "var using = arguments[0] || document;\n" +
+                            "var rootSelector = 'body';\n" +
+                            "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
+                            "var index = " + row + ";\n" +
+                            "var binding = '" + column + "';\n" +
+                            "var exact = " + exact + ";\n" +
+                            "\n" +
+                            ByAngular.functions.get("findRepeaterElement")
+                    , context);
     }
 
     // meaningless

@@ -38,7 +38,6 @@ import static org.testng.AssertJUnit.fail;
 public class AngularAndWebDriverTest {
 
     private FirefoxDriver driver;
-    private ByAngular byNg;
     private Server webServer;
 
     @BeforeSuite
@@ -62,7 +61,6 @@ public class AngularAndWebDriverTest {
 
         driver = new FirefoxDriver();
         driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
-        byNg = new ByAngular(driver);
     }
 
     @AfterSuite
@@ -83,7 +81,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://localhost:8080/");
         waitForAngularRequestsToFinish(driver);
 
-        WebElement firstname = driver.findElement(byNg.model("username"));
+        WebElement firstname = driver.findElement(ByAngular.model("username"));
         firstname.clear();
         firstname.sendKeys("Mary");
         assertEquals(driver.findElement(xpath("//input")).getAttribute("value"), "Mary");
@@ -96,7 +94,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://localhost:8080/#/form");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> weColors = driver.findElements(byNg.options("fruit for fruit in fruits"));
+        List<WebElement> weColors = driver.findElements(ByAngular.options("fruit for fruit in fruits"));
         assertThat(weColors.get(0).getText(), containsString("apple"));
         assertThat(weColors.get(3).getText(), containsString("banana"));
 
@@ -107,7 +105,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://localhost:8080/#/form");
         waitForAngularRequestsToFinish(driver);
 
-        driver.findElement(byNg.buttonText("Open Alert")).click();
+        driver.findElement(ByAngular.buttonText("Open Alert")).click();
         Alert alert = driver.switchTo().alert();
         assertThat(alert.getText(), containsString("Hello"));
         alert.accept();
@@ -119,7 +117,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> wes = driver.findElement(tagName("table")).findElements(byNg.repeater("person in people"));
+        List<WebElement> wes = driver.findElement(tagName("table")).findElements(ByAngular.repeater("person in people"));
 
         assertThat(wes.size(), is(4));
         assertThat(wes.get(0).findElement(tagName("td")).getText(), containsString("John"));
@@ -137,7 +135,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        new FluentWebDriver(driver).lis(byNg.repeater("(propName, propValue) in person"))
+        new FluentWebDriver(driver).lis(ByAngular.repeater("(propName, propValue) in person"))
                 .first(new TextContainsTerm("name ="))
                 .getText().shouldContain("John");
 
@@ -170,7 +168,7 @@ public class AngularAndWebDriverTest {
         // find the second person
         // index starts with 0 of course
 
-        assertThat(driver.findElement(byNg.repeater("person in people").row(1)).getText(), is("Bob Smith"));
+        assertThat(driver.findElement(ByAngular.repeater("person in people").row(1)).getText(), is("Bob Smith"));
 
     }
 
@@ -180,7 +178,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        driver.findElement(byNg.repeater("person in selectablePeople").row(2).column("person.isSelected")).click();
+        driver.findElement(ByAngular.repeater("person in selectablePeople").row(2).column("person.isSelected")).click();
 
         assertThat(driver.findElement(xpath("//tr[@byNg-repeat='person in selectablePeople']")).getText(), is("x y z"));
     }
@@ -192,7 +190,7 @@ public class AngularAndWebDriverTest {
         waitForAngularRequestsToFinish(driver);
 
         // find the second address' city
-        driver.findElement(byNg.repeater("person in selectablePeople").column("person.isSelected").row(2)).click();
+        driver.findElement(ByAngular.repeater("person in selectablePeople").column("person.isSelected").row(2)).click();
 
         assertThat(driver.findElement(xpath("//tr[@byNg-repeat='person in selectablePeople']")).getText(), is("x y z"));
     }
@@ -203,7 +201,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> we = driver.findElements(byNg.repeater("person in selectablePeople").column("person.isSelected"));
+        List<WebElement> we = driver.findElements(ByAngular.repeater("person in selectablePeople").column("person.isSelected"));
 
         assertThat(we.get(0).getText(), is("unselcted"));
         we.get(1).click();
@@ -218,10 +216,10 @@ public class AngularAndWebDriverTest {
         waitForAngularRequestsToFinish(driver);
 
         // An example showcasing ByBinding, where we give a substring of the binding attribute
-        List<WebElement> wes = driver.findElements(byNg.binding("user"));
+        List<WebElement> wes = driver.findElements(ByAngular.binding("user"));
         assertThat(wes.get(0).getText(), is("Anon"));
         //An exmple showcasing ByExactBinding, where it strictly matches the given Biding attribute name.
-        List<WebElement> weeb = driver.findElements(byNg.exactBinding("username"));
+        List<WebElement> weeb = driver.findElements(ByAngular.exactBinding("username"));
         assertThat(weeb.get(0).getText(), is("Anon"));
     }
 
@@ -231,7 +229,7 @@ public class AngularAndWebDriverTest {
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
         waitForAngularRequestsToFinish(driver);
 
-        List<WebElement> wes = driver.findElements(byNg.binding("peopleArrayValue4"));
+        List<WebElement> wes = driver.findElements(ByAngular.binding("peopleArrayValue4"));
 
         assertThat(wes.get(0).getTagName(), is("textarea"));
 
@@ -335,7 +333,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElement(byNg.repeater("location in Locationssss"));
+            driver.findElement(ByAngular.repeater("location in Locationssss"));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss) didn't have any matching elements at this place in the DOM"));
@@ -351,7 +349,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElement(byNg.repeater("location in Locationssss").row(99999));
+            driver.findElement(ByAngular.repeater("location in Locationssss").row(99999));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).row(99999) didn't have any matching elements at this place in the DOM"));
@@ -367,7 +365,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElements(byNg.repeater("location in Locationssss").row(99999));
+            driver.findElements(ByAngular.repeater("location in Locationssss").row(99999));
             fail("should have barfed");
         } catch (UnsupportedOperationException e) {
             assertThat(e.getMessage(), startsWith("This locator zooms in on a single row, findElements() is meaningless"));
@@ -379,7 +377,7 @@ public class AngularAndWebDriverTest {
     public void findElement_should_barf_with_message_for_bad_repeater_and_row_and_column() {
 
         try {
-            driver.findElement(byNg.repeater("location in Locationssss").row(99999).column("blort"));
+            driver.findElement(ByAngular.repeater("location in Locationssss").row(99999).column("blort"));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).row(99999).column(blort) didn't have any matching elements at this place in the DOM"));
@@ -394,7 +392,7 @@ public class AngularAndWebDriverTest {
 
 
         try {
-            driver.findElements(byNg.repeater("location in Locationssss").row(99999).column("blort"));
+            driver.findElements(ByAngular.repeater("location in Locationssss").row(99999).column("blort"));
             fail("should have barfed");
         } catch (UnsupportedOperationException e) {
             assertThat(e.getMessage(), startsWith("This locator zooms in on a single cell, findElements() is meaningless"));
@@ -408,7 +406,7 @@ public class AngularAndWebDriverTest {
         waitForAngularRequestsToFinish(driver);
 
         try {
-            driver.findElement(byNg.repeater("location in Locationssss").column("blort"));
+            driver.findElement(ByAngular.repeater("location in Locationssss").column("blort"));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).column(blort) didn't have any matching elements at this place in the DOM"));
@@ -422,7 +420,7 @@ public class AngularAndWebDriverTest {
         waitForAngularRequestsToFinish(driver);
 
         try {
-            driver.findElements(byNg.repeater("location in Locationssss").column("blort"));
+            driver.findElements(ByAngular.repeater("location in Locationssss").column("blort"));
             fail("should have barfed");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), startsWith("repeater(location in Locationssss).column(blort) didn't have any matching elements at this place in the DOM"));
@@ -439,8 +437,8 @@ public class AngularAndWebDriverTest {
             resetBrowser();
 
             driver.get("http://localhost:8080/index.html#/form");
-            FluentWebElement usernameInput = fwd.input(byNg.model("username"));
-            FluentWebElement name = fwd.span(byNg.binding("username"));
+            FluentWebElement usernameInput = fwd.input(ByAngular.model("username"));
+            FluentWebElement name = fwd.span(ByAngular.binding("username"));
 
             waitForAngularRequestsToFinish(driver);
 
@@ -460,7 +458,7 @@ public class AngularAndWebDriverTest {
         waitForAngularRequestsToFinish(driver);
 
 
-        fwd.span(byNg.binding("{{greeting}}")).getText().shouldBe("Hiya");
+        fwd.span(ByAngular.binding("{{greeting}}")).getText().shouldBe("Hiya");
 
         fwd.div(id("outside-ng")).getText().shouldBe("{{1 + 2}}");
         fwd.div(id("inside-ng")).getText().shouldBe("3");
@@ -516,7 +514,7 @@ public class AngularAndWebDriverTest {
 
         driver.get("http://localhost:8080/index.html#/conflict");
 
-        FluentWebElement reused = fwd.div(id("baz")).span(byNg.binding("item.reusedBinding"));
+        FluentWebElement reused = fwd.div(id("baz")).span(ByAngular.binding("item.reusedBinding"));
 
         reused.getText().shouldBe("Inner: inner");
 
@@ -540,10 +538,10 @@ public class AngularAndWebDriverTest {
            put("F", "Friday");
         }};
 
-        Map<String, String> days = fwd.lis(byNg.repeater("allinfo in days")).map(new FluentWebElementMap<String, String>() {
+        Map<String, String> days = fwd.lis(ByAngular.repeater("allinfo in days")).map(new FluentWebElementMap<String, String>() {
             public void map(FluentWebElement elem, int ix) {
-                put(elem.element(byNg.binding("allinfo.initial")).getText().toString(),
-                        elem.element(byNg.binding("allinfo.name")).getText().toString());
+                put(elem.element(ByAngular.binding("allinfo.initial")).getText().toString(),
+                        elem.element(ByAngular.binding("allinfo.name")).getText().toString());
             }
         });
 
@@ -561,12 +559,12 @@ public class AngularAndWebDriverTest {
 
         driver.get("http://localhost:8080/index.html#/repeater");
 
-        fwd.span(byNg.repeater("baz in days | filter:'T'").row(0).column("baz.initial")).getText().shouldBe("T");
+        fwd.span(ByAngular.repeater("baz in days | filter:'T'").row(0).column("baz.initial")).getText().shouldBe("T");
 
-        fwd.span(byNg.repeater("baz in days | fil").row(0).column("baz.initial")).getText().shouldBe("T");
+        fwd.span(ByAngular.repeater("baz in days | fil").row(0).column("baz.initial")).getText().shouldBe("T");
 
         try {
-            fwd.li(byNg.exactRepeater("baz in days | fil").row(0).column("baz.initial")).getText().shouldBe("T");
+            fwd.li(ByAngular.exactRepeater("baz in days | fil").row(0).column("baz.initial")).getText().shouldBe("T");
             fail("should have barfed");
         } catch (FluentExecutionStopped e) {
             assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | fil).row(0).column(baz.initial))"));
@@ -585,18 +583,18 @@ public class AngularAndWebDriverTest {
 
         driver.get("http://localhost:8080/index.html#/repeater");
 
-        FluentWebElements spans = fwd.spans(byNg.repeater("baz in days | filter:'T'").column("baz.initial"));
+        FluentWebElements spans = fwd.spans(ByAngular.repeater("baz in days | filter:'T'").column("baz.initial"));
         spans.getText().shouldBe("TTh");
         spans.get(0).getText().shouldBe("T");
         spans.get(1).getText().shouldBe("Th");
 
-        spans = fwd.spans(byNg.repeater("baz in days | fil").column("baz.initial"));
+        spans = fwd.spans(ByAngular.repeater("baz in days | fil").column("baz.initial"));
         spans.getText().shouldBe("TTh");
         spans.get(0).getText().shouldBe("T");
         spans.get(1).getText().shouldBe("Th");
 
         try {
-            fwd.li(byNg.exactRepeater("baz in days | fil").column("baz.initial")).getText().shouldBe("TTh");
+            fwd.li(ByAngular.exactRepeater("baz in days | fil").column("baz.initial")).getText().shouldBe("TTh");
             fail("should have barfed");
         } catch (FluentExecutionStopped e) {
             assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | fil).column(baz.initial))"));
@@ -616,14 +614,14 @@ public class AngularAndWebDriverTest {
 
         driver.get("http://localhost:8080/index.html#/repeater");
 
-        fwd.li(byNg.repeater("baz in days | filter:'T'").row(0)).getText().shouldBe("T");
-        fwd.li(byNg.repeater("baz in days | filter:'T'").row(1)).getText().shouldBe("Th");
+        fwd.li(ByAngular.repeater("baz in days | filter:'T'").row(0)).getText().shouldBe("T");
+        fwd.li(ByAngular.repeater("baz in days | filter:'T'").row(1)).getText().shouldBe("Th");
 
-        fwd.li(byNg.repeater("baz in days | filt").row(1)).getText().shouldBe("Th");
+        fwd.li(ByAngular.repeater("baz in days | filt").row(1)).getText().shouldBe("Th");
 
 
         try {
-            fwd.li(byNg.exactRepeater("baz in days | filt").row(1)).getText().shouldBe("T");
+            fwd.li(ByAngular.exactRepeater("baz in days | filt").row(1)).getText().shouldBe("T");
             fail("should have barfed");
         } catch (FluentExecutionStopped e) {
             assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | filt).row(1))"));
@@ -642,18 +640,18 @@ public class AngularAndWebDriverTest {
 
         driver.get("http://localhost:8080/index.html#/repeater");
 
-        FluentWebElements lis = fwd.lis(byNg.repeater("baz in days | filter:'T'"));
+        FluentWebElements lis = fwd.lis(ByAngular.repeater("baz in days | filter:'T'"));
         lis.getText().shouldBe("TTh");
         lis.get(0).getText().shouldBe("T");
         lis.get(1).getText().shouldBe("Th");
 
-        lis = fwd.lis(byNg.repeater("baz in days | fil"));
+        lis = fwd.lis(ByAngular.repeater("baz in days | fil"));
         lis.getText().shouldBe("TTh");
         lis.get(0).getText().shouldBe("T");
         lis.get(1).getText().shouldBe("Th");
 
         try {
-            fwd.lis(byNg.exactRepeater("baz in days | filt")).getText().shouldBe("T");
+            fwd.lis(ByAngular.exactRepeater("baz in days | filt")).getText().shouldBe("T");
             fail("should have barfed");
         } catch (FluentExecutionStopped e) {
             assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.lis(exactRepeater(baz in days | filt))"));
@@ -673,12 +671,12 @@ public class AngularAndWebDriverTest {
 
         driver.get("http://localhost:8080/index.html#/repeater");
 
-        fwd.li(byNg.repeater("baz in days | filter:'T'")).getText().shouldBe("T");
+        fwd.li(ByAngular.repeater("baz in days | filter:'T'")).getText().shouldBe("T");
 
-        fwd.li(byNg.repeater("baz in days | filt")).getText().shouldBe("T");
+        fwd.li(ByAngular.repeater("baz in days | filt")).getText().shouldBe("T");
 
         try {
-            fwd.li(byNg.exactRepeater("baz in days | filt")).getText().shouldBe("T");
+            fwd.li(ByAngular.exactRepeater("baz in days | filt")).getText().shouldBe("T");
             fail("should have barfed");
         } catch (FluentExecutionStopped e) {
             assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | filt))"));
