@@ -121,6 +121,16 @@ public class AngularAndWebDriverTest {
         assertThat(alert.getText(), containsString("Hello"));
         alert.accept();
     }
+    @Test
+    public void find_by_angular_cssContainingText() {
+
+        driver.get("http://localhost:8080/#/form");
+        waitForAngularRequestsToFinish(driver);
+
+        List<WebElement> wes = driver.findElements(ByAngular.cssContainingText("#animals ul .pet", "dog"));
+        assertThat(wes.size(), is(2));
+        assertThat(wes.get(1).getText(), containsString("small dog"));
+    }
 
     @Test
     public void find_multiple_hits_for_ng_repeat_in_page() {
