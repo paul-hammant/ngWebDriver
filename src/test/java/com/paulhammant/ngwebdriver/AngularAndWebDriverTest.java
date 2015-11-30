@@ -110,6 +110,17 @@ public class AngularAndWebDriverTest {
         assertThat(alert.getText(), containsString("Hello"));
         alert.accept();
     }
+    @Test
+    public void find_by_angular_partialButtonText() {
+
+        driver.get("http://localhost:8080/#/form");
+        waitForAngularRequestsToFinish(driver);
+
+        driver.findElement(ByAngular.partialButtonText("Alert")).click();
+        Alert alert = driver.switchTo().alert();
+        assertThat(alert.getText(), containsString("Hello"));
+        alert.accept();
+    }
 
     @Test
     public void find_multiple_hits_for_ng_repeat_in_page() {
