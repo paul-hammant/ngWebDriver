@@ -1,12 +1,23 @@
-A small library of WebDriver locators for AngularJS, as well as a utility to interoperate with $scope variables directly.
+# ngWebDriver
 
-It is only in Java for now, but I'm sure ports will make it available for .Net, Python, Ruby etc.
+A small library of WebDriver locators and more for AngularJS.
 
 # Status
 
-We have taken JavaScript from Angular's [Protractor](https://github.com/angular/protractor) project. While ngWebDriver perfectly compliments the Java version of WebDriver, it has to pass JavaScript up to the browser to inteoprate with Angular, and the Protractor project has done the hard work (including testing) to make that solid, and ngWebDriver benefits from that work.
+We have taken JavaScript from Angular's [Protractor](https://github.com/angular/protractor) project. While ngWebDriver perfectly 
+compliments the Java version of WebDriver, it has to pass JavaScript up to the browser to inteoprate with Angular, and the 
+Protractor project has done the hard work (including testing) to make that solid, and ngWebDriver benefits from that work.
 
-You can use ngWebDriver today with the regular Java Selenium2/WebDriver libraries. You can also use it with [FluentSelenium](https://github.com/SeleniumHQ/fluent-selenium).
+You can use ngWebDriver today with the regular Java Selenium2/WebDriver libraries. You can also use it with 
+[FluentSelenium](https://github.com/SeleniumHQ/fluent-selenium) for extra terseness.
+
+## Waiting for Angular to finish async activity
+
+```java
+WaitForAngularRequestsToFinish.waitForAngularRequestsToFinish(driver);
+```
+
+Do this if WebDriver can possibly run ahead of Angular's ability finish it's MVC stuff in your application. 
 
 ## Locators
 

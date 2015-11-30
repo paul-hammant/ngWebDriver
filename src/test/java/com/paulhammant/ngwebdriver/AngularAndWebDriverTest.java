@@ -322,7 +322,6 @@ public class AngularAndWebDriverTest {
 
     }
 
-
     //  All the failure tests
 
     @Test
