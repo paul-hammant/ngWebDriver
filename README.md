@@ -135,7 +135,11 @@ DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateF
 
 # Releases
 
-### 0.9.5 - Nov 29, 2015
+### 0.9.5 - ?
+
+* partialButtonText implemented (courtesy of Manoj Kumar)
+
+### 0.9.4 - Nov 29, 2015
 
 * Updated dependence on Protractor's clientsidescripts.js source.
 * FluentSelenium dependency changed to 1.16.
