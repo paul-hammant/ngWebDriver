@@ -41,6 +41,9 @@ public class ByAngular extends AngularJavaScriptFunctions {
      public static ByAngularPartialButtonText partialButtonText(String partialButtonText) {
         return new ByAngularPartialButtonText(partialButtonText);
     }
+    public static ByAngularCssContainingText cssContainingText(String cssSelector, String searchText) {
+        return new ByAngularCssContainingText(cssSelector,searchText);
+    }
 
     protected abstract static class BaseBy extends By {
 
