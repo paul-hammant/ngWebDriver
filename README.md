@@ -97,6 +97,15 @@ ByAngular.buttonText("cLiCk mE")
 ByAngular.partialButtonText("cLiCk ")
 ```
 
+
+### cssContainingText()
+
+[As Protractor's cssContainingText locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.cssContainingText)
+
+```java
+ByAngular.cssContainingText("#animals ul .pet", "dog")
+```
+
 ## Angular model interop
 
 As Protractor, you can change items in an Angular model, or retrieve them reagrdless of whether they aappear in the UI or not.
