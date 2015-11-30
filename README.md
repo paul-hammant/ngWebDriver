@@ -21,20 +21,28 @@ Do this if WebDriver can possibly run ahead of Angular's ability finish it's MVC
 
 ## Locators
 
-### repeater() and exactRepeater()
+### repeater()
 
-[As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) and [Protractor's exactRepeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactRepeater) 
+[As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) 
+
+```java
+ByAngular.repeater("foo in f")
+ByAngular.repeater("foo in f").row(17)
+ByAngular.repeater("foo in f").row(17).column("foo.name")
+ByAngular.repeater("foo in f").column("foo.name")
+```
+
+### exactRepeater()
+
+[As Protractor's exactRepeater](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactRepeater)
 
 ```java
 ByAngular.exactRepeater("foo in foos")
 ByAngular.exactRepeater("foo in foos").row(17)
 ByAngular.exactRepeater("foo in foos").row(17).column("foo.name")
 ByAngular.exactRepeater("foo in foos").column("foo.name")
-ByAngular.repeater("foo in f")
-ByAngular.repeater("foo in f").row(17)
-ByAngular.repeater("foo in f").row(17).column("foo.name")
-ByAngular.repeater("foo in f").column("foo.name")
 ```
+
 
 ### binding()
 
@@ -43,6 +51,18 @@ ByAngular.repeater("foo in f").column("foo.name")
 ```java
 ByAngular.binding("person.name")
 ByAngular.binding("{{person.name}}")
+// You can also use a substring for a partial match
+ByAngular.binding("person");
+
+```
+
+### exactBinding()
+
+[As Protractor's exactBinding locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.exactBinding)
+
+```java
+ByAngular.exactBinding("person.name")
+ByAngular.exactBinding("{{person.name}}")
 ```
 
 ### model()
@@ -58,7 +78,7 @@ ByAngular.model('person.name')
 [As Protractor's options locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.options)
 
 ```java
-ByAngular.model("c for c in colors")
+ByAngular.options("c for c in colors")
 ```
 ### buttonText()
 
@@ -117,7 +137,7 @@ DateTime actualWhen = parser.parseDateTime(ngModel.retrieveJson(anElem, "myDateF
 ### 0.9.3 - Nov 21, 2015
 
 * FluentSelenium dependency changed to 1.15.
-* New locators (from Protractor) options (courtesy of Manoj Kumar)
+* New locators (from Protractor) model, options (courtesy of Manoj Kumar)
 
 [Comparison/diffs between tags](https://github.com/paul-hammant/ngWebDriver/compare/ngwebdriver-0.9.2...ngwebdriver-0.9.3)
 
