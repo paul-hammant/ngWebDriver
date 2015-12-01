@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish.waitForAngularRequestsToFinish;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.By.*;
 import static org.testng.Assert.assertEquals;
@@ -39,6 +39,7 @@ public class AngularAndWebDriverTest {
 
     private FirefoxDriver driver;
     private Server webServer;
+    private NgWebDriver ngWebDriver;
 
     @BeforeSuite
     public void before_suite() throws Exception {
@@ -61,6 +62,7 @@ public class AngularAndWebDriverTest {
 
         driver = new FirefoxDriver();
         driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
+        ngWebDriver = new NgWebDriver(driver);
     }
 
     @AfterSuite
@@ -79,7 +81,7 @@ public class AngularAndWebDriverTest {
 
         //driver.get("http://www.angularjshub.com/code/examples/basics/02_TwoWayDataBinding_HTML/index.demo.php");
         driver.get("http://localhost:8080/");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         WebElement firstname = driver.findElement(ByAngular.model("username"));
         firstname.clear();
@@ -92,7 +94,7 @@ public class AngularAndWebDriverTest {
     public void find_all_for_an_angular_options() {
 
         driver.get("http://localhost:8080/#/form");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         List<WebElement> weColors = driver.findElements(ByAngular.options("fruit for fruit in fruits"));
         assertThat(weColors.get(0).getText(), containsString("apple"));
@@ -103,7 +105,7 @@ public class AngularAndWebDriverTest {
     public void find_by_angular_buttonText() {
 
         driver.get("http://localhost:8080/#/form");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         driver.findElement(ByAngular.buttonText("Open Alert")).click();
         Alert alert = driver.switchTo().alert();
@@ -114,7 +116,7 @@ public class AngularAndWebDriverTest {
     public void find_by_angular_partialButtonText() {
 
         driver.get("http://localhost:8080/#/form");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         driver.findElement(ByAngular.partialButtonText("Alert")).click();
         Alert alert = driver.switchTo().alert();
@@ -125,7 +127,7 @@ public class AngularAndWebDriverTest {
     public void find_by_angular_cssContainingText() {
 
         driver.get("http://localhost:8080/#/form");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         List<WebElement> wes = driver.findElements(ByAngular.cssContainingText("#animals ul .pet", "dog"));
         assertThat(wes.size(), is(2));
@@ -136,7 +138,7 @@ public class AngularAndWebDriverTest {
     public void find_multiple_hits_for_ng_repeat_in_page() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         List<WebElement> wes = driver.findElement(tagName("table")).findElements(ByAngular.repeater("person in people"));
 
@@ -154,7 +156,7 @@ public class AngularAndWebDriverTest {
         // As much as anything, this is a test of FluentSelenium
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         new FluentWebDriver(driver).lis(ByAngular.repeater("(propName, propValue) in person"))
                 .first(new TextContainsTerm("name ="))
@@ -184,7 +186,7 @@ public class AngularAndWebDriverTest {
     public void find_second_row_in_ng_repeat() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         // find the second person
         // index starts with 0 of course
@@ -197,7 +199,7 @@ public class AngularAndWebDriverTest {
     public void find_specific_cell_in_ng_repeat() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         driver.findElement(ByAngular.repeater("person in selectablePeople").row(2).column("person.isSelected")).click();
 
@@ -208,7 +210,7 @@ public class AngularAndWebDriverTest {
     public void find_specific_cell_in_ng_repeat_the_other_way() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         // find the second address' city
         driver.findElement(ByAngular.repeater("person in selectablePeople").column("person.isSelected").row(2)).click();
@@ -220,7 +222,7 @@ public class AngularAndWebDriverTest {
     public void find_all_of_a_column_in_an_ng_repeat() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         List<WebElement> we = driver.findElements(ByAngular.repeater("person in selectablePeople").column("person.isSelected"));
 
@@ -234,7 +236,7 @@ public class AngularAndWebDriverTest {
     public void find_by_angular_binding() {
 
         driver.get("http://localhost:8080/#/form");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         // An example showcasing ByBinding, where we give a substring of the binding attribute
         List<WebElement> wes = driver.findElements(ByAngular.binding("user"));
@@ -248,7 +250,7 @@ public class AngularAndWebDriverTest {
     public void find_all_for_an_angular_binding() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         List<WebElement> wes = driver.findElements(ByAngular.binding("peopleArrayValue4"));
 
@@ -264,7 +266,7 @@ public class AngularAndWebDriverTest {
     public void model_mutation_and_query_is_possible() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/08_FormSubmission/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         WebElement fn = driver.findElement(id("firstNameEdit1"));
         fn.sendKeys("Fred");
@@ -273,7 +275,7 @@ public class AngularAndWebDriverTest {
 
         WebElement wholeForm = driver.findElement(FluentBy.attribute("name", "personForm1"));
 
-        AngularModelAccessor ngModel = new AngularModelAccessor(driver);
+        NgWebDriver ngModel = new NgWebDriver(driver);
 
         // change something via the $scope model
         ngModel.mutate(wholeForm, "person1.firstName", "'Wilma'");
@@ -349,7 +351,7 @@ public class AngularAndWebDriverTest {
     public void findElement_should_barf_with_message_for_bad_repeater() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
 
         try {
@@ -365,7 +367,7 @@ public class AngularAndWebDriverTest {
     public void findElement_should_barf_with_message_for_bad_repeater_and_row() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
 
         try {
@@ -381,7 +383,7 @@ public class AngularAndWebDriverTest {
     public void findElements_should_barf_with_message_for_any_repeater_and_row2() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
 
         try {
@@ -408,7 +410,7 @@ public class AngularAndWebDriverTest {
     public void findElements_should_barf_with_message_for_any_repeater_and_row_and_column() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
 
         try {
@@ -423,7 +425,7 @@ public class AngularAndWebDriverTest {
     public void findElement_should_barf_when_element_not_in_the_dom() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         try {
             driver.findElement(ByAngular.repeater("location in Locationssss").column("blort"));
@@ -437,7 +439,7 @@ public class AngularAndWebDriverTest {
     public void findElements_should_barf_with_message_for_bad_repeater_and_column() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         try {
             driver.findElements(ByAngular.repeater("location in Locationssss").column("blort"));
@@ -460,7 +462,7 @@ public class AngularAndWebDriverTest {
             FluentWebElement usernameInput = fwd.input(ByAngular.model("username"));
             FluentWebElement name = fwd.span(ByAngular.binding("username"));
 
-            waitForAngularRequestsToFinish(driver);
+            ngWebDriver.waitForAngularRequestsToFinish();
 
             name.getText().shouldBe("Anon");
             usernameInput.clearField().sendKeys("B");
@@ -475,7 +477,7 @@ public class AngularAndWebDriverTest {
     public void altRoot_find_elements() {
         FluentWebDriver fwd = new FluentWebDriver(driver);
         driver.get("http://localhost:8080/alt_root_index.html#/form");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
 
         fwd.span(ByAngular.binding("{{greeting}}")).getText().shouldBe("Hiya");
@@ -491,7 +493,7 @@ public class AngularAndWebDriverTest {
     public void basic_actions() {
         FluentWebDriver fwd = new FluentWebDriver(driver);
         driver.get("http://localhost:8080/index.html#/form");
-        waitForAngularRequestsToFinish(driver);
+        ngWebDriver.waitForAngularRequestsToFinish();
 
 
         FluentWebElement sliderBar = fwd.input(By.name("points"));
@@ -702,6 +704,24 @@ public class AngularAndWebDriverTest {
             assertThat(e.getMessage(), startsWith("NoSuchElementException during invocation of: ?.li(exactRepeater(baz in days | filt))"));
             assertThat(e.getCause().getMessage(), startsWith("exactRepeater(baz in days | filt) didn't have any matching elements at this place in the DOM"));
         }
+
+    }
+
+    /*
+      Ported from protractor/spec/basic/lib_spec.js
+      TODO - many more specs in here
+     */
+    @Test
+    public void basic_lib_getLocationAbsUrl_gets_url() {
+        FluentWebDriver fwd = new FluentWebDriver(driver);
+
+        driver.get("http://localhost:8080/index.html");
+
+        assertThat(ngWebDriver.getLocationAbsUrl(), endsWith("/form"));
+
+        fwd.link(By.linkText("repeater")).click();
+
+        assertThat(ngWebDriver.getLocationAbsUrl(), endsWith("/repeater"));
 
     }
 

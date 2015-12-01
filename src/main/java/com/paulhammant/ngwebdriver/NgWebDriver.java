@@ -3,11 +3,11 @@ package com.paulhammant.ngwebdriver;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
-public class AngularModelAccessor {
+public class NgWebDriver {
 
     private JavascriptExecutor driver;
 
-    public AngularModelAccessor(JavascriptExecutor driver) {
+    public NgWebDriver(JavascriptExecutor driver) {
         this.driver = driver;
     }
 
@@ -45,4 +45,17 @@ public class AngularModelAccessor {
         return (Long) rv;
     }
 
+    public void waitForAngularRequestsToFinish() {
+        driver.executeAsyncScript("var callback = arguments[arguments.length - 1];\n" +
+                "var rootSelector = 'body';\n" +
+                "\n" +
+                ByAngular.functions.get("waitForAngular"));
+    }
+
+    public String getLocationAbsUrl() {
+        return (String) driver.executeScript(
+                "var selector = 'body';\n" +
+                "\n" +
+                ByAngular.functions.get("getLocationAbsUrl"));
+    }
 }
