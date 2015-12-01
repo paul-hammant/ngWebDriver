@@ -31,10 +31,6 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
-    <maven.compiler.testSource>1.8</maven.compiler.testSource>
   </properties>
 
   <dependencies>
@@ -110,8 +106,8 @@
               <showDeprecation>true</showDeprecation>
               <showWarnings>true</showWarnings>
               <compilerArguments>
-                <source>${maven.compiler.target}</source>
-                <target>${maven.compiler.source}</target>
+                <source>1.7</source>
+                <target>1.7</target>
               </compilerArguments>
             </configuration>
           </execution>
@@ -121,8 +117,8 @@
               <showDeprecation>true</showDeprecation>
               <showWarnings>true</showWarnings>
               <compilerArguments>
-                <source>${maven.compiler.testTarget}</source>
-                <target>${maven.compiler.testSource}</target>
+                <source>1.8</source>
+                <target>1.8</target>
               </compilerArguments>
             </configuration>
           </execution>

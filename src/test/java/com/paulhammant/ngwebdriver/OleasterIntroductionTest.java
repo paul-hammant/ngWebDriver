@@ -13,5 +13,8 @@ public class OleasterIntroductionTest {{
         it("contains a spec with an expectation", () -> {
             expect(40 + 2).toEqual(42);
         });
+        it("contains a second spec with an bad expectation", () -> {
+            expect(2 + 2).toEqual(5);
+        });
     });
 }}
