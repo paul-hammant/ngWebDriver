@@ -18,13 +18,13 @@ public class ByAngular {
 
     static {
         // in a Jar
-        InputStream resourceAsStream = ByAngular.class.getResourceAsStream("js/clientsidescripts.js");
+        InputStream resourceAsStream = ByAngular.class.getResourceAsStream("/js/clientsidescripts.js");
         if (resourceAsStream == null) {
             try {
                 // In ngWebDriver's own build (fallback)
                 resourceAsStream = new FileInputStream(new File("src/main/resources/js/clientsidescripts.js"));
             } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Could not find clientsidescripts.js in file system or in jar", e);
             }
         }
         String src = new Scanner(resourceAsStream, "UTF-8").useDelimiter("\\A").next();
