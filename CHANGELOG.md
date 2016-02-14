@@ -1,6 +1,6 @@
 # Releases
 
-### 0.9.5 - ?
+### 0.9.5 - Feb 14, 2016
 
 * partialButtonText implemented (courtesy of Manoj Kumar)
 * getLocationAbsUrl implemented
