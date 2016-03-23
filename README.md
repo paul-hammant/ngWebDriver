@@ -108,7 +108,7 @@ ByAngular.cssContainingText("#animals ul .pet", "dog")
 
 ## Angular model interop
 
-As with Protractor, you can change items in an Angular model, or retrieve them reagrdless of whether they aappear in the UI or not.
+As with Protractor, you can change items in an Angular model, or retrieve them reagrdless of whether they appear in the UI or not.
 
 ```java
 NgWebDriver ngWebDriver = new NgWebDriver(driver);
