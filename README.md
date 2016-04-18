@@ -143,7 +143,7 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
 <dependency>
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>0.9.4</version>
+  <version>0.9.5</version>
   <scope>test</scope>
 </dependency>
 
