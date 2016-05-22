@@ -2,7 +2,7 @@
 
 ### 0.9.6 - May 22, 2016
 
-* selenium dependency upgrade to 2.53.0
+* Selenium dependency changed to 2.53.0
 * FluentSelenium dependency changed to 1.16.1
 
 
