@@ -155,6 +155,8 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
 
 Download from [Mavens Central Repo](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22ngwebdriver%22)
 
-## Last Release
+## Releases
 
-0.9.5 - Feb 13, 2016
+Last Release: 0.9.6 - May 22, 2016
+
+Refer [CHANGELOG](./CHANGELOG.md)
