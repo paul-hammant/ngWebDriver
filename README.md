@@ -143,7 +143,7 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
 <dependency>
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>0.9.5</version>
+  <version>0.9.6</version>
   <scope>test</scope>
 </dependency>
 
@@ -154,3 +154,7 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
 ## Non-Maven
 
 Download from [Mavens Central Repo](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22ngwebdriver%22)
+
+## Last Release
+
+0.9.5 - Feb 13, 2016
