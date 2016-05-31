@@ -5,6 +5,8 @@ import org.openqa.selenium.WebElement;
 
 public class NgWebDriver {
 
+    public static String rootSelector = "[ng-app]";
+
     private JavascriptExecutor driver;
 
     public NgWebDriver(JavascriptExecutor driver) {
@@ -13,7 +15,8 @@ public class NgWebDriver {
 
     public void mutate(WebElement element, final String variable, final String value) {
         driver.executeScript("angular.element(arguments[0]).scope()." + variable + " = " + value + ";" +
-                "angular.element(document.body).injector().get('$rootScope').$apply();", element);
+                "var root = document.querySelector('" + rootSelector + "');" +
+                "angular.element(root).injector().get('$rootScope').$apply();", element);
     }
 
     public String retrieveJson(WebElement element, final String variable) {
@@ -47,14 +50,14 @@ public class NgWebDriver {
 
     public void waitForAngularRequestsToFinish() {
         driver.executeAsyncScript("var callback = arguments[arguments.length - 1];\n" +
-                "var rootSelector = 'body';\n" +
+                "var rootSelector = '"+rootSelector+"';\n" +
                 "\n" +
                 ByAngular.functions.get("waitForAngular"));
     }
 
     public String getLocationAbsUrl() {
         return (String) driver.executeScript(
-                "var selector = 'body';\n" +
+                "var selector = '"+rootSelector+"';\n" +
                 "\n" +
                 ByAngular.functions.get("getLocationAbsUrl"));
     }
