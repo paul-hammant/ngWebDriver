@@ -58,4 +58,9 @@ public class NgWebDriver {
                 "\n" +
                 ByAngular.functions.get("getLocationAbsUrl"));
     }
+	
+    public Object evaluateScript(WebElement element, String script) {
+        script = script.replace("$scope", "angular.element(arguments[0]).scope()");
+        return driver.executeScript(script, element);
+    }
 }
