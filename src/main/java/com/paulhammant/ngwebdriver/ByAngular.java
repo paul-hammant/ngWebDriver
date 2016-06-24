@@ -164,7 +164,11 @@ public class ByAngular {
 
         @Override
         public WebElement findElement(SearchContext context) {
-            return findElements(context).get(0);
+            JavascriptExecutor javascriptExecutor = getJavascriptExecutor(context);
+            if (context instanceof WebDriver) {
+                context = null;
+            }
+            return ((List<WebElement>) errorIfNull(getObject(context, javascriptExecutor))).get(0);
         }
 
         protected abstract Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor);
