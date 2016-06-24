@@ -2,7 +2,6 @@ package com.paulhammant.ngwebdriver;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -13,6 +12,7 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
     private boolean exact;
     private final int row;
     private final String column;
+    private final String rootSelector;
 
     public ByAngularRepeaterCell(String repeater, boolean exact, int row, String column) {
         super();
@@ -20,19 +20,29 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
         this.exact = exact;
         this.row = row;
         this.column = column;
+        this.rootSelector = "body";
+    }
+
+    public ByAngularRepeaterCell(String repeater, boolean exact, int row, String column, String rootSelector) {
+        super();
+        this.repeater = repeater;
+        this.row = row;
+        this.column = column;
+        this.rootSelector = rootSelector;
+        this.exact = exact;
     }
 
     protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
         return javascriptExecutor.executeScript(
-                    "var using = arguments[0] || document;\n" +
-                            "var rootSelector = 'body';\n" +
-                            "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
-                            "var index = " + row + ";\n" +
-                            "var binding = '" + column + "';\n" +
-                            "var exact = " + exact + ";\n" +
-                            "\n" +
-                            ByAngular.functions.get("findRepeaterElement")
-                    , context);
+                "var using = arguments[0] || document;\n" +
+                        "var rootSelector = '" + rootSelector + "';\n" +
+                        "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
+                        "var index = " + row + ";\n" +
+                        "var binding = '" + column + "';\n" +
+                        "var exact = " + exact + ";\n" +
+                        "\n" +
+                        ByAngular.functions.get("findRepeaterElement")
+                , context);
     }
 
     // meaningless
@@ -43,7 +53,7 @@ public class ByAngularRepeaterCell extends ByAngular.BaseBy {
 
     @Override
     public String toString() {
-        return (exact? "exactR":"r") + "epeater(" + repeater + ").row(" + row + ").column(" + column + ")";
+        return (exact ? "exactR" : "r") + "epeater(" + repeater + ").row(" + row + ").column(" + column + ")";
     }
 
 }

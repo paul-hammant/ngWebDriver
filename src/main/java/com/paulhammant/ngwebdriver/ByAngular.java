@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("WeakerAccess")
 public class ByAngular {
 
     protected static final Map<String, String> functions = new HashMap<String, String>();
@@ -29,10 +30,7 @@ public class ByAngular {
         }
         String src = new Scanner(resourceAsStream, "UTF-8").useDelimiter("\\A").next();
         iterateOverJsFunctionsInSource(src);
-
         inlineUtilityFunctions();
-
-
     }
 
     private static void iterateOverJsFunctionsInSource(String src) {
@@ -82,7 +80,7 @@ public class ByAngular {
                 throw new UnsupportedOperationException(body.substring(0, 40));
             }
         }
-        functions.put(fnName, body.substring(body.indexOf("{")+1));
+        functions.put(fnName, body.substring(body.indexOf("{") + 1));
     }
 
 
@@ -93,20 +91,40 @@ public class ByAngular {
         return new ByAngularRepeater(repeater, false);
     }
 
+    public static ByAngularRepeater repeater(String repeater, String rootSelector) {
+        return new ByAngularRepeater(repeater, false, rootSelector);
+    }
+
     public static ByAngularRepeater exactRepeater(String repeater) {
         return new ByAngularRepeater(repeater, true);
+    }
+
+    public static ByAngularRepeater exactRepeater(String repeater, String rootSelector) {
+        return new ByAngularRepeater(repeater, true, rootSelector);
     }
 
     public static ByAngularBinding binding(String binding) {
         return new ByAngularBinding(binding);
     }
 
+    public static ByAngularBinding binding(String binding, String rootSelector) {
+        return new ByAngularBinding(binding, rootSelector);
+    }
+
     public static ByAngularExactBinding exactBinding(String exactBinding) {
         return new ByAngularExactBinding(exactBinding);
     }
 
+    public static ByAngularExactBinding exactBinding(String exactBinding, String rootSelector) {
+        return new ByAngularExactBinding(exactBinding, rootSelector);
+    }
+
     public static ByAngularModel model(String model) {
         return new ByAngularModel(model);
+    }
+
+    public static ByAngularModel model(String model, String rootSelector) {
+        return new ByAngularModel(model, rootSelector);
     }
 
     public static ByAngularOptions options(String options) {
@@ -116,11 +134,13 @@ public class ByAngular {
     public static ByAngularButtonText buttonText(String buttonText) {
         return new ByAngularButtonText(buttonText);
     }
-     public static ByAngularPartialButtonText partialButtonText(String partialButtonText) {
+
+    public static ByAngularPartialButtonText partialButtonText(String partialButtonText) {
         return new ByAngularPartialButtonText(partialButtonText);
     }
+
     public static ByAngularCssContainingText cssContainingText(String cssSelector, String searchText) {
-        return new ByAngularCssContainingText(cssSelector,searchText);
+        return new ByAngularCssContainingText(cssSelector, searchText);
     }
 
     protected abstract static class BaseBy extends By {
