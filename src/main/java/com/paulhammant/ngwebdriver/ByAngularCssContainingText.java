@@ -6,17 +6,17 @@ import org.openqa.selenium.SearchContext;
 
 public class ByAngularCssContainingText extends ByAngular.BaseBy {
 
-    public ByAngularCssContainingText(String cssSelector,String searchText) {
+    public ByAngularCssContainingText(String cssSelector, String searchText) {
         super();
         this.cssSelector = cssSelector;
         this.searchText = searchText;
     }
 
-    private String cssSelector,searchText;
+    private String cssSelector, searchText;
 
     protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
         return javascriptExecutor.executeScript(
-                        "var cssSelector = '" + cssSelector + "';\n" +
+                "var cssSelector = '" + cssSelector + "';\n" +
                         "var searchText = '" + searchText + "';\n" +
                         "var using = arguments[0] || document;\n" +
                         "\n" +
@@ -26,6 +26,6 @@ public class ByAngularCssContainingText extends ByAngular.BaseBy {
 
     @Override
     public String toString() {
-        return "cssContainingText(" +cssSelector + searchText + ')';
+        return "cssContainingText(" + cssSelector + searchText + ')';
     }
 }

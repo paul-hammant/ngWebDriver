@@ -2,7 +2,6 @@ package com.paulhammant.ngwebdriver;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 
 public class ByAngularOptions extends ByAngular.BaseBy {
 

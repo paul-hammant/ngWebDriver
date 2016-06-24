@@ -6,9 +6,15 @@ import org.openqa.selenium.WebElement;
 public class NgWebDriver {
 
     private JavascriptExecutor driver;
+    private String rootSelector;
+
+    public NgWebDriver(JavascriptExecutor driver, String rootSelector) {
+        this.driver = driver;
+        this.rootSelector = rootSelector;
+    }
 
     public NgWebDriver(JavascriptExecutor driver) {
-        this.driver = driver;
+        this(driver, "body");
     }
 
     public void mutate(WebElement element, final String variable, final String value) {
@@ -47,15 +53,23 @@ public class NgWebDriver {
 
     public void waitForAngularRequestsToFinish() {
         driver.executeAsyncScript("var callback = arguments[arguments.length - 1];\n" +
-                "var rootSelector = 'body';\n" +
+                "var rootSelector = '" + rootSelector + "';\n" +
                 "\n" +
                 ByAngular.functions.get("waitForAngular"));
     }
 
     public String getLocationAbsUrl() {
         return (String) driver.executeScript(
-                "var selector = 'body';\n" +
-                "\n" +
-                ByAngular.functions.get("getLocationAbsUrl"));
+                "var selector = '" + rootSelector + "';\n" +
+                        "\n" +
+                        ByAngular.functions.get("getLocationAbsUrl"));
+    }
+
+    public String getRootSelector() {
+        return rootSelector;
+    }
+
+    public void setRootSelector(String rootSelector) {
+        this.rootSelector = rootSelector;
     }
 }
