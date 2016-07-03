@@ -127,12 +127,16 @@ Perhaps a different selector should be used to find Angular:
 ```
 NgWebDriver ngwd = new NgWebDriver(javascriptExecutor).withRootSelector("[ng-app]");
 
+ByAngular.Factory baf = ngwd.makeByAngularFactory()
+
+baf.exactRepeater("day in days");
+
 // locators
 ByAngular.withRootSelector("[ng-app]").exactRepeater("day in days");
 
 // or
-ByAngular.Factory ba = ByAngular.withRootSelector("[ng-app]");
-ByAngularRepeater foo = ba.exactRepeater("day in days");
+ByAngular.Factory baf = ByAngular.withRootSelector("[ng-app]");
+ByAngularRepeater foo = baf.exactRepeater("day in days");
 
 ```
 
