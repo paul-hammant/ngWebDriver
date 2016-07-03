@@ -25,6 +25,10 @@ public class NgWebDriver {
         return this;
     }
 
+    public ByAngular.Factory makeByAngularFactory() {
+        return ByAngular.withRootSelector(rootSelector);
+    }
+
     public void mutate(WebElement element, final String variable, final String value) {
         driver.executeScript("angular.element(arguments[0]).scope()." + variable + " = " + value + ";" +
                 "var root = document.querySelector('" + rootSelector + "');" +
