@@ -2,7 +2,6 @@ package com.paulhammant.ngwebdriver;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 
 public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
 
@@ -24,7 +23,7 @@ public class ByAngularRepeaterColumn extends ByAngular.BaseBy {
     protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
         return javascriptExecutor.executeScript(
                     "var using = arguments[0] || document;\n" +
-                            "var rootSelector = 'body';\n" +
+                            "var rootSelector = '"+NgWebDriver.rootSelector+"';\n" +
                             "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
                             "var binding = '" + column + "';\n" +
                             "var exact = " + exact + ";\n" +
