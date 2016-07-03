@@ -46,7 +46,7 @@ public class AngularAndWebDriverTest {
 
         // Launch Protractor's own test app on http://localhost:8080
         ((StdErrLog) Log.getRootLogger()).setLevel(StdErrLog.LEVEL_OFF);
-        webServer = new Server(new QueuedThreadPool(5));
+        webServer = new Server(new QueuedThreadPool(6));
         ServerConnector connector = new ServerConnector(webServer, new HttpConnectionFactory());
         connector.setPort(8080);
         webServer.addConnector(connector);
