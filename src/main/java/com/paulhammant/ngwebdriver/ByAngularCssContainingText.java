@@ -6,8 +6,8 @@ import org.openqa.selenium.SearchContext;
 
 public class ByAngularCssContainingText extends ByAngular.BaseBy {
 
-    public ByAngularCssContainingText(String cssSelector,String searchText) {
-        super();
+    public ByAngularCssContainingText(String rootSelector, String cssSelector,String searchText) {
+        super(rootSelector);
         this.cssSelector = cssSelector;
         this.searchText = searchText;
     }

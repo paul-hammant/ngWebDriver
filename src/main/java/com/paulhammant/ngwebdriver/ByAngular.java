@@ -12,6 +12,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.paulhammant.ngwebdriver.NgWebDriver.DEFAULT_ROOT_SELECTOR;
+
 public class ByAngular {
 
     protected static final Map<String, String> functions = new HashMap<String, String>();
@@ -89,41 +91,58 @@ public class ByAngular {
     private ByAngular() {
     }
 
+
+    /**
+     * Use the ByAngular selectors withRootSelector a different rootSelector
+     * @param rootSelector like "[ng-app]" (which is the default)
+     * @return
+     */
+    public static Factory withRootSelector(String rootSelector) {
+        return new Factory(rootSelector);
+    }
+
     public static ByAngularRepeater repeater(String repeater) {
-        return new ByAngularRepeater(repeater, false);
+        return withRootSelector(DEFAULT_ROOT_SELECTOR).repeater(repeater);
     }
 
     public static ByAngularRepeater exactRepeater(String repeater) {
-        return new ByAngularRepeater(repeater, true);
+        return withRootSelector(DEFAULT_ROOT_SELECTOR).exactRepeater(repeater);
     }
 
     public static ByAngularBinding binding(String binding) {
-        return new ByAngularBinding(binding);
+        return withRootSelector(DEFAULT_ROOT_SELECTOR).binding(binding);
     }
 
     public static ByAngularExactBinding exactBinding(String exactBinding) {
-        return new ByAngularExactBinding(exactBinding);
+        return withRootSelector(DEFAULT_ROOT_SELECTOR).exactBinding(exactBinding);
     }
 
     public static ByAngularModel model(String model) {
-        return new ByAngularModel(model);
+        return withRootSelector(DEFAULT_ROOT_SELECTOR).model(model);
     }
 
     public static ByAngularOptions options(String options) {
-        return new ByAngularOptions(options);
+        return withRootSelector(DEFAULT_ROOT_SELECTOR).options(options);
     }
 
     public static ByAngularButtonText buttonText(String buttonText) {
-        return new ByAngularButtonText(buttonText);
+        return withRootSelector(DEFAULT_ROOT_SELECTOR).buttonText(buttonText);
     }
-     public static ByAngularPartialButtonText partialButtonText(String partialButtonText) {
-        return new ByAngularPartialButtonText(partialButtonText);
+
+    public static ByAngularPartialButtonText partialButtonText(String partialButtonText) {
+        return withRootSelector(DEFAULT_ROOT_SELECTOR).partialButtonText(partialButtonText);
     }
     public static ByAngularCssContainingText cssContainingText(String cssSelector, String searchText) {
-        return new ByAngularCssContainingText(cssSelector,searchText);
+        return withRootSelector(DEFAULT_ROOT_SELECTOR).cssContainingText(cssSelector,searchText);
     }
 
     protected abstract static class BaseBy extends By {
+
+        protected final String rootSelector;
+
+        protected BaseBy(String rootSelector) {
+            this.rootSelector = rootSelector;
+        }
 
         private final JavascriptExecutor getJavascriptExecutor(SearchContext context) {
             JavascriptExecutor jse;
@@ -162,4 +181,50 @@ public class ByAngular {
             return (List<WebElement>) errorIfNull(getObject(context, javascriptExecutor));
         }
     }
+
+    public static class Factory {
+
+        private String rootSelector;
+
+        Factory(String rootSelector) {
+            this.rootSelector = rootSelector;
+        }
+
+        public ByAngularRepeater repeater(String repeater) {
+            return new ByAngularRepeater(rootSelector, repeater, false);
+        }
+
+        public ByAngularRepeater exactRepeater(String repeater) {
+            return new ByAngularRepeater(rootSelector, repeater, true);
+        }
+
+        public ByAngularBinding binding(String binding) {
+            return new ByAngularBinding(rootSelector, binding);
+        }
+
+        public ByAngularExactBinding exactBinding(String exactBinding) {
+            return new ByAngularExactBinding(rootSelector, exactBinding);
+        }
+
+        public ByAngularModel model(String model) {
+            return new ByAngularModel(rootSelector, model);
+        }
+
+        public ByAngularOptions options(String options) {
+            return new ByAngularOptions(rootSelector, options);
+        }
+
+        public ByAngularButtonText buttonText(String buttonText) {
+            return new ByAngularButtonText(rootSelector, buttonText);
+        }
+        public ByAngularPartialButtonText partialButtonText(String partialButtonText) {
+            return new ByAngularPartialButtonText(rootSelector, partialButtonText);
+        }
+        public ByAngularCssContainingText cssContainingText(String cssSelector, String searchText) {
+            return new ByAngularCssContainingText(rootSelector, cssSelector,searchText);
+        }
+
+
+    }
+
 }

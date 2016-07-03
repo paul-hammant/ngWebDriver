@@ -5,12 +5,24 @@ import org.openqa.selenium.WebElement;
 
 public class NgWebDriver {
 
-    public static String rootSelector = "[ng-app]";
+    public static final String DEFAULT_ROOT_SELECTOR = "[ng-app]";
+
+    private String rootSelector;
 
     private JavascriptExecutor driver;
 
     public NgWebDriver(JavascriptExecutor driver) {
         this.driver = driver;
+        withRootSelector(DEFAULT_ROOT_SELECTOR);
+    }
+
+    /**
+     * Set the root selector for finding angular in the DOM
+     * @param rootSelector like "[ng-app]" (which is the default)
+     */
+    public NgWebDriver withRootSelector(String rootSelector) {
+        this.rootSelector = rootSelector;
+        return this;
     }
 
     public void mutate(WebElement element, final String variable, final String value) {

@@ -189,7 +189,7 @@ public class AngularAndWebDriverTest {
         ngWebDriver.waitForAngularRequestsToFinish();
 
         // find the second person
-        // index starts with 0 of course
+        // index starts withRootSelector 0 of course
 
         assertThat(driver.findElement(ByAngular.repeater("person in people").row(1)).getText(), is("Bob Smith"));
 
@@ -695,7 +695,7 @@ public class AngularAndWebDriverTest {
 
         fwd.li(ByAngular.repeater("baz in days | filter:'T'")).getText().shouldBe("T");
 
-        fwd.li(ByAngular.repeater("baz in days | filt")).getText().shouldBe("T");
+        fwd.li(ByAngular.withRootSelector("[ng-app]").repeater("baz in days | filt")).getText().shouldBe("T");
 
         try {
             fwd.li(ByAngular.exactRepeater("baz in days | filt")).getText().shouldBe("T");

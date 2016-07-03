@@ -120,6 +120,22 @@ ngWebDriver.mutate(wholeForm, "person.name", "'Wilma'");
 
 See also retrieveJson, retrieve, retrieveAsString and retrieveAsLong for getting Angular data back from the browser.
 
+## NgWebDriver can find Angular in the page?
+
+Perhaps a different selector should be used to find Angular:
+
+```
+NgWebDriver ngwd = new NgWebDriver(javascriptExecutor).withRootSelector("[ng-app]");
+
+// locators
+ByAngular.withRootSelector("[ng-app]").exactRepeater("day in days");
+
+// or
+ByAngular.Factory ba = ByAngular.withRootSelector("[ng-app]");
+ByAngularRepeater foo = ba.exactRepeater("day in days");
+
+```
+
 ## Other Functions
 
 ### getLocationAbsUrl()

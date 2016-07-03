@@ -6,8 +6,8 @@ import org.openqa.selenium.SearchContext;
 
 public class ByAngularPartialButtonText extends ByAngular.BaseBy {
 
-    public ByAngularPartialButtonText(String partialButtonText) {
-        super();
+    public ByAngularPartialButtonText(String rootSelector, String partialButtonText) {
+        super(rootSelector);
         this.searchText = partialButtonText;
     }
 

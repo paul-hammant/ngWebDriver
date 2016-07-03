@@ -5,8 +5,8 @@ import org.openqa.selenium.SearchContext;
 
 public class ByAngularOptions extends ByAngular.BaseBy {
 
-    public ByAngularOptions(String options) {
-        super();
+    public ByAngularOptions(String rootSelector, String options) {
+        super(rootSelector);
         this.options = options;
     }
 

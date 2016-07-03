@@ -5,8 +5,8 @@ import org.openqa.selenium.SearchContext;
 
 public class ByAngularButtonText extends ByAngular.BaseBy {
 
-    public ByAngularButtonText(String buttonText) {
-        super();
+    public ByAngularButtonText(String rootSelector, String buttonText) {
+        super(rootSelector);
         this.searchText = buttonText;
     }
 

@@ -12,21 +12,21 @@ public class ByAngularRepeaterRow extends ByAngular.BaseBy {
     private boolean exact;
     private final int row;
 
-    public ByAngularRepeaterRow(String repeater, boolean exact, int row) {
-        super();
+    public ByAngularRepeaterRow(String rootSelector, String repeater, boolean exact, int row) {
+        super(rootSelector);
         this.repeater = repeater;
         this.exact = exact;
         this.row = row;
     }
 
     public ByAngularRepeaterCell column(String column) {
-        return new ByAngularRepeaterCell(repeater, exact, row, column);
+        return new ByAngularRepeaterCell(rootSelector, repeater, exact, row, column);
     }
 
     protected Object getObject(SearchContext context, JavascriptExecutor javascriptExecutor) {
         return javascriptExecutor.executeScript(
                     "var using = arguments[0] || document;\n" +
-                            "var rootSelector = '"+NgWebDriver.rootSelector+"';\n" +
+                            "var rootSelector = '" + rootSelector + "';\n" +
                             "var repeater = '" + repeater.replace("'", "\\'") + "';\n" +
                             "var index = " + row + ";\n" +
                             "var exact = " + exact+ ";\n" +
