@@ -4,11 +4,11 @@ A small library of WebDriver locators and more for AngularJS.
 
 # Status
 
-We have taken JavaScript from Angular's [Protractor](https://github.com/angular/protractor) project. While ngWebDriver perfectly 
-compliments the Java version of WebDriver, it has to pass JavaScript up to the browser to inteoprate with Angular, and the 
+We have taken JavaScript from Angular's [Protractor](https://github.com/angular/protractor) project. While ngWebDriver perfectly
+compliments the Java version of WebDriver, it has to pass JavaScript up to the browser to inteoprate with Angular, and the
 Protractor project has done the hard work (including testing) to make that solid, and ngWebDriver benefits from that work.
 
-You can use ngWebDriver today with the regular Java Selenium2/WebDriver libraries. You can also use it with 
+You can use ngWebDriver today with the regular Java Selenium2/WebDriver libraries. You can also use it with
 [FluentSelenium](https://github.com/SeleniumHQ/fluent-selenium) for extra terseness.
 
 ## Waiting for Angular to finish async activity
@@ -17,13 +17,13 @@ You can use ngWebDriver today with the regular Java Selenium2/WebDriver librarie
 new NgWebDriver(driver).waitForAngularRequestsToFinish();
 ```
 
-Do this if WebDriver can possibly run ahead of Angular's ability finish it's MVC stuff in your application. 
+Do this if WebDriver can possibly run ahead of Angular's ability finish it's MVC stuff in your application.
 
 ## Locators
 
 ### repeater()
 
-[As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) 
+[As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater)
 
 ```java
 ByAngular.repeater("foo in f")
@@ -112,10 +112,10 @@ As with Protractor, you can change items in an Angular model, or retrieve them r
 
 ```java
 NgWebDriver ngWebDriver = new NgWebDriver(driver);
-// change something via the model defined in $scope 
+// change something via the model defined in $scope
 ngWebDriver.mutate(wholeForm, "person.name", "'Wilma'");
-// Note Wilma wrapped in single-quotes as it has to be a valid JavaScript 
-// string literal when it arrives browser-side for execution 
+// Note Wilma wrapped in single-quotes as it has to be a valid JavaScript
+// string literal when it arrives browser-side for execution
 ```
 
 See also retrieveJson, retrieve, retrieveAsString and retrieveAsLong for getting Angular data back from the browser.
@@ -152,7 +152,7 @@ String absoluteUrl = new NgWebDriver(driver).getLocationAbsUrl();
 
 ## Code Examples
 
-All our usage examples are in [a single test class](https://github.com/paul-hammant/ngWebDriver/blob/master/src/test/java/com/paulhammant/ngwebdriver/AngularAndWebDriverTest.java): 
+All our usage examples are in [a single test class](https://github.com/paul-hammant/ngWebDriver/blob/master/src/test/java/com/paulhammant/ngwebdriver/AngularAndWebDriverTest.java):
 
 
 # Including it in your project
@@ -167,7 +167,7 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
   <scope>test</scope>
 </dependency>
 
-<!-- you still need to have a dependency for preferred version of 
+<!-- you still need to have a dependency for preferred version of
   Selenium/WebDriver. That should be 2.48.2 or above -->
 ```
 
@@ -177,6 +177,6 @@ Download from [Mavens Central Repo](http://search.maven.org/#search%7Cga%7C1%7Ca
 
 ## Releases
 
-Last Release: 0.9.6 - May 22, 2016
+Last Release: 0.9.7 - July 22, 2016
 
 Refer [CHANGELOG](./CHANGELOG.md)

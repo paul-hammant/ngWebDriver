@@ -1,6 +1,6 @@
 # Releases
 
-### 0.9.7 (draft) - Jul ??, 2016
+### 0.9.7 - Jul 22 2016
 
 * Selenium dependency changed to 2.53.1
 * Different RootSelectors (other than [ng-app]) are possible (thx to @dwi-di)
