@@ -71,6 +71,12 @@ public class NgWebDriver {
                 ByAngular.functions.get("waitForAngular"));
     }
 
+    public void waitForAngular2RequestsToFinish() {
+        driver.executeAsyncScript("var callback = arguments[arguments.length - 1];\n" +
+                "\n" +
+                ByAngular.functions.get("waitForAllAngular2"));
+    }
+
     public String getLocationAbsUrl() {
         return (String) driver.executeScript(
                 "var selector = '"+rootSelector+"';\n" +
