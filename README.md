@@ -120,25 +120,33 @@ ngWebDriver.mutate(wholeForm, "person.name", "'Wilma'");
 
 See also retrieveJson, retrieve, retrieveAsString and retrieveAsLong for getting Angular data back from the browser.
 
-## NgWebDriver can find Angular in the page?
+## Helping NgWebDriver find Angular in a page
 
 Perhaps a different selector should be used to find Angular:
 
 ```
-NgWebDriver ngwd = new NgWebDriver(javascriptExecutor).withRootSelector("[ng-app]");
+NgWebDriver ngwd = new NgWebDriver(javascriptExecutor).withRootSelector("something-custom");
 
-ByAngular.Factory baf = ngwd.makeByAngularFactory()
+ByAngular.Factory factory = ngwd.makeByAngularFactory()
 
-baf.exactRepeater("day in days");
+factory.exactRepeater("day in days");
 
 // locators
-ByAngular.withRootSelector("[ng-app]").exactRepeater("day in days");
+ByAngular.withRootSelector("something-custom").exactRepeater("day in days");
 
 // or
-ByAngular.Factory baf = ByAngular.withRootSelector("[ng-app]");
+ByAngular.Factory baf = ByAngular.withRootSelector("something-custom");
 ByAngularRepeater foo = baf.exactRepeater("day in days");
 
 ```
+
+### Alternate selectors
+
+Referring to a handy StackOverflow questions - [No injector found for element argument to getTestability](http://stackoverflow.com/questions/28040078/no-injector-found-for-element-argument-to-gettestability), you can use any selector:
+
+* `'[ng-app]'`- matching an element that has the arribute 'ng-app' (this is the default)
+* `'#my-app'` - matching an id `my-app`
+* `'[fooBar]'` - matching an attribute `fooBar` on any element
 
 ## Other Functions
 
