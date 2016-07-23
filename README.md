@@ -144,7 +144,7 @@ ByAngularRepeater foo = baf.exactRepeater("day in days");
 
 Referring to a handy StackOverflow questions - [No injector found for element argument to getTestability](http://stackoverflow.com/questions/28040078/no-injector-found-for-element-argument-to-gettestability), you can use any selector:
 
-* `'[ng-app]'`- matching an element that has the arribute 'ng-app' (this is the default)
+* `'[ng-app]'`- matching an element that has the arribute `ng-app` (this is the default)
 * `'#my-app'` - matching an id `my-app`
 * `'[fooBar]'` - matching an attribute `fooBar` on any element
 
