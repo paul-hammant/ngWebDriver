@@ -1,6 +1,6 @@
 # ngWebDriver
 
-A small library of WebDriver locators and more for AngularJS.
+A small library of WebDriver locators and more for AngularJS, for Java.
 
 # Status
 
