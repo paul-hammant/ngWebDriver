@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.9.10</version>
+      <version>6.10</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -57,17 +57,23 @@
       <artifactId>fluent-selenium</artifactId>
       <version>1.16.1</version>
       <scope>test</scope>
-	  <exclusions>
-	    <exclusion>  <!-- declare the exclusion here -->
-	  		  <groupId>org.seleniumhq.selenium</groupId>
-			    <artifactId>selenium-java</artifactId>
-	        </exclusion>
-	    </exclusions>
+      <exclusions>
+        <exclusion>  <!-- declare the exclusion here -->
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>[2.53.1,)</version>
+      <version>[3.0.1,)</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty.websocket</groupId>
+          <artifactId>websocket-client</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -75,7 +81,6 @@
       <version>9.3.7.RC1</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>

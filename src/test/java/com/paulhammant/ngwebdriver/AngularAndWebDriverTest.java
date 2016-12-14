@@ -12,7 +12,7 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.seleniumhq.selenium.fluent.*;
 import org.testng.annotations.AfterSuite;
@@ -37,7 +37,7 @@ import static org.testng.AssertJUnit.fail;
 
 public class AngularAndWebDriverTest {
 
-    private FirefoxDriver driver;
+    private ChromeDriver driver;
     private Server webServer;
     private NgWebDriver ngWebDriver;
 
@@ -60,7 +60,7 @@ public class AngularAndWebDriverTest {
         webServer.setHandler(handlers);
         webServer.start();
 
-        driver = new FirefoxDriver();
+        driver = new ChromeDriver();
         driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
         ngWebDriver = new NgWebDriver(driver);
     }
