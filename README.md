@@ -152,6 +152,7 @@ Long personAge = ngWebDriver.retrieveAsLong(formElement, "person.age");
 NgWebDriver ngWebDriver = new NgWebDriver(driver);
 // Get something via the model defined in $scope
 Map person = (Map) ngWebDriver.retrieve(formElement, "person");
+// note - could be List instead of a Map - WebDriver makes a late decision on that
 ```
 
 ## Helping NgWebDriver find Angular in a page
