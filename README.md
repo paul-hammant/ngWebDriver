@@ -122,7 +122,7 @@ ngWebDriver.mutate(formElement, "person.name", "'Wilma'");
 
 ### Getting model variables
 
-*As a JSON string:*{:.underline}
+*As a JSON string:*
 
 ```java
 NgWebDriver ngWebDriver = new NgWebDriver(driver);
@@ -130,7 +130,7 @@ NgWebDriver ngWebDriver = new NgWebDriver(driver);
 String personJson = ngWebDriver.retrieveJson(formElement, "person");
 ```
 
-*As a string:*{:.underline}
+*As a string:*
 
 ```java
 NgWebDriver ngWebDriver = new NgWebDriver(driver);
@@ -138,7 +138,7 @@ NgWebDriver ngWebDriver = new NgWebDriver(driver);
 String personName = ngWebDriver.retrieveAsString(formElement, "person.name");
 ```
 
-*As a number:*{:.underline}
+*As a number:*
 
 ```java
 NgWebDriver ngWebDriver = new NgWebDriver(driver);
@@ -146,7 +146,7 @@ NgWebDriver ngWebDriver = new NgWebDriver(driver);
 Long personAge = ngWebDriver.retrieveAsLong(formElement, "person.age");
 ```
 
-*As Map/dict:*{:.underline}
+*As Map/dict:*
 
 ```java
 NgWebDriver ngWebDriver = new NgWebDriver(driver);
