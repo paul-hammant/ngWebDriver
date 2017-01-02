@@ -155,9 +155,9 @@ Map person = (Map) ngWebDriver.retrieve(formElement, "person");
 // note - could be List instead of a Map - WebDriver makes a late decision on that
 ```
 
-## Helping NgWebDriver find Angular in a page
+## Helping NgWebDriver find Angular apps in a page
 
-Perhaps a different selector should be used to find Angular:
+Perhaps a different selector should be used to find Angular apps:
 
 ```
 NgWebDriver ngwd = new NgWebDriver(javascriptExecutor).withRootSelector("something-custom");
