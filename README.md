@@ -110,15 +110,49 @@ ByAngular.cssContainingText("#animals ul .pet", "dog")
 
 As with Protractor, you can change items in an Angular model, or retrieve them reagrdless of whether they appear in the UI or not.
 
+### Changing model variables
+
 ```java
 NgWebDriver ngWebDriver = new NgWebDriver(driver);
 // change something via the model defined in $scope
-ngWebDriver.mutate(wholeForm, "person.name", "'Wilma'");
+ngWebDriver.mutate(formElement, "person.name", "'Wilma'");
 // Note Wilma wrapped in single-quotes as it has to be a valid JavaScript
 // string literal when it arrives browser-side for execution
 ```
 
-See also retrieveJson, retrieve, retrieveAsString and retrieveAsLong for getting Angular data back from the browser.
+### Getting model variables
+
+*As a JSON string:*{:.underline}
+
+```java
+NgWebDriver ngWebDriver = new NgWebDriver(driver);
+// Get something via the model defined in $scope
+String personJson = ngWebDriver.retrieveJson(formElement, "person");
+```
+
+*As a string:*{:.underline}
+
+```java
+NgWebDriver ngWebDriver = new NgWebDriver(driver);
+// Get something via the model defined in $scope
+String personName = ngWebDriver.retrieveAsString(formElement, "person.name");
+```
+
+*As a number:*{:.underline}
+
+```java
+NgWebDriver ngWebDriver = new NgWebDriver(driver);
+// Get something via the model defined in $scope
+Long personAge = ngWebDriver.retrieveAsLong(formElement, "person.age");
+```
+
+*As Map/dict:*{:.underline}
+
+```java
+NgWebDriver ngWebDriver = new NgWebDriver(driver);
+// Get something via the model defined in $scope
+Map person = (Map) ngWebDriver.retrieve(formElement, "person");
+```
 
 ## Helping NgWebDriver find Angular in a page
 
