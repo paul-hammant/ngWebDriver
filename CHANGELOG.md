@@ -1,5 +1,9 @@
 # Releases
 
+### 0.9.8 - Jan 20 2017
+
+* Selenium depednency upgraded to 3.0.1
+
 ### 0.9.7 - Jul 22 2016
 
 * Selenium dependency changed to 2.53.1

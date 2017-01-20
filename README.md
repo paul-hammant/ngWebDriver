@@ -220,6 +220,6 @@ Download from [Mavens Central Repo](http://search.maven.org/#search%7Cga%7C1%7Ca
 
 ## Releases
 
-Last Release: 0.9.7 - July 22, 2016
+Last Release: 0.9.8 - Jan 20, 2017
 
 Refer [CHANGELOG](./CHANGELOG.md)
