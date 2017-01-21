@@ -16,6 +16,13 @@
 /* global angular */
 var functions = {};
 
+///////////////////////////////////////////////////////
+////                                               ////
+////                    HELPERS                    ////
+////                                               ////
+///////////////////////////////////////////////////////
+
+
 /* Wraps a function up into a string with its helper functions so that it can
  * call those helper functions client side
  *
@@ -36,6 +43,84 @@ function wrapWithHelpers(fun) {
       '  return (' + fun.toString() + ').apply(this, arguments);');
 }
 
+/* Tests if an ngRepeat matches a repeater
+ *
+ * @param {string} ngRepeat The ngRepeat to test
+ * @param {string} repeater The repeater to test against
+ * @param {boolean} exact If the ngRepeat expression needs to match the whole
+ *   repeater (not counting any `track by ...` modifier) or if it just needs to
+ *   match a substring
+ * @return {boolean} If the ngRepeat matched the repeater
+ */
+function repeaterMatch(ngRepeat, repeater, exact) {
+  if (exact) {
+    return ngRepeat.split(' track by ')[0].split(' as ')[0].split('|')[0].
+        split('=')[0].trim() == repeater;
+  } else {
+    return ngRepeat.indexOf(repeater) != -1;
+  }
+}
+
+/* Tries to find $$testability and possibly $injector for an ng1 app
+ *
+ * By default, doesn't care about $injector if it finds $$testability.  However,
+ * these priorities can be reversed.
+ *
+ * @param {string=} selector The selector for the element with the injector.  If
+ *   falsy, tries a variety of methods to find an injector
+ * @param {boolean=} injectorPlease Prioritize finding an injector
+ * @return {$$testability?: Testability, $injector?: Injector} Returns whatever
+ *   ng1 app hooks it finds
+ */
+function getNg1Hooks(selector, injectorPlease) {
+  function tryEl(el) {
+    try {
+      if (!injectorPlease && angular.getTestability) {
+        var $$testability = angular.getTestability(el);
+        if ($$testability) {
+          return {$$testability: $$testability};
+        }
+      } else {
+        var $injector = angular.element(el).injector();
+        if ($injector) {
+          return {$injector: $injector};
+        }
+      }
+    } catch(err) {} 
+  }
+  function trySelector(selector) {
+    var els = document.querySelectorAll(selector);
+    for (var i = 0; i < els.length; i++) {
+      var elHooks = tryEl(els[i]);
+      if (elHooks) {
+        return elHooks;
+      }
+    }
+  }
+
+  if (selector) {
+    return trySelector(selector);
+  } else if (window.__TESTABILITY__NG1_APP_ROOT_INJECTOR__) {
+    var $injector = window.__TESTABILITY__NG1_APP_ROOT_INJECTOR__;
+    var $$testability = null;
+    try {
+      $$testability = $injector.get('$$testability');
+    } catch (e) {}
+    return {$injector: $injector, $$testability: $$testability};
+  } else {
+    return tryEl(document.body) ||
+        trySelector('[ng-app]') || trySelector('[ng:app]') ||
+        trySelector('[ng-controller]') || trySelector('[ng:controller]');
+  }
+}
+
+///////////////////////////////////////////////////////
+////                                               ////
+////                    SCRIPTS                    ////
+////                                               ////
+///////////////////////////////////////////////////////
+
+
 /**
  * Wait until Angular has finished rendering and has
  * no outstanding $http calls before continuing. The specific Angular app
@@ -48,55 +133,51 @@ function wrapWithHelpers(fun) {
  *     be passed as a parameter.
  */
 functions.waitForAngular = function(rootSelector, callback) {
-  var el = document.querySelector(rootSelector);
-
   try {
-    if (window.getAngularTestability) {
+    if (window.angular && !(window.angular.version &&
+          window.angular.version.major > 1)) {
+      /* ng1 */
+      var hooks = getNg1Hooks(rootSelector);
+      if (hooks.$$testability) {
+        hooks.$$testability.whenStable(callback);
+      } else if (hooks.$injector) {
+        hooks.$injector.get('$browser').
+            notifyWhenNoOutstandingRequests(callback);
+      } else if (!!rootSelector) {
+        throw new Error('Could not automatically find injector on page: "' +
+            window.location.toString() + '".  Consider using config.rootEl');
+      } else {
+        throw new Error('root element (' + rootSelector + ') has no injector.' +
+           ' this may mean it is not inside ng-app.');
+      }
+    } else if (rootSelector && window.getAngularTestability) {
+      var el = document.querySelector(rootSelector);
       window.getAngularTestability(el).whenStable(callback);
-      return;
-    }
-    if (!window.angular) {
+    } else if (window.getAllAngularTestabilities) {
+      var testabilities = window.getAllAngularTestabilities();
+      var count = testabilities.length;
+      var decrement = function() {
+        count--;
+        if (count === 0) {
+          callback();
+        }
+      };
+      testabilities.forEach(function(testability) {
+        testability.whenStable(decrement);
+      });
+    } else if (!window.angular) {
       throw new Error('window.angular is undefined.  This could be either ' +
           'because this is a non-angular page or because your test involves ' +
           'client-side navigation, which can interfere with Protractor\'s ' +
           'bootstrapping.  See http://git.io/v4gXM for details');
-    }
-    if (angular.getTestability) {
-      angular.getTestability(el).whenStable(callback);
+    } else if (window.angular.version >= 2) {
+      throw new Error('You appear to be using angular, but window.' +
+          'getAngularTestability was never set.  This may be due to bad ' +
+          'obfuscation.');
     } else {
-      if (!angular.element(el).injector()) {
-        throw new Error('root element (' + rootSelector + ') has no injector.' +
-           ' this may mean it is not inside ng-app.');
-      }
-      angular.element(el).injector().get('$browser').
-          notifyWhenNoOutstandingRequests(callback);
+      throw new Error('Cannot get testability API for unknown angular ' +
+          'version "' + window.angular.version + '"');
     }
-  } catch (err) {
-    callback(err.message);
-  }
-};
-
-/**
- * Wait until all Angular2 applications on the page have become stable.
- *
- * Asynchronous.
- *
- * @param {function(string)} callback callback. If a failure occurs, it will
- *     be passed as a parameter.
- */
-functions.waitForAllAngular2 = function(callback) {
-  try {
-    var testabilities = window.getAllAngularTestabilities();
-    var count = testabilities.length;
-    var decrement = function() {
-      count--;
-      if (count === 0) {
-        callback();
-      }
-    };
-    testabilities.forEach(function(testability) {
-      testability.whenStable(decrement);
-    });
   } catch (err) {
     callback(err.message);
   }
@@ -113,10 +194,9 @@ functions.waitForAllAngular2 = function(callback) {
  * @return {Array.<Element>} The elements containing the binding.
  */
 functions.findBindings = function(binding, exactMatch, using, rootSelector) {
-  var root = document.querySelector(rootSelector || 'body');
   using = using || document;
   if (angular.getTestability) {
-    return angular.getTestability(root).
+    return getNg1Hooks(rootSelector).$$testability.
         findBindings(using, binding, exactMatch);
   }
   var bindings = using.getElementsByClassName('ng-binding');
@@ -143,15 +223,6 @@ functions.findBindings = function(binding, exactMatch, using, rootSelector) {
   }
   return matches; /* Return the whole array for webdriver.findElements. */
 };
-
-function repeaterMatch(ngRepeat, repeater, exact) {
-  if (exact) {
-    return ngRepeat.split(' track by ')[0].split(' as ')[0].split('|')[0].
-        split('=')[0].trim() == repeater;
-  } else {
-    return ngRepeat.indexOf(repeater) != -1;
-  }
-}
 
 /**
  * Find an array of elements matching a row within an ng-repeat.
@@ -267,7 +338,6 @@ functions.findAllRepeaterRows = wrapWithHelpers(findAllRepeaterRows, repeaterMat
  */
 function findRepeaterElement(repeater, exact, index, binding, using, rootSelector) {
   var matches = [];
-  var root = document.querySelector(rootSelector || 'body');
   using = using || document;
 
   var rows = [];
@@ -311,7 +381,7 @@ function findRepeaterElement(repeater, exact, index, binding, using, rootSelecto
     if (angular.getTestability) {
       matches.push.apply(
           matches,
-          angular.getTestability(root).findBindings(row, binding));
+          getNg1Hooks(rootSelector).$$testability.findBindings(row, binding));
     } else {
       if (row.className.indexOf('ng-binding') != -1) {
         bindings.push(row);
@@ -328,7 +398,8 @@ function findRepeaterElement(repeater, exact, index, binding, using, rootSelecto
       if (angular.getTestability) {
         matches.push.apply(
             matches,
-            angular.getTestability(root).findBindings(rowElem, binding));
+            getNg1Hooks(rootSelector).$$testability.findBindings(rowElem,
+                binding));
       } else {
         if (rowElem.className.indexOf('ng-binding') != -1) {
           bindings.push(rowElem);
@@ -351,7 +422,8 @@ function findRepeaterElement(repeater, exact, index, binding, using, rootSelecto
   }
   return matches;
 }
-functions.findRepeaterElement = wrapWithHelpers(findRepeaterElement, repeaterMatch);
+functions.findRepeaterElement =
+    wrapWithHelpers(findRepeaterElement, repeaterMatch, getNg1Hooks);
 
 /**
  * Find the elements in a column of an ng-repeat.
@@ -366,7 +438,6 @@ functions.findRepeaterElement = wrapWithHelpers(findRepeaterElement, repeaterMat
  */
 function findRepeaterColumn(repeater, exact, binding, using, rootSelector) {
   var matches = [];
-  var root = document.querySelector(rootSelector || 'body');
   using = using || document;
 
   var rows = [];
@@ -408,7 +479,8 @@ function findRepeaterColumn(repeater, exact, binding, using, rootSelector) {
     if (angular.getTestability) {
       matches.push.apply(
           matches,
-          angular.getTestability(root).findBindings(rows[i], binding));
+          getNg1Hooks(rootSelector).$$testability.findBindings(rows[i],
+              binding));
     } else {
       if (rows[i].className.indexOf('ng-binding') != -1) {
         bindings.push(rows[i]);
@@ -424,7 +496,8 @@ function findRepeaterColumn(repeater, exact, binding, using, rootSelector) {
       if (angular.getTestability) {
         matches.push.apply(
             matches,
-            angular.getTestability(root).findBindings(multiRows[i][j], binding));
+            getNg1Hooks(rootSelector).$$testability.findBindings(
+                multiRows[i][j], binding));
       } else {
         var elem = multiRows[i][j];
         if (elem.className.indexOf('ng-binding') != -1) {
@@ -448,7 +521,8 @@ function findRepeaterColumn(repeater, exact, binding, using, rootSelector) {
   }
   return matches;
 }
-functions.findRepeaterColumn = wrapWithHelpers(findRepeaterColumn, repeaterMatch);
+functions.findRepeaterColumn =
+    wrapWithHelpers(findRepeaterColumn, repeaterMatch, getNg1Hooks);
 
 /**
  * Find elements by model name.
@@ -460,11 +534,10 @@ functions.findRepeaterColumn = wrapWithHelpers(findRepeaterColumn, repeaterMatch
  * @return {Array.<Element>} The matching elements.
  */
 functions.findByModel = function(model, using, rootSelector) {
-  var root = document.querySelector(rootSelector || 'body');
   using = using || document;
 
   if (angular.getTestability) {
-    return angular.getTestability(root).
+    return getNg1Hooks(rootSelector).$$testability.
         findModels(using, model, true);
   }
   var prefixes = ['ng-', 'ng_', 'data-ng-', 'x-ng-', 'ng\\:'];
@@ -588,24 +661,46 @@ functions.findByCssContainingText = function(cssSelector, searchText, using) {
  * Asynchronous.
  *
  * @param {number} attempts Number of times to retry.
+ * @param {boolean} ng12Hybrid Flag set if app is a hybrid of angular 1 and 2
  * @param {function({version: ?number, message: ?string})} asyncCallback callback
  *
  */
-functions.testForAngular = function(attempts, asyncCallback) {
+functions.testForAngular = function(attempts, ng12Hybrid, asyncCallback) {
   var callback = function(args) {
     setTimeout(function() {
       asyncCallback(args);
     }, 0);
   };
+  var definitelyNg1 = !!ng12Hybrid;
+  var definitelyNg2OrNewer = false;
   var check = function(n) {
     try {
-      if (window.getAllAngularTestabilities) {
-        callback({ver: 2});
-      } else if (window.angular && window.angular.resumeBootstrap) {
-        callback({ver: 1});
-      } else if (n < 1) {
-        if (window.angular) {
+      /* Figure out which version of angular we're waiting on */
+      if (!definitelyNg1 && !definitelyNg2OrNewer) {
+        if (window.angular && !(window.angular.version && window.angular.version.major > 1)) {
+          definitelyNg1 = true;
+        } else if (window.getAllAngularTestabilities) {
+          definitelyNg2OrNewer = true;
+        }
+      }
+      /* See if our version of angular is ready */
+      if (definitelyNg1) {
+        if (window.angular && window.angular.resumeBootstrap) {
+          return callback({ver: 1});
+        }
+      } else if (definitelyNg2OrNewer) {
+        if (true /* ng2 has no resumeBootstrap() */) {
+          return callback({ver: 2});
+        }
+      }
+      /* Try again (or fail) */
+      if (n < 1) {
+        if (definitelyNg1 && window.angular) {
           callback({message: 'angular never provided resumeBootstrap'});
+        } else if (ng12Hybrid && !window.angular) { 
+          callback({message: 'angular 1 never loaded' +
+              window.getAllAngularTestabilities ? ' (are you sure this app ' +
+              'uses ngUpgrade?  Try un-setting ng12Hybrid)' : ''});
         } else {
           callback({message: 'retries looking for angular exceeded'});
         }
@@ -649,12 +744,11 @@ functions.allowAnimations = function(element, value) {
  * @param {string} selector The selector housing an ng-app
  */
 functions.getLocationAbsUrl = function(selector) {
-  var el = document.querySelector(selector);
+  var hooks = getNg1Hooks(selector);
   if (angular.getTestability) {
-    return angular.getTestability(el).
-        getLocation();
+    return hooks.$$testability.getLocation();
   }
-  return angular.element(el).injector().get('$location').absUrl();
+  return hooks.$injector.get('$location').absUrl();
 };
 
 /**
@@ -665,12 +759,11 @@ functions.getLocationAbsUrl = function(selector) {
  *     /path?search=a&b=c#hash
  */
 functions.setLocation = function(selector, url) {
-  var el = document.querySelector(selector);
+  var hooks = getNg1Hooks(selector);
   if (angular.getTestability) {
-    return angular.getTestability(el).
-        setLocation(url);
+    return hooks.$$testability.setLocation(url);
   }
-  var $injector = angular.element(el).injector();
+  var $injector = hooks.$injector;
   var $location = $injector.get('$location');
   var $rootScope = $injector.get('$rootScope');
 
@@ -687,11 +780,15 @@ functions.setLocation = function(selector, url) {
  * @return {!Array<!Object>} An array of pending http requests.
  */
 functions.getPendingHttpRequests = function(selector) {
-  var el = document.querySelector(selector);
-  var $injector = angular.element(el).injector();
-  var $http = $injector.get('$http');
+  var hooks = getNg1Hooks(selector, true);
+  var $http = hooks.$injector.get('$http');
   return $http.pendingRequests;
 };
+
+['waitForAngular', 'findBindings', 'findByModel', 'getLocationAbsUrl',
+  'setLocation', 'getPendingHttpRequests'].forEach(function(funName) {
+    functions[funName] = wrapWithHelpers(functions[funName], getNg1Hooks);
+});
 
 /* Publish all the functions as strings to pass to WebDriver's
  * exec[Async]Script.  In addition, also include a script that will
@@ -718,3 +815,73 @@ for (var fnName in functions) {
 
 exports.installInBrowser = (util.format(
     'window.clientSideScripts = {%s};', scriptsList.join(', ')));
+
+/**
+ * Automatically installed by Protractor when a page is loaded, this
+ * default mock module decorates $timeout to keep track of any
+ * outstanding timeouts.
+ *
+ * @param {boolean} trackOutstandingTimeouts
+ */
+exports.protractorBaseModuleFn = function(trackOutstandingTimeouts) {
+  var ngMod = angular.module('protractorBaseModule_', []).config([
+    '$compileProvider',
+    function($compileProvider) {
+      if ($compileProvider.debugInfoEnabled) {
+        $compileProvider.debugInfoEnabled(true);
+      }
+    }
+  ]);
+  if (trackOutstandingTimeouts) {
+    ngMod.config([
+      '$provide',
+      function ($provide) {
+        $provide.decorator('$timeout', [
+          '$delegate',
+          function ($delegate) {
+            var $timeout = $delegate;
+
+            var taskId = 0;
+
+            if (!window['NG_PENDING_TIMEOUTS']) {
+              window['NG_PENDING_TIMEOUTS'] = {};
+            }
+
+            var extendedTimeout= function() {
+              var args = Array.prototype.slice.call(arguments);
+              if (typeof(args[0]) !== 'function') {
+                return $timeout.apply(null, args);
+              }
+
+              taskId++;
+              var fn = args[0];
+              window['NG_PENDING_TIMEOUTS'][taskId] =
+                  fn.toString();
+              var wrappedFn = (function(taskId_) {
+                return function() {
+                  delete window['NG_PENDING_TIMEOUTS'][taskId_];
+                  return fn.apply(null, arguments);
+                };
+              })(taskId);
+              args[0] = wrappedFn;
+
+              var promise = $timeout.apply(null, args);
+              promise.ptorTaskId_ = taskId;
+              return promise;
+            };
+
+            extendedTimeout.cancel = function() {
+              var taskId_ = arguments[0] && arguments[0].ptorTaskId_;
+              if (taskId_) {
+                delete window['NG_PENDING_TIMEOUTS'][taskId_];
+              }
+              return $timeout.cancel.apply($timeout, arguments);
+            };
+
+            return extendedTimeout;
+          }
+        ]);
+      }
+    ]);
+  }
+};

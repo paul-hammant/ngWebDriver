@@ -15,7 +15,6 @@
 * Selenium dependency changed to 2.53.0
 * FluentSelenium dependency changed to 1.16.1
 
-
 ### 0.9.5 - Feb 14, 2016
 
 * partialButtonText implemented (courtesy of Manoj Kumar)

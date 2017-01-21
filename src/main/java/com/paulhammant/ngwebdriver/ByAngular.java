@@ -31,9 +31,7 @@ public class ByAngular {
         }
         String src = new Scanner(resourceAsStream, "UTF-8").useDelimiter("\\A").next();
         iterateOverJsFunctionsInSource(src);
-
-        inlineUtilityFunctions();
-
+        inlineUtilityFunctionsIfNeeded();
 
     }
 
@@ -56,21 +54,21 @@ public class ByAngular {
         }
     }
 
-
-    private static void inlineUtilityFunctions() {
-        Set<String> keys = functions.keySet();
-        for (String key : keys) {
-            String val = functions.get(key);
-            if (!key.equals("repeaterMatch") && val.indexOf("repeaterMatch") > 0) {
-                val = "var repeaterMatch = function(ngRepeat, repeater, exact) {" + functions.get("repeaterMatch") + "}\n" + val;
-                functions.put(key, val);
+    private static void inlineUtilityFunctionsIfNeeded() {
+        for (String functionName : functions.keySet()) {
+            String functionBody = functions.get(functionName);
+            if (!functionName.equals("repeaterMatch") && functionBody.indexOf("repeaterMatch") > 0) {
+                functionBody = "var repeaterMatch = function(ngRepeat, repeater, exact) {" + functions.get("repeaterMatch") + "}\n" + functionBody;
             }
+            if (!functionName.equals("getNg1Hooks") && functionBody.indexOf("getNg1Hooks") > 0) {
+                functionBody = "var getNg1Hooks = function(selector, injectorPlease) {" + functions.get("getNg1Hooks") + "}\n" + functionBody;
+            }
+            functions.put(functionName, functionBody);
         }
     }
 
-
     private static void storeJavaScriptFunction(String body) {
-        Pattern regFn = Pattern.compile("^function ([a-zA-Z]+)\\(", Pattern.MULTILINE);
+        Pattern regFn = Pattern.compile("^function ([a-zA-Z0-9]+)\\(", Pattern.MULTILINE);
         Matcher m = regFn.matcher(body);
         String fnName;
         if (m.find()) {
@@ -81,16 +79,14 @@ public class ByAngular {
             if (m2.find()) {
                 fnName = m2.group(1);
             } else {
-                throw new UnsupportedOperationException(body.substring(0, 40));
+                return;
             }
         }
         functions.put(fnName, body.substring(body.indexOf("{")+1));
     }
 
-
     private ByAngular() {
     }
-
 
     /**
      * Use the ByAngular selectors withRootSelector a different rootSelector
