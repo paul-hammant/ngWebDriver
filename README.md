@@ -1,15 +1,21 @@
 # ngWebDriver
 
-A small library of WebDriver locators and more for AngularJS, for Java.
+A small library of WebDriver locators and more for AngularJS (v1.x) and Angular (v2.x +), for Java.
 
 # Status
 
 We have taken JavaScript from Angular's [Protractor](https://github.com/angular/protractor) project. While ngWebDriver perfectly
-compliments the Java version of WebDriver, it has to pass JavaScript up to the browser to inteoprate with Angular, and the
-Protractor project has done the hard work (including testing) to make that solid, and ngWebDriver benefits from that work.
+compliments the Java version of WebDriver, it has to pass JavaScript up to the browser to interoperate with Angular, and the
+Protractor project has done the hard work (including testing) to make that solid. This project benefits from that work.
 
 You can use ngWebDriver today with the regular Java Selenium2/WebDriver libraries. You can also use it with
 [FluentSelenium](https://github.com/SeleniumHQ/fluent-selenium) for extra terseness.
+
+
+# Compatibility
+
+Like Protractor, ngWebDriver works with Angular versions greater than 1.0.6/1.1.4, and is compatible with Angular 2 applications. 
+Note that for Angular 2 apps, the `binding` and `model` locators are not supported. We recommend using `by.css`.
 
 ## Waiting for Angular to finish async activity
 
@@ -220,6 +226,6 @@ Download from [Mavens Central Repo](http://search.maven.org/#search%7Cga%7C1%7Ca
 
 ## Releases
 
-Last Release: 0.9.8 - Jan 20, 2017
+Last Release: 1.0 - Jan 21, 2017
 
 Refer [CHANGELOG](./CHANGELOG.md)
