@@ -212,12 +212,12 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
 <dependency>
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>0.9.6</version>
+  <version>1.0</version>
   <scope>test</scope>
 </dependency>
 
 <!-- you still need to have a dependency for preferred version of
-  Selenium/WebDriver. That should be 2.48.2 or above -->
+  Selenium/WebDriver. That should be 3.3.1 or above -->
 ```
 
 ## Non-Maven
