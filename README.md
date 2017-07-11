@@ -163,13 +163,11 @@ Map person = (Map) ngWebDriver.retrieve(formElement, "person");
 
 ## Helping NgWebDriver find Angular apps in a page
 
-Perhaps a different selector should be used to find Angular apps:
+Perhaps a different selector should be used to find Angular apps (as defined by the ng-app attribute on an element in the page)
 
 ```
 NgWebDriver ngwd = new NgWebDriver(javascriptExecutor).withRootSelector("something-custom");
-
 ByAngular.Factory factory = ngwd.makeByAngularFactory()
-
 factory.exactRepeater("day in days");
 
 // locators
@@ -178,8 +176,11 @@ ByAngular.withRootSelector("something-custom").exactRepeater("day in days");
 // or
 ByAngular.Factory baf = ByAngular.withRootSelector("something-custom");
 ByAngularRepeater foo = baf.exactRepeater("day in days");
-
 ```
+
+There's a reference to css selectors you'll need to read - https://www.w3schools.com/cssref/css_selectors.asp - because that's the type of string it is going to require.
+
+If you're seeing `$$testability` referenced in a WebDriver error, then work out in you have correctly set selector for the root element on the Angular app. Specifically have you used `withRootSelector()` when you need to?
 
 ### Alternate selectors
 
