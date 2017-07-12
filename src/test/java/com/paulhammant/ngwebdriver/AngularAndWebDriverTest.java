@@ -495,14 +495,13 @@ public class AngularAndWebDriverTest {
         driver.get("http://localhost:8080/index.html#/form");
         ngWebDriver.waitForAngularRequestsToFinish();
 
-
         FluentWebElement sliderBar = fwd.input(By.name("points"));
 
         sliderBar.getAttribute("value").shouldBe("1");
 
         new Actions(driver).dragAndDropBy(sliderBar.getWebElement(), 400, 20).build().perform();
 
-        sliderBar.getAttribute("value").shouldBe("10");
+        sliderBar.getAttribute("value").shouldBe("5");
     }
 
     /*

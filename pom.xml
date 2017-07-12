@@ -67,7 +67,7 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>[3.3.1,)</version>
+      <version>[3.3.7,)</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.jetty.websocket</groupId>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.3.7.RC1</version>
+      <version>9.4.3.v20170317</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
