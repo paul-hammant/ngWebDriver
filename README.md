@@ -178,10 +178,6 @@ ByAngular.Factory baf = ByAngular.withRootSelector("something-custom");
 ByAngularRepeater foo = baf.exactRepeater("day in days");
 ```
 
-There's a reference to css selectors you'll need to read - https://www.w3schools.com/cssref/css_selectors.asp - because that's the type of string it is going to require.
-
-If you're seeing `$$testability` referenced in a WebDriver error, then work out in you have correctly set selector for the root element on the Angular app. Specifically have you used `withRootSelector()` when you need to?
-
 ### Alternate selectors
 
 Referring to a handy StackOverflow questions - [No injector found for element argument to getTestability](http://stackoverflow.com/questions/28040078/no-injector-found-for-element-argument-to-gettestability), you can use any selector:
@@ -189,6 +185,14 @@ Referring to a handy StackOverflow questions - [No injector found for element ar
 * `'[ng-app]'`- matching an element that has the arribute `ng-app` (this is the default)
 * `'#my-app'` - matching an id `my-app`
 * `'[fooBar]'` - matching an attribute `fooBar` on any element
+
+There's a reference to css selectors you'll need to read - https://www.w3schools.com/cssref/css_selectors.asp - because that's the type of string it is going to require.
+
+### "Cannot read property '$$testability' of undefined"
+
+If you're seeing `$$testability` referenced in a WebDriver error, then work out in you have 
+correctly set selector for the root element on the Angular app. Specifically have you 
+used `withRootSelector()` when you need to use it?
 
 ## Other Functions
 
