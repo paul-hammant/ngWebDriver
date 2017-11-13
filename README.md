@@ -163,13 +163,13 @@ Map person = (Map) ngWebDriver.retrieve(formElement, "person");
 
 ## Helping NgWebDriver find Angular apps in a page
 
-**Getting "Cannot read property '$$testability' of undefined" ?*
+**Getting "Cannot read property '$$testability' of undefined" ?**
 
 If you're seeing `$$testability` referenced in a WebDriver error, then work out in you have 
-correctly set selector for the root element on the Angular app. Specifically have you 
-used `withRootSelector()` when you need to use it? Details about how to recover from that here...
+correctly set selector for the "root element" on the Angular app. Specifically have you 
+used `withRootSelector()` in situations where you need to use it? Details about how to recover from that here...
 
-Perhaps a different "root selector" should be used to find Angular apps (as defined by the ng-app attribute on an element in the page)
+To specify a different "root selector" to help ngWebDriver find the Angular app, take a look at what is defined in the `ng-app` attribute in the page in question. Examples:
 
 ```
 NgWebDriver ngwd = new NgWebDriver(javascriptExecutor).withRootSelector("something-custom");
