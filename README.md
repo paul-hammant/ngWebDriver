@@ -163,9 +163,13 @@ Map person = (Map) ngWebDriver.retrieve(formElement, "person");
 
 ## Helping NgWebDriver find Angular apps in a page
 
-If you get errors like `Cannot read property '$$testability' of undefined`, read on ....
+**Getting "Cannot read property '$$testability' of undefined" ?*
 
-Perhaps a different selector should be used to find Angular apps (as defined by the ng-app attribute on an element in the page)
+If you're seeing `$$testability` referenced in a WebDriver error, then work out in you have 
+correctly set selector for the root element on the Angular app. Specifically have you 
+used `withRootSelector()` when you need to use it? Details about how to recover from that here...
+
+Perhaps a different "root selector" should be used to find Angular apps (as defined by the ng-app attribute on an element in the page)
 
 ```
 NgWebDriver ngwd = new NgWebDriver(javascriptExecutor).withRootSelector("something-custom");
@@ -189,12 +193,6 @@ Referring to a handy StackOverflow questions - [No injector found for element ar
 * `'[fooBar]'` - matching an attribute `fooBar` on any element
 
 There's a reference to css selectors you'll need to read - https://www.w3schools.com/cssref/css_selectors.asp - because that's the type of string it is going to require.
-
-### "Cannot read property '$$testability' of undefined"
-
-If you're seeing `$$testability` referenced in a WebDriver error, then work out in you have 
-correctly set selector for the root element on the Angular app. Specifically have you 
-used `withRootSelector()` when you need to use it?
 
 ## Other Functions
 
