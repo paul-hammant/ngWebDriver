@@ -163,6 +163,8 @@ Map person = (Map) ngWebDriver.retrieve(formElement, "person");
 
 ## Helping NgWebDriver find Angular apps in a page
 
+If you get errors like `Cannot read property '$$testability' of undefined`, read on ....
+
 Perhaps a different selector should be used to find Angular apps (as defined by the ng-app attribute on an element in the page)
 
 ```
