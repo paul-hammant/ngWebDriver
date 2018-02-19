@@ -13,7 +13,10 @@ import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.seleniumhq.selenium.fluent.*;
 
 import org.testng.annotations.AfterSuite;
@@ -21,6 +24,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -67,8 +71,8 @@ public class AngularAndWebDriverTest {
 				new DefaultHandler() });
 		webServer.setHandler(handlers);
 		webServer.start();
-
-		driver = new ChromeDriver();
+		setupBrowser("chrome");
+		// driver = new ChromeDriver();
 		driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
 		ngWebDriver = new NgWebDriver(driver);
 	}
@@ -827,6 +831,49 @@ public class AngularAndWebDriverTest {
 
 		assertThat(ngWebDriver.getLocationAbsUrl(), endsWith("/repeater"));
 
+	}
+
+	@SuppressWarnings("deprecation")
+	private void setupBrowser(String browser) {
+		System.setProperty("webdriver.chrome.driver",
+				(new File("c:/java/selenium/chromedriver.exe")).getAbsolutePath());
+		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+		ChromeOptions chromeOptions = new ChromeOptions();
+
+		Map<String, Object> chromePrefs = new HashMap<String, Object>();
+		chromePrefs.put("profile.default_content_settings.popups", 0);
+		String downloadFilepath = System.getProperty("user.dir")
+				+ System.getProperty("file.separator") + "target"
+				+ System.getProperty("file.separator");
+		chromePrefs.put("download.prompt_for_download", "false");
+		chromePrefs.put("download.directory_upgrade", "true");
+		chromePrefs.put("plugins.always_open_pdf_externally", "true");
+
+		chromePrefs.put("download.default_directory", downloadFilepath);
+		chromePrefs.put("enableNetwork", "true");
+		chromeOptions.setExperimentalOption("prefs", chromePrefs);
+
+		for (String optionAgrument : (new String[] {
+				"--user-agent=Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20120101 Firefox/33.0",
+				"--allow-running-insecure-content", "--allow-insecure-localhost",
+				"--enable-local-file-accesses", "--disable-notifications",
+				"--disable-save-password-bubble",
+				/* "start-maximized" , */
+				"--browser.download.folderList=2", "--disable-web-security",
+				"--no-proxy-server",
+				"--browser.helperApps.neverAsk.saveToDisk=image/jpg,text/csv,text/xml,application/xml,application/vnd.ms-excel,application/x-excel,application/x-msexcel,application/excel,application/pdf",
+				String.format("--browser.download.dir=%s", downloadFilepath)
+				/* "--user-data-dir=/path/to/your/custom/profile"  , */
+
+		})) {
+			chromeOptions.addArguments(optionAgrument);
+		}
+
+		capabilities.setBrowserName(DesiredCapabilities.chrome().getBrowserName());
+		capabilities.setCapability(
+				org.openqa.selenium.chrome.ChromeOptions.CAPABILITY, chromeOptions);
+		capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		driver = new ChromeDriver(capabilities);
 	}
 
 }
