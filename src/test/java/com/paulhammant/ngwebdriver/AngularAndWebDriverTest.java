@@ -31,6 +31,7 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 import static org.openqa.selenium.By.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.fail;
@@ -132,6 +133,25 @@ public class AngularAndWebDriverTest {
         List<WebElement> wes = driver.findElements(ByAngular.cssContainingText("#animals ul .pet", "dog"));
         assertThat(wes.size(), is(2));
         assertThat(wes.get(1).getText(), containsString("small dog"));
+    }
+
+    @Test(enabled = true)
+    public void find_by_angular_cssContainingTextRegexp() {
+
+        driver.get("http://localhost:8080/#/form");
+        ngWebDriver.waitForAngularRequestsToFinish();
+
+        List<WebElement> wes = driver
+                .findElements(ByAngular.cssContainingText("#animals ul .pet",
+                        "__REGEXP__/(?:BIG|small) *(?:CAT|dog)(something else)*/i"));
+        assertThat(wes.size(), is(4));
+        String[] results = new String[] { "big dog", "small dog", "big cat",
+                "small cat" };
+        HashSet<String> elementTexts = new HashSet<String>();
+        for (WebElement we : wes) {
+            elementTexts.add(we.getText());
+        }
+        assertThat(elementTexts, hasItems(results));
     }
 
     @Test
