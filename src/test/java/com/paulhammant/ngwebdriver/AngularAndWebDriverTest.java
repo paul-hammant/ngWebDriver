@@ -21,6 +21,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -521,7 +522,7 @@ public class AngularAndWebDriverTest {
 
         new Actions(driver).dragAndDropBy(sliderBar.getWebElement(), 400, 20).build().perform();
 
-        sliderBar.getAttribute("value").shouldBe("5");
+        sliderBar.getAttribute("value").shouldBe("10");
     }
 
     /*
