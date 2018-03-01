@@ -1,9 +1,36 @@
 package com.paulhammant.ngwebdriver;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.support.AbstractFindByBuilder;
+import org.openqa.selenium.support.PageFactoryFinder;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Field;
+
+import static com.paulhammant.ngwebdriver.NgWebDriver.DEFAULT_ROOT_SELECTOR;
 
 public class ByAngularBinding extends ByAngular.BaseBy {
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.FIELD, ElementType.TYPE})
+    @PageFactoryFinder(NgFindByBuilder.class)
+    public @interface FindBy {
+        String rootSelector() default DEFAULT_ROOT_SELECTOR;
+        String binding();
+    }
+
+    public static class NgFindByBuilder extends AbstractFindByBuilder {
+        @Override
+        public By buildIt(final Object annotation, Field field) {
+            final FindBy findBy = (FindBy) annotation;
+            return new ByAngularBinding(findBy.rootSelector(), findBy.binding());
+        }
+    }
 
     public ByAngularBinding(String rootSelector, String binding) {
         super(rootSelector);
