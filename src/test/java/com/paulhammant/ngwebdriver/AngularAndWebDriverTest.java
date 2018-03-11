@@ -1,5 +1,6 @@
 package com.paulhammant.ngwebdriver;
 
+import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
@@ -45,9 +46,9 @@ public class AngularAndWebDriverTest {
 
     @BeforeSuite
     public void before_suite() throws Exception {
-
+        ChromeDriverManager.getInstance().setup();
         // Launch Protractor's own test app on http://localhost:8080
-        ((StdErrLog) Log.getRootLogger()).setLevel(StdErrLog.LEVEL_OFF);
+        //((StdErrLog) Log.getRootLogger()).setLevel(StdErrLog.LEVEL_OFF);
         webServer = new Server(new QueuedThreadPool(6));
         ServerConnector connector = new ServerConnector(webServer, new HttpConnectionFactory());
         connector.setPort(8080);
