@@ -20,9 +20,10 @@ Note that for Angular 2 apps, the `binding` and `model` locators are not support
 ## Waiting for Angular to finish async activity
 
 ```java
-new NgWebDriver(driver).waitForAngularRequestsToFinish();
+ChromeDriver driver = new ChromeDriver();
+NgWebDriver ngWebDriver = new NgWebDriver(driver);
+ngWebDriver.waitForAngularRequestsToFinish();
 ```
-
 Do this if WebDriver can possibly run ahead of Angular's ability finish it's MVC stuff in your application.
 
 ## Locators
