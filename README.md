@@ -20,9 +20,10 @@ Note that for Angular 2 apps, the `binding` and `model` locators are not support
 ## Waiting for Angular to finish async activity
 
 ```java
-new NgWebDriver(driver).waitForAngularRequestsToFinish();
+ChromeDriver driver = new ChromeDriver();
+NgWebDriver ngWebDriver = new NgWebDriver(driver);
+ngWebDriver.waitForAngularRequestsToFinish();
 ```
-
 Do this if WebDriver can possibly run ahead of Angular's ability finish it's MVC stuff in your application.
 
 ## Locators
@@ -114,7 +115,7 @@ ByAngular.cssContainingText("#animals ul .pet", "dog")
 
 ## Angular model interop
 
-As with Protractor, you can change items in an Angular model, or retrieve them reagrdless of whether they appear in the UI or not.
+As with Protractor, you can change items in an Angular model, or retrieve them regardless of whether they appear in the UI or not.
 
 ### Changing model variables
 
@@ -217,7 +218,7 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
 <dependency>
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>1.0</version>
+  <version>1.1.2</version>
   <scope>test</scope>
 </dependency>
 
@@ -231,6 +232,6 @@ Download from [Mavens Central Repo](http://search.maven.org/#search%7Cga%7C1%7Ca
 
 ## Releases
 
-Last Release: 1.0 - Jan 21, 2017
+Last Release: 1.1.2 - Mar 08, 2018
 
 Refer [CHANGELOG](./CHANGELOG.md)
