@@ -195,6 +195,10 @@ Referring to a handy StackOverflow questions - [No injector found for element ar
 
 There's a reference to css selectors you'll need to read - https://www.w3schools.com/cssref/css_selectors.asp - because that's the type of string it is going to require.
 
+### still needing help on $$testability ?
+
+Read the five or so bug reports on $$testability and how (most likely) you have to learn a little about you application so that you can use `.withRootSelector("abc123")`. Those bug reports: https://github.com/paul-hammant/ngWebDriver/issues?issue+testability
+
 ## Other Functions
 
 ### getLocationAbsUrl()
