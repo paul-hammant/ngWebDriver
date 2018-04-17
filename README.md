@@ -30,7 +30,7 @@ Do this if WebDriver can possibly run ahead of Angular's ability finish it's MVC
 
 ### repeater()
 
-[As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater)
+[As Protractor's repeater locator](https://angular.github.io/protractor/#/api?view=ProtractorBy.prototype.repeater) this works for arbitrary `ng-repeat` elements, not just `&lt;tr>` or `&lt;td>`
 
 ```java
 ByAngular.repeater("foo in f")
