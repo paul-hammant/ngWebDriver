@@ -174,8 +174,9 @@ To specify a different "root selector" to help ngWebDriver find the Angular app,
 
 ```
 NgWebDriver ngwd = new NgWebDriver(webDriver).withRootSelector("something-custom");
-ByAngular.Factory factory = ngwd.makeByAngularFactory()
-factory.exactRepeater("day in days");
+ByAngular.Factory baf = ngwd.makeByAngularFactory()
+WebElement element = webDriver.findElement(baf.exactRepeater("day in days"));
+element.click();
 
 // locators
 ByAngular.withRootSelector("something-custom").exactRepeater("day in days");
