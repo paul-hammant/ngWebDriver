@@ -238,6 +238,6 @@ Download from [Mavens Central Repo](http://search.maven.org/#search%7Cga%7C1%7Ca
 
 ## Releases
 
-Last Release: 1.1.3 - Apr 18, 2018
+Last Release: 1.1.4 - Jun 21, 2018
 
 Refer [CHANGELOG](./CHANGELOG.md)

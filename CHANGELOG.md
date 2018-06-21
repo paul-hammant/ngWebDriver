@@ -1,5 +1,9 @@
 # Releases
 
+### 1.1.4 - Jun 21, 2018
+
+* Selenium upgrade to 3.12
+
 ### 1.1.3 - Apr 18 2018
 
 * Dead Angular2 method deleted.
