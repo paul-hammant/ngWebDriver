@@ -193,12 +193,13 @@ Referring to a handy StackOverflow questions - [No injector found for element ar
 * `'[ng-app]'`- matching an element that has the arribute `ng-app` (this is the default)
 * `'#my-app'` - matching an id `my-app`
 * `'[fooBar]'` - matching an attribute `fooBar` on any element
+* `'[module=todoApp]'` - the "todo app" module (amongst others) on the [https://angularjs.org](https://angularjs.org) home page.
 
 There's a reference to css selectors you'll need to read - https://www.w3schools.com/cssref/css_selectors.asp - because that's the type of string it is going to require.
 
 ### Still needing help on $$testability ?
 
-Read the five or so bug reports on $$testability and how (most likely) you have to learn a little about you application so that you can use `.withRootSelector("abc123")`. Those bug reports: https://github.com/paul-hammant/ngWebDriver/issues?issue+testability
+Read the five or so bug reports on $$testability and how (most likely) you have to learn a little about you application so that you can use `.withRootSelector("abc123")`. Those bug reports: https://github.com/paul-hammant/ngWebDriver/issues?issue+testability. Also deeply read the css_selectors page on w3schools.com (link above) so you can fine tune your selector fu **before** filing a bug against this project.
 
 ## Other Functions
 
@@ -223,7 +224,7 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
 <dependency>
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>1.1.2</version>
+  <version>1.1.3</version>
   <scope>test</scope>
 </dependency>
 
@@ -237,6 +238,6 @@ Download from [Mavens Central Repo](http://search.maven.org/#search%7Cga%7C1%7Ca
 
 ## Releases
 
-Last Release: 1.1.2 - Mar 08, 2018
+Last Release: 1.1.3 - Apr 18, 2018
 
 Refer [CHANGELOG](./CHANGELOG.md)

@@ -1,5 +1,9 @@
 # Releases
 
+### 1.1.3 - Apr 18 2018
+
+* Dead Angular2 method deleted.
+
 ### 1.0 - Jan 21 2017
 
 * Updated dependence on Protractor's clientsidescripts.js source.
