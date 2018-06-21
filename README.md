@@ -17,6 +17,9 @@ You can use ngWebDriver today with the regular Java Selenium2/WebDriver librarie
 Like Protractor, ngWebDriver works with Angular versions greater than 1.0.6/1.1.4, and is compatible with Angular 2 applications. 
 Note that for Angular 2 apps, the `binding` and `model` locators are not supported. We recommend using `by.css`.
 
+
+# Documentation
+
 ## Waiting for Angular to finish async activity
 
 ```java
@@ -241,3 +244,11 @@ Download from [Mavens Central Repo](http://search.maven.org/#search%7Cga%7C1%7Ca
 Last Release: 1.1.4 - Jun 21, 2018
 
 Refer [CHANGELOG](./CHANGELOG.md)
+
+# Seeking help
+
+1. take a look all of this README - it is not that long
+2. take a look at the issues (open and closed)
+3. read the [Code of Conduct](./Code-Of-Conduct.md) and raise an issue, but be sure to make it really really easy for committers to reproduce your error. Like a clone and a build and - bang - perfect reproduction. 
+4. if there's some reason you can't do the reproduction on GitHub contact Paul Hammant - paul@hammant.org - for custom support.
+
