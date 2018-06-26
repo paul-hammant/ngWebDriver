@@ -2,7 +2,7 @@
 
 ### 1.1.4 - Jun 21, 2018
 
-* Selenium upgrade to 3.12
+* Selenium upgrade to 3.12, compatible with Selenium 3.13 too (tested)
 
 ### 1.1.3 - Apr 18 2018
 
