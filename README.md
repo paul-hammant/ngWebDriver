@@ -116,6 +116,31 @@ ByAngular.partialButtonText("cLiCk ")
 ByAngular.cssContainingText("#animals ul .pet", "dog")
 ```
 
+## Page Objects.
+
+The work in the same way at WebDriver's page object technology, there are a set of `FindBy` 
+annotations for ngWebDriver:
+
+```
+@ByAngularBinding.FindBy(..)
+@ByAngularButtonText.FindBy(..)
+@ByAngularButtonText.FindBy(..)
+@ByAngularCssContainingText.FindBy(..)
+@ByAngularExactBinding.FindBy(..)
+@ByAngularModel.FindBy(..)
+@ByAngularOptions.FindBy(..)
+@ByAngularPartialButtonText.FindBy(..)
+@ByAngularRepeater.FindBy(..)
+@ByAngularRepeaterCell.FindBy(..)
+@ByAngularRepeaterColumn.FindBy(..)
+@ByAngularRepeaterRow.FindBy(..)
+```
+
+Declare them above fields as you would have done for `FindBy` in the regular WebDriver and 
+continue to to use `PageFactory.initElements(..)` as normal. Refer to the parameters for the new
+`FindBy` static inner classes as there's `rootSelector` argument that is optional, but should 
+have been tried before you raise a bug with ngWebDriver.
+
 ## Angular model interop
 
 As with Protractor, you can change items in an Angular model, or retrieve them regardless of whether they appear in the UI or not.
