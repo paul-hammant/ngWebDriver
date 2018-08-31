@@ -253,6 +253,7 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
   <version>1.1.3</version>
+  <!-- some people might like to delete the following line if they get "package com.paulhammant.ngwebdriver does not exist" -->
   <scope>test</scope>
 </dependency>
 
