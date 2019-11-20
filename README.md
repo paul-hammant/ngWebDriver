@@ -218,11 +218,11 @@ ByAngularRepeater foo = baf.exactRepeater("day in days");
 
 Referring to a handy StackOverflow questions - [No injector found for element argument to getTestability](http://stackoverflow.com/questions/28040078/no-injector-found-for-element-argument-to-gettestability), you can use the applicable selector for your Angular app:
 
-* `'[ng-app]'`- matching an element that has the arribute `ng-app` (this is the default)
-* `\"app-root\"`- matching an element that has the element name `app-root`
-* `'#my-app'` - matching an id `my-app`
-* `'[fooBar]'` - matching an attribute `fooBar` on any element
-* `'[module=todoApp]'` - the "todo app" module (amongst others) on the [https://angularjs.org](https://angularjs.org) home page.
+* `.withRootSelector("[ng-app]")`- matching an element that has the arribute `ng-app` (this is the default)
+* `.withRootSelector("\"app-root\"")`- matching an element that has the element name `app-root`
+* `.withRootSelector("'#my-app'")` - matching an id `my-app`
+* `.withRootSelector("'[fooBar]'")` - matching an attribute `fooBar` on any element
+* `.withRootSelector("'[module=todoApp]'")` - the "todo app" module (amongst others) on the [https://angularjs.org](https://angularjs.org) home page.
 
 There's a reference to css selectors you'll need to read - https://www.w3schools.com/cssref/css_selectors.asp - because that's the type of string it is going to require.
 
