@@ -64,8 +64,8 @@ public class NgWebDriver {
         return (Long) rv;
     }
 
-    public void waitForAngularRequestsToFinish() {
-        driver.executeAsyncScript("var callback = arguments[arguments.length - 1];\n" +
+    public Object waitForAngularRequestsToFinish() {
+        return driver.executeAsyncScript("var callback = arguments[arguments.length - 1];\n" +
                 "var rootSelector = '"+rootSelector+"';\n" +
                 "\n" +
                 ByAngular.functions.get("waitForAngular"));

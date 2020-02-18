@@ -79,6 +79,13 @@ public class AngularAndWebDriverTest {
     }
 
     @Test
+    public void waitForAngularRequestsToFinish_non_angular_app() {
+        driver.get("http://www.google.com");
+        Object actual = ngWebDriver.waitForAngularRequestsToFinish();
+        assertThat(actual, equalTo("both angularJS testability and angular testability are undefined.  This could be either because this is a non-angular page or because your test involves client-side navigation, which can interfere with Protractor's bootstrapping.  See http://git.io/v4gXM for details"));
+    }
+
+    @Test
     public void find_by_angular_model() {
 
         //driver.get("http://www.angularjshub.com/code/examples/basics/02_TwoWayDataBinding_HTML/index.demo.php");
