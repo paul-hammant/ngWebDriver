@@ -28,6 +28,8 @@ NgWebDriver ngWebDriver = new NgWebDriver(driver);
 ngWebDriver.waitForAngularRequestsToFinish();
 ```
 Do this if WebDriver can possibly run ahead of Angular's ability finish it's MVC stuff in your application.
+In some of the error cases (e.g. if it's not an angular application or if the root selector could not be found correctly in an angular 2 app, 
+an error message is returned from the waitForAngularRequestsToFinish method.
 
 ## Locators
 
