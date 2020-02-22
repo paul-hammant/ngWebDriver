@@ -1,5 +1,10 @@
 # Releases
 
+### 1.1.5 - Feb 22, 2020
+
+* Selenium upgrade to 3.149
+* return code on waitForAngularToFinish() giving textual help for failure situations
+
 ### 1.1.4 - Jun 21, 2018
 
 * Selenium upgrade to 3.12, compatible with Selenium 3.13 too (tested)
