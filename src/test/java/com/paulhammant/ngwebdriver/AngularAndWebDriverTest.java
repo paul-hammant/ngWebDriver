@@ -15,10 +15,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.seleniumhq.selenium.fluent.*;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,12 +24,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.fail;
@@ -85,7 +79,7 @@ public class AngularAndWebDriverTest {
         assertThat(actual, equalTo("both angularJS testability and angular testability are undefined.  This could be either because this is a non-angular page or because your test involves client-side navigation, which can interfere with Protractor's bootstrapping.  See http://git.io/v4gXM for details"));
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void find_by_angular_model() {
 
         //driver.get("http://www.angularjshub.com/code/examples/basics/02_TwoWayDataBinding_HTML/index.demo.php");
@@ -162,7 +156,7 @@ public class AngularAndWebDriverTest {
         assertThat(elementTexts, hasItems(results));
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void find_multiple_hits_for_ng_repeat_in_page() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
@@ -178,7 +172,7 @@ public class AngularAndWebDriverTest {
 
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void find_multiple_hits_for_ng_repeat_and_subset_to_first_matching_predicate_for_fluent_selenium_example() {
 
         // As much as anything, this is a test of FluentSelenium
@@ -210,7 +204,7 @@ public class AngularAndWebDriverTest {
         }
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void find_second_row_in_ng_repeat() {
 
         driver.get("http://www.angularjshub.com/code/examples/collections/01_Repeater/index.demo.php");
@@ -274,7 +268,7 @@ public class AngularAndWebDriverTest {
         assertThat(weeb.get(0).getText(), is("Anon"));
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void find_all_for_an_angular_binding() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
@@ -290,7 +284,7 @@ public class AngularAndWebDriverTest {
 
     // Model interaction
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void model_mutation_and_query_is_possible() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/08_FormSubmission/index.demo.php");
@@ -375,7 +369,7 @@ public class AngularAndWebDriverTest {
 
     //  All the failure tests
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void findElement_should_barf_with_message_for_bad_repeater() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
@@ -391,7 +385,7 @@ public class AngularAndWebDriverTest {
 
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void findElement_should_barf_with_message_for_bad_repeater_and_row() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
@@ -407,7 +401,7 @@ public class AngularAndWebDriverTest {
 
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void findElements_should_barf_with_message_for_any_repeater_and_row2() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
@@ -434,7 +428,7 @@ public class AngularAndWebDriverTest {
         }
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void findElements_should_barf_with_message_for_any_repeater_and_row_and_column() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
@@ -449,7 +443,7 @@ public class AngularAndWebDriverTest {
         }
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void findElement_should_barf_when_element_not_in_the_dom() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
@@ -463,7 +457,7 @@ public class AngularAndWebDriverTest {
         }
     }
 
-    @Test
+    @Test @Ignore("angularjshub is down")
     public void findElements_should_barf_with_message_for_bad_repeater_and_column() {
 
         driver.get("http://www.angularjshub.com/code/examples/forms/04_Select/index.demo.php");
