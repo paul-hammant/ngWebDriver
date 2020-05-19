@@ -255,7 +255,7 @@ All our usage examples are in [a single test class](https://github.com/paul-hamm
 <dependency>
   <groupId>com.paulhammant</groupId>
   <artifactId>ngwebdriver</artifactId>
-  <version>1.1.3</version>
+  <version>1.1.5</version>
   <!-- You might want to delete the following line if you get "package com.paulhammant.ngwebdriver does not exist" errors -->
   <scope>test</scope>
 </dependency>
