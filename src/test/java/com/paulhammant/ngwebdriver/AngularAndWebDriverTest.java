@@ -481,11 +481,10 @@ public class AngularAndWebDriverTest {
             resetBrowser();
 
             driver.get("http://localhost:8080/index.html#/form");
+            ngWebDriver.waitForAngularRequestsToFinish();
             FluentWebElement usernameInput = fwd.input(ByAngular.model("username"));
             FluentWebElement name = fwd.span(ByAngular.binding("username"));
-
-            ngWebDriver.waitForAngularRequestsToFinish();
-
+            
             name.getText().shouldBe("Anon");
             usernameInput.clearField().sendKeys("B");
             name.getText().shouldBe("B");
@@ -539,6 +538,7 @@ public class AngularAndWebDriverTest {
     public void basic_elements_should_chain_with_index_correctly() {
         FluentWebDriver fwd = new FluentWebDriver(driver);
         driver.get("http://localhost:8080/index.html");
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         fwd.inputs(By.cssSelector("#checkboxes input")).last(new IsIndex2Or3()).click();
 
@@ -559,10 +559,16 @@ public class AngularAndWebDriverTest {
     @Test
     public void basic_elements_chained_call_should_wait_to_grab_the_WebElement_until_a_method_is_called() throws InterruptedException {
         FluentWebDriver fwd = new FluentWebDriver(driver);
+        driver.manage().window().maximize();
 
         driver.get("http://localhost:8080/index.html#/conflict");
 
+        ngWebDriver.waitForAngularRequestsToFinish();
+
         FluentWebElement reused = fwd.div(id("baz")).span(ByAngular.binding("item.reusedBinding"));
+
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", reused.getWebElement());
+        Thread.sleep(500);
 
         reused.getText().shouldBe("Inner: inner");
 
@@ -577,6 +583,8 @@ public class AngularAndWebDriverTest {
         FluentWebDriver fwd = new FluentWebDriver(driver);
 
         driver.get("http://localhost:8080/index.html#/repeater");
+
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         Map<String, String> expected = new HashMap<String, String>() {{
            put("M", "Monday");
@@ -687,6 +695,8 @@ public class AngularAndWebDriverTest {
         FluentWebDriver fwd = new FluentWebDriver(driver);
 
         driver.get("http://localhost:8080/index.html#/repeater");
+
+        ngWebDriver.waitForAngularRequestsToFinish();
 
         FluentWebElements lis = fwd.lis(ByAngular.repeater("baz in days | filter:'T'"));
         lis.getText().shouldBe("TTh");
