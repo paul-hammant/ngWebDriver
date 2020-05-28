@@ -132,7 +132,7 @@ public class ByAngular {
         return withRootSelector(DEFAULT_ROOT_SELECTOR).cssContainingText(cssSelector,searchText);
     }
 
-    protected abstract static class BaseBy extends By {
+    public abstract static class BaseBy extends By {
 
         protected final String rootSelector;
 

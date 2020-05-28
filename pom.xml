@@ -66,10 +66,10 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
+    <dependency>  
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>3.141.59</version>
+      <version>4.0.0-alpha-3</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.jetty.websocket</groupId>

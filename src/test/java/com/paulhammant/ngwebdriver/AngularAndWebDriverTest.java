@@ -512,14 +512,19 @@ public class AngularAndWebDriverTest {
       Ported from protractor/spec/basic/action_spec.js
      */
     @Test
-    public void basic_actions() {
+    public void basic_actions() throws java.lang.InterruptedException {
         FluentWebDriver fwd = new FluentWebDriver(driver);
         driver.get("http://localhost:8080/index.html#/form");
         ngWebDriver.waitForAngularRequestsToFinish();
 
         FluentWebElement sliderBar = fwd.input(By.name("points"));
 
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", sliderBar.getWebElement());
+        Thread.sleep(500);
+
         sliderBar.getAttribute("value").shouldBe("1");
+
+
 
         new Actions(driver).dragAndDropBy(sliderBar.getWebElement(), 400, 20).build().perform();
 
@@ -552,7 +557,7 @@ public class AngularAndWebDriverTest {
       TODO - many more specs in here
      */
     @Test
-    public void basic_elements_chained_call_should_wait_to_grab_the_WebElement_until_a_method_is_called() {
+    public void basic_elements_chained_call_should_wait_to_grab_the_WebElement_until_a_method_is_called() throws InterruptedException {
         FluentWebDriver fwd = new FluentWebDriver(driver);
 
         driver.get("http://localhost:8080/index.html#/conflict");
