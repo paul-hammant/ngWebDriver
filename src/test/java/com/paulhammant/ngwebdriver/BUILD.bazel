@@ -1,0 +1,27 @@
+package(default_visibility = ["//visibility:public"])
+java_library(
+    name = "ngwebdriver",
+    srcs = [
+        "//src/test/java/com/paulhammant/ngwebdriver:sources"
+    ],
+    deps = [
+        "//:tests_dependencies" , 
+        "//src/main/java/com/paulhammant/ngwebdriver:ngwebdriver"
+    ],
+    runtime_deps = [
+        
+    ],
+        testonly = 1,
+)
+
+java_test_discovery(
+    name = "ngwebdriver_test_discovery",
+    tests_from = [":ngwebdriver"],
+    size = "small",
+    print_discovered_classes = True,
+    suffixes = ["Test", "Tests", "IT", "E2E"],
+    prefixes = ["Test", "Tests", "IT", "E2E"],
+    testonly = 1
+)
+
+sources()

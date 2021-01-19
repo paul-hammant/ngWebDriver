@@ -1,0 +1,31 @@
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "main_dependencies",
+    exports = [
+        "@org_seleniumhq_selenium_selenium_java"
+    ],
+    runtime_deps = [
+        "//src/main/resources:resources"
+    ],
+)
+     
+
+
+java_library(
+    name = "tests_dependencies",
+    testonly = 1,
+    exports = [
+        "@org_eclipse_jetty_jetty_server",
+        "@org_hamcrest_hamcrest_all",
+        "@org_seleniumhq_selenium_fluent_fluent_selenium",
+        "@org_testng_testng",
+        "main_dependencies"
+    ],
+)
+     
+
+filegroup(
+    name = "coordinates",
+    srcs = ["MANIFEST.MF"],
+)

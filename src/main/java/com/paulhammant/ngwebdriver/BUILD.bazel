@@ -1,0 +1,17 @@
+package(default_visibility = ["//visibility:public"])
+java_library(
+
+    name = "ngwebdriver",
+    srcs = [
+        "//src/main/java/com/paulhammant/ngwebdriver:sources"
+    ],
+    deps = [
+        "//:main_dependencies"
+    ],
+    runtime_deps = [
+        
+    ],
+    
+)
+
+sources()

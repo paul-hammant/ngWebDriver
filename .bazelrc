@@ -1,0 +1,10 @@
+#
+# DO NOT EDIT - this line imports shared managed bazel configuration
+#
+import %workspace%/tools/bazelrc/.bazelrc.managed.dev.env
+
+#
+# ADDITIONS ONLY UNDER THIS LINE
+#
+
+      
