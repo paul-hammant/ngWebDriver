@@ -140,7 +140,7 @@ public class ByAngular {
             this.rootSelector = rootSelector;
         }
 
-        private final JavascriptExecutor getJavascriptExecutor(SearchContext context) {
+        protected final JavascriptExecutor getJavascriptExecutor(SearchContext context) {
             JavascriptExecutor jse;
             if (context instanceof RemoteWebElement) {
                 jse = (JavascriptExecutor) ((RemoteWebElement) context).getWrappedDriver();

@@ -8,8 +8,6 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.MovedContextHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -41,7 +39,7 @@ public class AngularAndWebDriverTest {
     public void before_suite() throws Exception {
 
         // Launch Protractor's own test app on http://localhost:8080
-        ((StdErrLog) Log.getRootLogger()).setLevel(StdErrLog.LEVEL_OFF);
+        //((StdErrLog) Log.getRootLogger()).setLevel(StdErrLog.LEVEL_OFF);
         webServer = new Server(new QueuedThreadPool(6));
         ServerConnector connector = new ServerConnector(webServer, new HttpConnectionFactory());
         connector.setPort(8080);
