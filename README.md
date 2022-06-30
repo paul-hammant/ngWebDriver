@@ -1,6 +1,6 @@
 # ngWebDriver
 
-A small library of WebDriver locators and more for AngularJS (v1.x) and Angular (v2 through v9), for Java. It works with Firefox, Chrome and all the other Selenium-WebDriver browsers.
+A small library of WebDriver locators and more for AngularJS (v1.x) and Angular (v2 through v12), for Java. It works with Firefox, Chrome and all the other Selenium-WebDriver browsers.
 
 [![javadoc](https://javadoc.io/badge2/com.paulhammant/ngwebdriver/javadoc.svg)](https://javadoc.io/doc/com.paulhammant/ngwebdriver)
 
