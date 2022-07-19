@@ -85,7 +85,7 @@
             <extensions>true</extensions>
             <configuration>
                 <serverId>nexus-oss-sonatype</serverId>
-                <nexusUrl>https://oss.sonatype.org/content/repositories/snapshots/</nexusUrl>
+                <nexusUrl>https://oss.sonatype.org/</nexusUrl>
             </configuration>
         </plugin>
         </plugins>
