@@ -3,7 +3,7 @@
 
     <groupId>com.paulhammant</groupId>
     <artifactId>ngwebdriver</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>ngWebDriver</name>
@@ -18,7 +18,7 @@
         <!-- NOTE: Set -Dfile.encoding=UTF-8 in MAVEN_OPTS -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <resource.encoding>UTF-8</resource.encoding>
-        <sonatype.nexus.url>https://s01.oss.sonatype.org</sonatype.nexus.url>
+        <sonatype.nexus.url>https://oss.sonatype.org</sonatype.nexus.url>
     </properties>
 
     <dependencies>
